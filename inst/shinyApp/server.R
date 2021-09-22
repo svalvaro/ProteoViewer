@@ -9,34 +9,33 @@ function(input, output) {
 
         inFile <- input$proteomics_table
 
-
-
-
         if (is.null(inFile)) {
             return(NULL)
         } else if(! is.null(inFile)){
 
-            df <- utils::read.delim(inFile$datapath) %>%
-                dplyr::select(
-                    c(
-                        dplyr::contains(c('Proteins',
-                                          'Experiment',
-                                          'Protein.names',
-                                          'Sequence',
-                                          'Intensity')),
-                        - dplyr::contains(c('leading',
-                                            'max',
-                                            'modified'))
-                    )
-                )
+            df <- utils::read.delim(inFile$datapath) #%>%
+                # dplyr::select(
+                #     c(
+                #         dplyr::contains(c('Proteins',
+                #                           'Experiment',
+                #                           'Protein.names',
+                #                           'Sequence',
+                #                           'Intensity')),
+                #         - dplyr::contains(c('leading',
+                #                             'max',
+                #                             'modified'))
+                #     )
+                # )
 
 
         }
 
+        #df <- read.delim('inst/shinyApp/www/evidence.txt')
+
         return(df)
     })
 
-    # proteomicsInput <- read.delim('inst/shinyApp/www/evidence.txt')
+    # df <- read.delim('inst/shinyApp/www/evidence.txt')
 
     # proteomicsInput <- read.delim('inst/shinyApp/www/evidence.txt')%>%
     # dplyr::select(
@@ -96,31 +95,31 @@ function(input, output) {
     #### Proteomics table indexed by Experiment and Protein Selected ####
 
 
-    ProteoIndexed <- reactive({
-
-        df <- proteomicsInput()
-
-        # Select only for the selected protein
-
-        # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
-        ProteoIndexed <- df[df$Proteins == input$SelectedProtein,]
-
-
-
-        if (input$combineExperiments == FALSE) {
-            # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
-            ProteoIndexed <- ProteoIndexed[
-                ProteoIndexed$Experiment == input$SelectedExperiment,]
-        }
-
-
-        # Remove rows containing NAs in the Intensity colum
-
-        ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
-
-
-
-    })
+    # ProteoIndexed <- reactive({
+    #
+    #     df <- proteomicsInput()
+    #
+    #     # Select only for the selected protein
+    #
+    #     # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
+    #     ProteoIndexed <- df[df$Proteins == input$SelectedProtein,]
+    #
+    #
+    #
+    #     if (input$combineExperiments == FALSE) {
+    #         # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
+    #         ProteoIndexed <- ProteoIndexed[
+    #             ProteoIndexed$Experiment == input$SelectedExperiment,]
+    #     }
+    #
+    #
+    #     # Remove rows containing NAs in the Intensity colum
+    #
+    #     ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
+    #
+    #
+    #
+    # })
 
     #  Number of peptides
     # output$text <- renderText(nrow(ProteoIndexed()))
@@ -135,10 +134,30 @@ function(input, output) {
     #### Render Image ####
 
         output$image <- renderUI({
+
+            if (is.null(proteomicsInput())) {
+                return(NULL)
+            }
             #tags$img(src = "http://wlab.ethz.ch/protter/create?up=P55011&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:yellow=C&bc:green=I&format=svg",width = 1010)
 
-            tags$img(src = paste0("http://wlab.ethz.ch/protter/create?up=",input$SelectedProtein,"&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:yellow=C&bc:green=I&format=svg"),
-                     width = input$zoomFiugre)
+            #tags$img(src = paste0("http://wlab.ethz.ch/protter/create?up=",input$SelectedProtein,"&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:yellow=C&bc:green=I&format=svg"),
+            #       width = input$zoomFigure)
+
+#
+            url <- ProteoViewer::connectProtterAPI(
+                evidence = proteomicsInput(),
+                SelectedProtein = input$SelectedProtein,
+                SelectedExperiment = input$SelectedExperiment,
+                combineExperiments = input$combineExperiments
+                )
+
+            print(url)
+
+            tag$img(src = url,
+                 width = input$zoomFigure)
+
+            # tags$img(src = "http://wlab.ethz.ch/protter/create?up=O75947&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#a4c639=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#fbceb1=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947&format=svg",
+            #          width = input$zoomFiugre)
         })
 
 

@@ -1,5 +1,6 @@
 library(shinydashboard)
-library(htmltools)
+#library(htmltools)
 library(magrittr)
 library(tidyverse)
 library(shiny)
+library(grDevices)

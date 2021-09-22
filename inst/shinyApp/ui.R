@@ -25,7 +25,7 @@ dashboardPage(
         #textOutput('text'),
 
 
-        sliderInput(inputId = 'zoomFiugre',label = 'Select the size of the image',
+        sliderInput(inputId = 'zoomFigure',label = 'Select the size of the image',
                     min = 500, max = 10000, value = 1000)
     ),
     dashboardBody(
