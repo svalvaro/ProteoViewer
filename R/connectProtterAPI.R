@@ -66,12 +66,15 @@ connectProtterAPI <- function(evidence = NULL,
 
     df <- df[base::order(df$Intensity), ]
 
-    # Only one decimal
-
-    df$Intensity <- base::format(round(df$Intensity,3), nsmall = 3)
+    df$Intensity <- as.numeric(df$Intensity)
 
 
-    # Assign the colors
+    # Create continous scale
+
+
+    continuous_breaks <- seq(from = trunc(min(df$Intensity)),
+                             to = trunc(max(df$Intensity)))
+
 
     myColors <- grDevices::colorRampPalette(c(
         "#2166AC",
@@ -80,22 +83,35 @@ connectProtterAPI <- function(evidence = NULL,
         "#B2182B"
     ))
 
-    df$Colour <- myColors(nrow(df))
+    colorsToPlot <- myColors(length(continuous_breaks))
 
-    #df$plotting_length <- 1
+    # data frame to be plotted to generate the legend.
+    dfToPlot <- data.frame(breaks = continuous_breaks,
+                         Colour = colorsToPlot)
+
+
+
+    # Match the colour of the legend to each sequence to generate the image
+
+    df$Colour <- dfToPlot$Colour[match( trunc(df$Intensity),dfToPlot$breaks)]
+
+    # Remove the hash from the names, the Protter API doesn't accept them
+
+    df$Colour <- base::gsub('#', '', df$Colour)
+
 
 
     # Plot the palette if required
 
     if (plot_palette == TRUE) {
 
-        p <- ggplot(df, aes(x = as.factor(Intensity),
-                            y = 1 ,
-                            fill = as.factor(Intensity)))+
+        p <- ggplot(dfToPlot, aes(x = breaks,
+                            y = 1,
+                            fill = as.factor(breaks)))+
             geom_bar(width = 1,
                      stat = 'identity'
                      )+
-            scale_fill_manual(values = df$Colour)+
+            scale_fill_manual(values = dfToPlot$Colour)+
             ggtitle(base::expression('Log'[2]*' Intensity'))+
             ylab('')+
             theme_bw()+
@@ -105,18 +121,12 @@ connectProtterAPI <- function(evidence = NULL,
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.y = element_blank(),
-                  axis.ticks.y = element_blank()
-                  )+
+                  axis.ticks.y = element_blank())+
             ylim(0,1)
 
         return(p)
 
     }
-
-    # Remove the hash from the names, the Protter API doesn't accept them
-
-    df$Colour <- base::gsub('#', '', df$Colour)
-
 
     # Generate url for protter API
 

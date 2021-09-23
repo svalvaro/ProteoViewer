@@ -1,5 +1,5 @@
 dashboardPage(
-    dashboardHeader(title = "Basic dashboard"),
+    dashboardHeader(title = "ProteoViewer"),
     dashboardSidebar(
         # For now only evidence.txt from MaxQuant
 
