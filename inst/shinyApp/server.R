@@ -90,7 +90,8 @@ function(input, output) {
                 evidence = proteomicsInput(),
                 SelectedProtein = input$SelectedProtein,
                 SelectedExperiment = input$SelectedExperiment,
-                combineExperiments = input$combineExperiments
+                combineExperiments = input$combineExperiments,
+                plot_palette = FALSE
                 )
 
             # render the image
@@ -98,6 +99,15 @@ function(input, output) {
                   width = input$zoomFigure)
         })
 
+
+    output$palette <- renderPlot(height = 100, width = 500,{
+        ProteoViewer::connectProtterAPI(
+            evidence = proteomicsInput(),
+            SelectedProtein = input$SelectedProtein,
+            SelectedExperiment = input$SelectedExperiment,
+            combineExperiments = input$combineExperiments,
+            plot_palette = TRUE)
+    })
 
     #### Render the Legend ####
 }

@@ -26,7 +26,7 @@ dashboardPage(
 
 
         sliderInput(inputId = 'zoomFigure',label = 'Select the size of the image',
-                    min = 500, max = 10000, value = 1000)
+                    min = 100, max = 5000, value = 1000)
     ),
     dashboardBody(
         # Boxes need to be put in a row (or column)
@@ -35,7 +35,9 @@ dashboardPage(
             #uiOutput(outputId = 'table'),
 
 
-            uiOutput(outputId = 'image')
+            uiOutput(outputId = 'image'),
+
+            plotOutput('palette')
 
 
         )
