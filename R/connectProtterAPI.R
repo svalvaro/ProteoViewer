@@ -11,10 +11,9 @@
 connectProtterAPI <- function(evidence = NULL,
                               SelectedExperiment = NULL,
                               SelectedProtein = NULL,
-                              color_higher = 'red',
-                              color_lower = 'blue',
                               combineExperiments = FALSE,
-                              plot_palette = FALSE){
+                              plot_palette = FALSE,
+                              peptideCutter = TRUE){
 
 
     if (!is.data.frame(evidence)) {
@@ -69,7 +68,7 @@ connectProtterAPI <- function(evidence = NULL,
 
     # Only one decimal
 
-    df$Intensity <- base::format(round(df$Intensity,1), nsmall = 1)
+    df$Intensity <- base::format(round(df$Intensity,3), nsmall = 3)
 
 
     # Assign the colors
@@ -83,14 +82,16 @@ connectProtterAPI <- function(evidence = NULL,
 
     df$Colour <- myColors(nrow(df))
 
-    df$plotting_length <- 1
+    #df$plotting_length <- 1
 
 
     # Plot the palette if required
 
     if (plot_palette == TRUE) {
 
-        p <- ggplot(df, aes(x =Intensity, y = 1 , fill = as.factor(Intensity)))+
+        p <- ggplot(df, aes(x = as.factor(Intensity),
+                            y = 1 ,
+                            fill = as.factor(Intensity)))+
             geom_bar(width = 1,
                      stat = 'identity'
                      )+
@@ -106,8 +107,7 @@ connectProtterAPI <- function(evidence = NULL,
                   axis.text.y = element_blank(),
                   axis.ticks.y = element_blank()
                   )+
-            ylim(0,1)#+
-            #coord_flip()
+            ylim(0,1)
 
         return(p)
 
@@ -131,6 +131,10 @@ connectProtterAPI <- function(evidence = NULL,
                       df$Sequence[ii], '&' )
     }
 
+    if (peptideCutter == TRUE) {
+
+        url <- paste0(url, "cutAt=peptidecutter.Tryps&")
+    }
 
     url <- paste0(url, "format=svg")
 

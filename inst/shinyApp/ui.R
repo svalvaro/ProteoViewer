@@ -1,8 +1,6 @@
 dashboardPage(
     dashboardHeader(title = "Basic dashboard"),
     dashboardSidebar(
-
-        # Upload the proteomics txt file.
         # For now only evidence.txt from MaxQuant
 
         # Input: Select a file ----
@@ -10,8 +8,6 @@ dashboardPage(
                   label =  "Upload the evidence.txt file",
                   multiple = FALSE,
                   accept = 'text'),
-
-        verbatimTextOutput("value"),
 
         uiOutput('proteinsSelect'),
 
@@ -22,10 +18,11 @@ dashboardPage(
         uiOutput('experimentSelect'),
 
 
-        #textOutput('text'),
+        checkboxInput('peptideCutter', 'Show trypsin cutting sites',
+                      value = TRUE),
 
-
-        sliderInput(inputId = 'zoomFigure',label = 'Select the size of the image',
+        sliderInput(inputId = 'zoomFigure',
+                    label = 'Select the size of the image',
                     min = 100, max = 5000, value = 1000)
     ),
     dashboardBody(
@@ -34,12 +31,12 @@ dashboardPage(
 
             #uiOutput(outputId = 'table'),
 
+            box(title = h2(textOutput('title_box')),
+                width = 1000,
+                uiOutput(outputId = 'image'),
 
-            uiOutput(outputId = 'image'),
-
-            plotOutput('palette')
-
-
+                plotOutput('lenged')
+                )
+            )
         )
     )
-)

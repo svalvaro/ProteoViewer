@@ -5,8 +5,6 @@ function(input, output) {
     ## Set maximum upload size to 500MB
     options(shiny.maxRequestSize=500*1024^2)
 
-
-
     proteomicsInput <- reactive({
 
         inFile <- input$proteomics_table
@@ -16,9 +14,19 @@ function(input, output) {
         } else if(! is.null(inFile)){
 
             df <- utils::read.delim(inFile$datapath)
+
+            # Select only the first uniprot in those ones containing multiple
+            # Followed by a semicolon.
+
+            # Repeated three times because sometimes there are multiple uniprot:
+            # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
+            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
+
         }
 
-        #df <- read.delim('inst/shinyApp/www/evidence.txt')
+        #df <- read.delim('shinyApp/www/evidence.txt')
 
         return(df)
     })
@@ -45,15 +53,26 @@ function(input, output) {
         }else{
             # Show also the protein name, create a column for that.
 
-            proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
+            proteinsToSelect <- proteomicsInput() %>% select(contains(
+                c('Proteins', 'names')
+            ))
+
+            proteinsToSelect$Display <- paste0(
+                proteinsToSelect$Proteins, ': ', proteinsToSelect$Protein.names
+            )
+
+            proteinsToSelect <- unique(proteinsToSelect)
+
+            #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
             shiny::selectInput(inputId = 'SelectedProtein',
                                label = 'Select a protein of interest',
-                               choices = proteinsToSelect,
-                               selected = proteinsToSelect[1])
+                               choices = proteinsToSelect$Display,
+                               selected = proteinsToSelect$Display[1])
         }
 
     })
+
 
     #### Experiment to select ####
 
@@ -76,6 +95,8 @@ function(input, output) {
     })
 
 
+    output$title_box <- renderText(input$SelectedProtein)
+
     #### Render Image ####
 
         output$image <- renderUI({
@@ -84,13 +105,19 @@ function(input, output) {
                 return(NULL)
             }
 
+            # Remove everything after the ":" in the proteinSelected
+            # which is the description of the protein.
+
+            proteinsSelected <- gsub("(.*):.*", "\\1",input$SelectedProtein )
+
             # Create the url to connect to the API
 
             url <- ProteoViewer::connectProtterAPI(
                 evidence = proteomicsInput(),
-                SelectedProtein = input$SelectedProtein,
+                SelectedProtein = proteinsSelected,
                 SelectedExperiment = input$SelectedExperiment,
                 combineExperiments = input$combineExperiments,
+                peptideCutter = input$peptideCutter,
                 plot_palette = FALSE
                 )
 
@@ -99,16 +126,19 @@ function(input, output) {
                   width = input$zoomFigure)
         })
 
+    #### Render the Legend ####
+    output$lenged <- renderPlot(height = 100, width = 500,{
 
-    output$palette <- renderPlot(height = 100, width = 500,{
+        proteinsSelected <- gsub("(.*):.*", "\\1",input$SelectedProtein )
+
         ProteoViewer::connectProtterAPI(
             evidence = proteomicsInput(),
-            SelectedProtein = input$SelectedProtein,
+            SelectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_palette = TRUE)
     })
 
-    #### Render the Legend ####
+
 }
 
