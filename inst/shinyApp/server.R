@@ -126,17 +126,39 @@ function(input, output) {
                   width = input$zoomFigure)
         })
 
-    #### Render the Legend ####
-    output$lenged <- renderPlot(height = 100, width = 500,{
 
+    legend <- reactive({
         proteinsSelected <- gsub("(.*):.*", "\\1",input$SelectedProtein )
 
-        ProteoViewer::connectProtterAPI(
+        legend <- ProteoViewer::connectProtterAPI(
             evidence = proteomicsInput(),
             SelectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_palette = TRUE)
+
+
+        if (is.null(legend)) {
+            return(NULL)
+        }else{
+            return(legend)
+        }
+    })
+
+
+    output$error_message <- renderText({
+
+        if (is.null(legend()) &
+            ! is.null(proteomicsInput())) {
+            print('No peptides found for this experiment')
+        }else{
+            return(NULL)
+        }
+    })
+    #### Render the Legend ####
+    output$lenged <- renderPlot(height = 100, width = 500,{
+            legend()
+
     })
 
 

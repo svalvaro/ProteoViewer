@@ -49,6 +49,13 @@ connectProtterAPI <- function(evidence = NULL,
             ProteoIndexed$Experiment == SelectedExperiment,]
     }
 
+    # If there are no peptides are found in that experiment.
+
+    if (nrow(ProteoIndexed) == 0) {
+        message('No peptides found in this experiment for this protein.')
+        return(NULL)
+    }
+
     # Remove rows containing NAs in the Intensity colum
 
     ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
@@ -90,7 +97,6 @@ connectProtterAPI <- function(evidence = NULL,
                          Colour = colorsToPlot)
 
 
-
     # Match the colour of the legend to each sequence to generate the image
 
     df$Colour <- dfToPlot$Colour[match( trunc(df$Intensity),dfToPlot$breaks)]
@@ -100,12 +106,11 @@ connectProtterAPI <- function(evidence = NULL,
     df$Colour <- base::gsub('#', '', df$Colour)
 
 
-
     # Plot the palette if required
 
     if (plot_palette == TRUE) {
 
-        p <- ggplot(dfToPlot, aes(x = breaks,
+        p <- ggplot(dfToPlot, aes(x = as.factor(breaks),
                             y = 1,
                             fill = as.factor(breaks)))+
             geom_bar(width = 1,
@@ -151,7 +156,4 @@ connectProtterAPI <- function(evidence = NULL,
     message(paste0('The url is: \n', url))
 
     return(url)
-
-
-
 }
