@@ -2,7 +2,9 @@ function(input, output) {
 
     #### Upload the Proteomics Table ####
 
-    options(shiny.maxRequestSize=500*1024^2)## Set maximum upload size to 500MB
+    ## Set maximum upload size to 500MB
+    options(shiny.maxRequestSize=500*1024^2)
+
 
 
     proteomicsInput <- reactive({
@@ -13,21 +15,7 @@ function(input, output) {
             return(NULL)
         } else if(! is.null(inFile)){
 
-            df <- utils::read.delim(inFile$datapath) #%>%
-                # dplyr::select(
-                #     c(
-                #         dplyr::contains(c('Proteins',
-                #                           'Experiment',
-                #                           'Protein.names',
-                #                           'Sequence',
-                #                           'Intensity')),
-                #         - dplyr::contains(c('leading',
-                #                             'max',
-                #                             'modified'))
-                #     )
-                # )
-
-
+            df <- utils::read.delim(inFile$datapath)
         }
 
         #df <- read.delim('inst/shinyApp/www/evidence.txt')
@@ -50,7 +38,6 @@ function(input, output) {
 
     #### Proteins to select ####
 
-
     output$proteinsSelect <- renderUI({
 
         if (is.null(proteomicsInput())) {
@@ -61,19 +48,16 @@ function(input, output) {
             proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
             shiny::selectInput(inputId = 'SelectedProtein',
-                               label = 'Select a experiment',
+                               label = 'Select a protein of interest',
                                choices = proteinsToSelect,
                                selected = proteinsToSelect[1])
         }
 
     })
 
-
     #### Experiment to select ####
 
     output$experimentSelect <- renderUI({
-
-
 
         if (is.null(proteomicsInput())) {
             return(NULL)
@@ -84,51 +68,12 @@ function(input, output) {
             experimentToSelect <- base::unique(proteomicsInput()$Experiment)
 
             shiny::selectInput(inputId = 'SelectedExperiment',
-                               label = 'Select a Protein of Interest',
+                               label = 'Select a Experiment',
                                choices = experimentToSelect,
                                selected = experimentToSelect[1])
         }
 
     })
-
-
-    #### Proteomics table indexed by Experiment and Protein Selected ####
-
-
-    # ProteoIndexed <- reactive({
-    #
-    #     df <- proteomicsInput()
-    #
-    #     # Select only for the selected protein
-    #
-    #     # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
-    #     ProteoIndexed <- df[df$Proteins == input$SelectedProtein,]
-    #
-    #
-    #
-    #     if (input$combineExperiments == FALSE) {
-    #         # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
-    #         ProteoIndexed <- ProteoIndexed[
-    #             ProteoIndexed$Experiment == input$SelectedExperiment,]
-    #     }
-    #
-    #
-    #     # Remove rows containing NAs in the Intensity colum
-    #
-    #     ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
-    #
-    #
-    #
-    # })
-
-    #  Number of peptides
-    # output$text <- renderText(nrow(ProteoIndexed()))
-
-
-
-
-
-
 
 
     #### Render Image ####
@@ -138,12 +83,9 @@ function(input, output) {
             if (is.null(proteomicsInput())) {
                 return(NULL)
             }
-            #tags$img(src = "http://wlab.ethz.ch/protter/create?up=P55011&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:yellow=C&bc:green=I&format=svg",width = 1010)
 
-            #tags$img(src = paste0("http://wlab.ethz.ch/protter/create?up=",input$SelectedProtein,"&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:yellow=C&bc:green=I&format=svg"),
-            #       width = input$zoomFigure)
+            # Create the url to connect to the API
 
-#
             url <- ProteoViewer::connectProtterAPI(
                 evidence = proteomicsInput(),
                 SelectedProtein = input$SelectedProtein,
@@ -151,15 +93,12 @@ function(input, output) {
                 combineExperiments = input$combineExperiments
                 )
 
-            print(url)
-
-            tag$img(src = url,
-                 width = input$zoomFigure)
-
-            # tags$img(src = "http://wlab.ethz.ch/protter/create?up=O75947&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#a4c639=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947bc:#5d8aa8=O75947bc:#fbceb1=O75947bc:#5d8aa8=O75947bc:#5d8aa8=O75947bc:#e32636=O75947&format=svg",
-            #          width = input$zoomFiugre)
+            # render the image
+            tags$img(src = url,
+                  width = input$zoomFigure)
         })
 
 
+    #### Render the Legend ####
 }
 
