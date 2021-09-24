@@ -1,29 +1,43 @@
 dashboardPage(
-    dashboardHeader(title = "ProteoViewer"),
-    dashboardSidebar(
+    dashboardHeader(title = "ProteoViewer",titleWidth =  300),
+    dashboardSidebar(width = 300,
         # For now only evidence.txt from MaxQuant
 
         # Input: Select a file ----
         fileInput(inputId = "proteomics_table",
-                  label =  "Upload the evidence.txt file",
+                  label =  h4("Upload the evidence.txt file"),
                   multiple = FALSE,
                   accept = 'text'),
 
         uiOutput('proteinsSelect'),
 
 
-        checkboxInput('combineExperiments', 'Combine the experiments',
+        checkboxInput('combineExperiments', h4('Combine the experiments'),
                       value = FALSE),
 
         uiOutput('experimentSelect'),
 
 
-        checkboxInput('peptideCutter', 'Show trypsin cutting sites',
+        checkboxInput('peptideCutter', h4('Show trypsin cutting sites'),
                       value = TRUE),
 
         sliderInput(inputId = 'zoomFigure',
-                    label = 'Select the size of the image',
-                    min = 100, max = 5000, value = 1000)
+                    label = h4('Select the size of the image'),
+                    min = 100, max = 5000, value = 1000),
+
+
+        # Load demo data.
+
+        shinyWidgets::actionBttn(inputId = 'Demo',
+                   label = 'Start Demo',
+                   icon = NULL,
+                   style = "unite",
+                   color = "default",
+                   size = "md",
+                   block = FALSE,
+                   no_outline = TRUE
+        )
+
     ),
     dashboardBody(
         # Boxes need to be put in a row (or column)
