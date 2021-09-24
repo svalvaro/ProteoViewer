@@ -13,7 +13,7 @@ connectProtterAPI <- function(evidence = NULL,
                               SelectedProtein = NULL,
                               combineExperiments = FALSE,
                               plot_palette = FALSE,
-                              peptideCutter = TRUE){
+                              proteaseSelected = 'Tryps'){
 
 
     if (!is.data.frame(evidence)) {
@@ -146,9 +146,9 @@ connectProtterAPI <- function(evidence = NULL,
                       df$Sequence[ii], '&' )
     }
 
-    if (peptideCutter == TRUE) {
+    if (!proteaseSelected == 'none') {
 
-        url <- paste0(url, "cutAt=peptidecutter.Tryps&")
+        url <- paste0(url, "cutAt=peptidecutter.", proteaseSelected,"&")
     }
 
     url <- paste0(url, "format=svg")

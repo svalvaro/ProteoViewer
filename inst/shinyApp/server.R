@@ -161,7 +161,7 @@ function(input, output) {
                 SelectedProtein = proteinsSelected,
                 SelectedExperiment = input$SelectedExperiment,
                 combineExperiments = input$combineExperiments,
-                peptideCutter = input$peptideCutter,
+                proteaseSelected = input$proteaseSelected,
                 plot_palette = FALSE
                 )
 
@@ -179,6 +179,7 @@ function(input, output) {
             SelectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
+            proteaseSelected = input$proteaseSelected,
             plot_palette = TRUE)
 
 

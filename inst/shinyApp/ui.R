@@ -1,5 +1,20 @@
 dashboardPage(
-    dashboardHeader(title = "ProteoViewer",titleWidth =  300),
+
+    dashboardHeader(#title = "ProteoViewer",
+        title = titlePanel('ProteoViewer',
+                           tags$head(
+                               tags$link(
+                                   rel = "icon", type = "image/png", href = "logo.png"
+                               ),
+                               tags$title("ProteoViewer")#,
+
+                               #tag$link(rel = 'icons', href = "Proteomika_logo_hires.png")
+
+
+                           )
+        ),
+        titleWidth =  300),
+
     dashboardSidebar(width = 300,
         # For now only evidence.txt from MaxQuant
 
@@ -18,8 +33,16 @@ dashboardPage(
         uiOutput('experimentSelect'),
 
 
-        checkboxInput('peptideCutter', h4('Show trypsin cutting sites'),
-                      value = TRUE),
+        # checkboxInput('protease', h4('Show trypsin cutting sites'),
+        #               value = TRUE),
+
+        selectInput(inputId = 'proteaseSelected',
+                    label =  'Protease',
+                    choices = c('No protease' = 'none',
+                                'Trypsin' = 'Tryps',
+                                'LysC' = 'LysC',
+                                'LysN' = 'LysN'),
+                    selected = 'none'),
 
         sliderInput(inputId = 'zoomFigure',
                     label = h4('Select the size of the image'),
