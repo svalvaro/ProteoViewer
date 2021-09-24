@@ -1,5 +1,31 @@
 function(input, output) {
 
+    #### Load Demo Data ####
+
+    demo <- shiny::reactiveValues(start = FALSE)
+
+
+    observeEvent(input$Demo, {
+        shiny::req(input$Demo)
+
+        message(paste0('Demo is', demo$start))
+
+        demo$start <-  TRUE
+
+
+
+        shinyalert::shinyalert("Demo Data Loaded",
+                               "Now you can visualize some proteins!",
+                               type="success",
+                               closeOnClickOutside = TRUE,
+                               closeOnEsc = TRUE,
+                               timer = 6000)
+
+
+    })
+
+
+
     #### Upload the Proteomics Table ####
 
     ## Set maximum upload size to 500MB
@@ -9,9 +35,7 @@ function(input, output) {
 
         inFile <- input$proteomics_table
 
-        if (is.null(inFile)) {
-            return(NULL)
-        } else if(! is.null(inFile)){
+        if(! is.null(inFile)){
 
             df <- utils::read.delim(inFile$datapath)
 
@@ -20,13 +44,31 @@ function(input, output) {
 
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
-            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+
+        }else if(demo$start == TRUE){
+
+            #df <- read.delim('www/evidence.txt')
+
+            df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
+                                         package = 'ProteoViewer'))
+
+
+
+            # Repeated three times because sometimes there are multiple uniprot:
+            # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+
+        } else if (is.null(inFile)) {
+            return(NULL)
 
         }
 
-        #df <- read.delim('shinyApp/www/evidence.txt')
+
 
         return(df)
     })
@@ -42,6 +84,8 @@ function(input, output) {
     #                           'Sequence',
     #                           'Intensity')),
     #         - dplyr::contains(c('leading','max','modified'))))
+
+
 
 
     #### Proteins to select ####
@@ -108,7 +152,7 @@ function(input, output) {
             # Remove everything after the ":" in the proteinSelected
             # which is the description of the protein.
 
-            proteinsSelected <- gsub("(.*):.*", "\\1",input$SelectedProtein )
+            proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
 
             # Create the url to connect to the API
 
@@ -122,13 +166,13 @@ function(input, output) {
                 )
 
             # render the image
-            tags$img(src = url,
+            shiny::tags$img(src = url,
                   width = input$zoomFigure)
         })
 
 
     legend <- reactive({
-        proteinsSelected <- gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
 
         legend <- ProteoViewer::connectProtterAPI(
             evidence = proteomicsInput(),

@@ -27,6 +27,7 @@ dashboardPage(
 
 
         # Load demo data.
+        shinyalert::useShinyalert(),
 
         shinyWidgets::actionBttn(inputId = 'Demo',
                    label = 'Start Demo',
