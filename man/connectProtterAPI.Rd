@@ -5,14 +5,16 @@
 \title{Title}
 \usage{
 connectProtterAPI(
-  evidence,
-  SelectedExperiment,
-  SelectedProtein,
-  combineExperiments = FALSE
+  evidence = NULL,
+  SelectedExperiment = NULL,
+  SelectedProtein = NULL,
+  combineExperiments = FALSE,
+  plot_palette = FALSE,
+  peptideCutter = TRUE
 )
 }
 \arguments{
-\item{combineExperiments}{}
+\item{SelectedProtein}{}
 }
 \value{
 
