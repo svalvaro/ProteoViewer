@@ -25,7 +25,6 @@ function(input, output) {
     })
 
 
-
     #### Upload the Proteomics Table ####
 
     ## Set maximum upload size to 500MB
@@ -206,34 +205,39 @@ function(input, output) {
 
     #### Render proteinImage ####
 
-        output$proteinImage <- renderUI({
+    output$proteinImage <- renderUI({
 
-            if (is.null(dfPeptidesColors())) {
-                return(NULL)
-            }
+        if (is.null(dfPeptidesColors())) {
+            return(NULL)
+        }
 
-            # Remove everything after the ":" in the proteinSelected
-            # which is the description of the protein.
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
 
-            proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
 
 
-            # Create the url to connect to the API
+        # Create the url to connect to the API
 
-            url <- ProteoViewer::connectProtterAPI(
-                dfPeptidesColors = dfPeptidesColors(),
-                SelectedProtein = proteinsSelected,
-                proteaseSelected = input$proteaseSelected
-                )
+        url <- ProteoViewer::connectProtterAPI(
+            dfPeptidesColors = dfPeptidesColors(),
+            SelectedProtein = proteinsSelected,
+            proteaseSelected = input$proteaseSelected
+            )
 
-            # render the image
-            shiny::tags$img(src = url,
-                  width = input$zoomFigure)
-        })
+        # render the image
+        shiny::tags$img(src = url,
+              width = input$zoomFigure)
+    })
+
     #### Render the Legend ####
 
     legend <- reactive({
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
 
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
@@ -251,7 +255,7 @@ function(input, output) {
     })
 
 
-    output$error_message <- renderText({
+    output$noPeptidesErrorMessage <- renderText({
 
         if (is.null(dfPeptidesColors()) &
             ! is.null(proteomicsInput())) {
@@ -262,13 +266,60 @@ function(input, output) {
     })
 
 
-    output$lenged <- renderPlot(height = 100, width = 500,{
+    output$legend <- renderPlot(height = 100, width = 500,{
             legend()
 
     })
 
 
     #### Experiment Design ####
+
+
+    experimentDesign <- reactive({
+
+        if (is.null(experimentNames())) {
+            return(NULL)
+        }
+
+        experimentDesign <- data.frame(
+            label = experimentNames(),
+            condition = ' ',
+            replicate = ' '
+        )
+
+        message(experimentDesign)
+
+        return(experimentDesign)
+
+    })
+
+
+
+    output$experimentDesignOutput <- rhandsontable::renderRHandsontable({
+
+
+        if (is.null(experimentNames())) {
+            return(NULL)
+        }
+
+        rhandsontable::rhandsontable(
+            experimentDesign(),
+            height =  500
+            ) %>%
+            rhandsontable::hot_col('replicate', format = '0a')
+    })
+
+
+    # output$boxExperimentDesign <- renderUI({
+    #
+    #     box(
+    #         title = h3('Experiment Design'#,
+    #
+    #                    #rHandsontableOutput('experimentDesignOutput'),
+    #         )
+    #         )
+    # })
+
 
 
 

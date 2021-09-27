@@ -9,12 +9,11 @@ createLegend(
   SelectedExperiment = NULL,
   SelectedProtein = NULL,
   combineExperiments = FALSE,
-  plot_legend = TRUE,
-  proteaseSelected = "Tryps"
+  plot_legend = TRUE
 )
 }
 \arguments{
-\item{proteaseSelected}{}
+\item{plot_legend}{}
 }
 \value{
 
