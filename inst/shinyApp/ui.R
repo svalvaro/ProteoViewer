@@ -106,8 +106,8 @@ dashboardPage(
             box(title = h2(textOutput('title_box')),
                 width = 1000,
                 # Error message
-                h4(textOutput('error_message')),
-                uiOutput(outputId = 'image'),
+                h3(textOutput('error_message')),
+                uiOutput(outputId = 'proteinImage'),
 
                 plotOutput('lenged')
                 )

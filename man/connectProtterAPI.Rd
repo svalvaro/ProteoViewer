@@ -5,16 +5,13 @@
 \title{Title}
 \usage{
 connectProtterAPI(
-  evidence = NULL,
-  SelectedExperiment = NULL,
+  dfPeptidesColors = NULL,
   SelectedProtein = NULL,
-  combineExperiments = FALSE,
-  plot_palette = FALSE,
-  peptideCutter = TRUE
+  proteaseSelected = "Tryps"
 )
 }
 \arguments{
-\item{SelectedProtein}{}
+\item{proteaseSelected}{}
 }
 \value{
 

@@ -50,7 +50,7 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            # df <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
+            # evidence <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
 
             df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
                                          package = 'ProteoViewer'))
@@ -141,11 +141,54 @@ function(input, output) {
 
     output$title_box <- renderText(input$SelectedProtein)
 
+
+
+    #### Create table peptides & colours ####
+
+    dfPeptidesColors <- reactive({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
+
+
+        # Create the peptides and colours tabular format
+        # When plot_legend = FALSE, it returns a table containing
+        # the peptides, and colors corresponding.
+
+        dfPeptidesColors <- ProteoViewer::createLegend(
+            evidence = proteomicsInput(),
+            SelectedProtein = proteinsSelected,
+            SelectedExperiment = input$SelectedExperiment,
+            combineExperiments = input$combineExperiments,
+            plot_legend = FALSE)
+
+
+
+        # If no peptides  for the given experiment
+        if (is.null(dfPeptidesColors)) {
+            return(NULL)
+        } else{
+            return(dfPeptidesColors)
+        }
+
+    })
+
+
+
     #### Render Image ####
 
-        output$image <- renderUI({
+        output$proteinImage <- renderUI({
 
-            if (is.null(proteomicsInput())) {
+            if (is.null(dfPeptidesColors())) {
                 return(NULL)
             }
 
@@ -154,15 +197,13 @@ function(input, output) {
 
             proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
 
+
             # Create the url to connect to the API
 
             url <- ProteoViewer::connectProtterAPI(
-                evidence = proteomicsInput(),
+                dfPeptidesColors = dfPeptidesColors(),
                 SelectedProtein = proteinsSelected,
-                SelectedExperiment = input$SelectedExperiment,
-                combineExperiments = input$combineExperiments,
-                proteaseSelected = input$proteaseSelected,
-                plot_palette = FALSE
+                proteaseSelected = input$proteaseSelected
                 )
 
             # render the image
@@ -174,16 +215,15 @@ function(input, output) {
     legend <- reactive({
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
 
-        legend <- ProteoViewer::connectProtterAPI(
+        legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
             SelectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
-            proteaseSelected = input$proteaseSelected,
-            plot_palette = TRUE)
+            plot_legend = TRUE)
 
 
-        if (is.null(legend)) {
+        if (is.null(legend) | is.null(dfPeptidesColors())) {
             return(NULL)
         }else{
             return(legend)
@@ -193,13 +233,14 @@ function(input, output) {
 
     output$error_message <- renderText({
 
-        if (is.null(legend()) &
+        if (is.null(dfPeptidesColors()) &
             ! is.null(proteomicsInput())) {
             print('No peptides found for this experiment')
         }else{
             return(NULL)
         }
     })
+
     #### Render the Legend ####
     output$lenged <- renderPlot(height = 100, width = 500,{
             legend()
