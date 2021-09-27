@@ -50,7 +50,7 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            #df <- read.delim('www/evidence.txt')
+            # df <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
 
             df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
                                          package = 'ProteoViewer'))
