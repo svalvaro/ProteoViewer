@@ -285,20 +285,22 @@ function(input, output) {
             # If no experiment is provided but the user has uploaded the
             # evidence txt
 
-        } else if(!is.null(proteomicsInput()) ){
+        } else if(!is.null(input$proteomics_table)  ){
 
 
 
             experimentDesign <- data.frame(
                                         label = experimentNames(),
                                         condition = ' ',
-                                        replicate = ' '
+                                        replicate = as.numeric(' ')
                                         )
 
             # If the user starts the demo
-        } else if(input$Demo == TRUE){
-
-            message('im here')
+            # For some reason input$Demo is 0 when False
+            # then 1 when true, and if pressed multiple times, it continues to
+            # increase. So for input$Demo >0  means when the user press demo
+            # many times
+        } else if(input$Demo > 0){
 
             experimentDesign <- utils::read.delim(
                 system.file('shinyApp/www/experiment_design_example.txt',
@@ -307,7 +309,7 @@ function(input, output) {
         }
 
 
-
+        message(input$Demo)
 
 
         return(experimentDesign)
@@ -327,7 +329,8 @@ function(input, output) {
             experimentDesign(),
             height =  500
             ) %>%
-            rhandsontable::hot_col('replicate', format = '0a')
+            rhandsontable::hot_col('replicate', format = '0a') %>%
+            rhandsontable::hot_col('label', readOnly = TRUE)
     })
 
 
