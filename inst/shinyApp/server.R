@@ -277,17 +277,38 @@ function(input, output) {
 
     experimentDesign <- reactive({
 
-        if (is.null(experimentNames())) {
-            return(NULL)
+        if(! is.null(input$expDesignUpload)){
+
+            experimentDesign <- utils::read.delim(
+                input$expDesignUpload$datapath, header = TRUE)
+
+            # If no experiment is provided but the user has uploaded the
+            # evidence txt
+
+        } else if(!is.null(proteomicsInput()) ){
+
+
+
+            experimentDesign <- data.frame(
+                                        label = experimentNames(),
+                                        condition = ' ',
+                                        replicate = ' '
+                                        )
+
+            # If the user starts the demo
+        } else if(input$Demo == TRUE){
+
+            message('im here')
+
+            experimentDesign <- utils::read.delim(
+                system.file('shinyApp/www/experiment_design_example.txt',
+                            package = 'ProteoViewer'),
+                header = TRUE)
         }
 
-        experimentDesign <- data.frame(
-            label = experimentNames(),
-            condition = ' ',
-            replicate = ' '
-        )
 
-        message(experimentDesign)
+
+
 
         return(experimentDesign)
 
