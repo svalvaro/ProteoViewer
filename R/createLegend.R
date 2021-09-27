@@ -21,7 +21,7 @@ createLegend <- function(evidence = NULL,
         return(NULL)
     }
 
-    # SelectedExperiment = "wt_1"
+    # SelectedExperiment = "condition_A_1"
     # SelectedProtein = "O75947"
 
     proteomicsInput <- evidence %>%
@@ -45,7 +45,7 @@ createLegend <- function(evidence = NULL,
         proteomicsInput$Proteins == SelectedProtein,]
 
 
-    # If there are no peptides are foun:d in that experiment.
+    # If there are no peptides are found in that experiment.
 
     if (nrow(ProteoIndexed) == 0) {
         message('No peptides found in this experiment for this protein.')
@@ -56,7 +56,7 @@ createLegend <- function(evidence = NULL,
 
     ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
 
-    ## Deal with repeated Sequences, obtain the average for now
+    ## Deal with repeated Sequences, obtain the SUM of Sequence and group.
 
     dfPeptidesColors <- ProteoIndexed %>%
         group_by(Sequence, Experiment) %>%

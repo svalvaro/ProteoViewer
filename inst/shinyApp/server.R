@@ -105,7 +105,12 @@ function(input, output) {
                 proteinsToSelect$Proteins, ': ', proteinsToSelect$Protein.names
             )
 
-            proteinsToSelect <- unique(proteinsToSelect)
+            # Obtain only the uniques
+            proteinsToSelect <- base::unique(proteinsToSelect)
+
+            # Sort them alphabetically
+            proteinsToSelect <- proteinsToSelect[
+                base::order(proteinsToSelect$Display),]
 
             #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
@@ -120,21 +125,36 @@ function(input, output) {
 
     #### Experiment to select ####
 
-    output$experimentSelect <- renderUI({
+
+    # First we need the experiment names.
+
+
+    experimentNames <- reactive({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
-        }else if (input$combineExperiments == TRUE){
-            return(NULL)
-        }else{
+        }
 
-            experimentToSelect <- base::unique(proteomicsInput()$Experiment)
+        experimentNames <- base::sort(
+            base::unique(proteomicsInput()$Experiment)
+            )
+
+
+        return(experimentNames)
+
+    })
+
+    output$experimentSelect <- renderUI({
+
+        if (is.null(proteomicsInput()) |
+            input$combineExperiments == TRUE) {
+            return(NULL)
+        }
 
             shiny::selectInput(inputId = 'SelectedExperiment',
                                label = 'Select a Experiment',
-                               choices = experimentToSelect,
-                               selected = experimentToSelect[1])
-        }
+                               choices = experimentNames(),
+                               selected = experimentNames()[1])
 
     })
 
@@ -184,7 +204,7 @@ function(input, output) {
 
 
 
-    #### Render Image ####
+    #### Render proteinImage ####
 
         output$proteinImage <- renderUI({
 
@@ -210,7 +230,7 @@ function(input, output) {
             shiny::tags$img(src = url,
                   width = input$zoomFigure)
         })
-
+    #### Render the Legend ####
 
     legend <- reactive({
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
@@ -241,11 +261,16 @@ function(input, output) {
         }
     })
 
-    #### Render the Legend ####
+
     output$lenged <- renderPlot(height = 100, width = 500,{
             legend()
 
     })
+
+
+    #### Experiment Design ####
+
+
 
 
 }
