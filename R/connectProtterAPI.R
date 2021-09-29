@@ -21,6 +21,10 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
                   "&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&")
 
 
+    # Change it to comma separated color for peptides with the same color,
+    # It will reduce a bit the length of the total query and might aliviate the
+    # issues with long requests.
+
     for (ii in seq_len(nrow(dfPeptidesColors))) {
 
         url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
