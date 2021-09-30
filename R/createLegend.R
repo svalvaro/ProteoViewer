@@ -10,11 +10,14 @@
 #' @export
 #'
 #' @examples
-createLegend <- function(evidence = NULL,
-                      SelectedExperiment = NULL,
-                      SelectedProtein = NULL,
-                      combineExperiments = FALSE,
-                      plot_legend = TRUE){
+createLegend <- function(evidence,
+                        experimentDesign,
+                        compareConditions = FALSE,
+                        conditionSelected = NULL,
+                        SelectedExperiment = NULL,
+                        SelectedProtein = NULL,
+                        combineExperiments = FALSE,
+                        plot_legend = TRUE){
 
 
     if (!is.data.frame(evidence)) {
@@ -62,7 +65,6 @@ createLegend <- function(evidence = NULL,
         group_by(Sequence, Experiment) %>%
         summarise(Intensity = sum(Intensity))
 
-
     # Calculate the log2 of the intensities and reorder
 
     dfPeptidesColors$Intensity <- log2(dfPeptidesColors$Intensity)
@@ -75,6 +77,7 @@ createLegend <- function(evidence = NULL,
     # Create continous scale for the combined protein independtly of the
     # experiment. That way it is easy to compare the experiments against each
     # other
+
 
 
     continuous_breaks <- seq(from = trunc(min(dfPeptidesColors$Intensity)),
@@ -96,33 +99,6 @@ createLegend <- function(evidence = NULL,
                            Colour = colorsToPlot)
 
 
-    # Match the colour of the legend to each sequence to generate the image
-
-    dfPeptidesColors$Colour <- dfToPlot$Colour[match( trunc(dfPeptidesColors$Intensity),dfToPlot$breaks)]
-
-    # Remove the hash from the names, the Protter API doesn't accept them
-
-    dfPeptidesColors$Colour <- base::gsub('#', '', dfPeptidesColors$Colour)
-
-
-    # If the user now wants to select a specific experiment
-
-
-    if (combineExperiments == FALSE) {
-        # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
-        dfPeptidesColors <- dfPeptidesColors[
-            dfPeptidesColors$Experiment == SelectedExperiment,]
-    }
-
-
-
-    if (nrow(dfPeptidesColors) == 0 &
-        plot_legend == FALSE) {
-        message('No peptides found in this experiment for this protein and
-                experiment.')
-        return(NULL)
-    }
-
     # Plot the palette if required
 
     if (plot_legend == TRUE) {
@@ -130,9 +106,7 @@ createLegend <- function(evidence = NULL,
         p <- ggplot(dfToPlot, aes(x = as.factor(breaks),
                                   y = 1,
                                   fill = as.factor(breaks)))+
-            geom_bar(width = 1,
-                     stat = 'identity'
-            )+
+            geom_bar(width = 1, stat = 'identity')+
             scale_fill_manual(values = dfToPlot$Colour)+
             ggtitle(base::expression('Log'[2]*' Intensity'))+
             ylab('')+
@@ -148,8 +122,65 @@ createLegend <- function(evidence = NULL,
 
         return(p)
 
-    }else{
-        return(dfPeptidesColors)
     }
+
+    # If ExperimentDesign and condition selected are provided
+
+    if (!is.null(experimentDesign)) {
+
+        dfPeptidesColors$Condition <- experimentDesign$Condition[
+            match(dfPeptidesColors$Experiment,experimentDesign$Experiment)]
+    }
+
+    if(!is.null(conditionSelected)){
+
+        # Obtain the median of the peptide sequence by group
+
+        dfPeptidesColors <- dfPeptidesColors %>%
+            group_by(Sequence, Condition) %>%
+            summarise(Intensity = median(Intensity))
+
+
+        # Index by the conditionSelected
+
+
+        dfPeptidesColors <- dfPeptidesColors[dfPeptidesColors$Condition == conditionSelected,]
+    }
+
+
+    # Match the colour of the legend to each sequence to generate the image
+
+    dfPeptidesColors$Colour <- dfToPlot$Colour[
+        match( trunc(dfPeptidesColors$Intensity),dfToPlot$breaks)]
+
+    # Remove the hash from the names, the Protter API doesn't accept them
+
+    dfPeptidesColors$Colour <- base::gsub('#', '', dfPeptidesColors$Colour)
+
+
+    # If the user now wants to select a specific experiment
+
+    # This part might cause some trouble.
+    if (combineExperiments == FALSE && compareConditions == FALSE) {
+
+
+        # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
+        dfPeptidesColors <- dfPeptidesColors[
+            dfPeptidesColors$Experiment == SelectedExperiment,]
+    }
+
+
+
+    if (nrow(dfPeptidesColors) == 0 & plot_legend == FALSE) {
+        message('No peptides found in this experiment for this protein and
+                experiment.')
+        return(NULL)
+    }
+
+
+
+    return(dfPeptidesColors)
+
+
 
 }

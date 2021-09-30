@@ -72,20 +72,6 @@ function(input, output) {
         return(df)
     })
 
-    # df <- read.delim('inst/shinyApp/www/evidence.txt')
-
-    # proteomicsInput <- read.delim('inst/shinyApp/www/evidence.txt')%>%
-    # dplyr::select(
-    #     c(
-    #         dplyr::contains(c('Proteins',
-    #                           'Experiment',
-    #                           'Protein.names',
-    #                           'Sequence',
-    #                           'Intensity')),
-    #         - dplyr::contains(c('leading','max','modified'))))
-
-
-
 
     #### Proteins to select ####
 
@@ -438,26 +424,21 @@ function(input, output) {
             return(NULL)
         }
 
-        # shinyWidgets::pickerInput(
-        #     inputId = 'conditionsSelected',
-        #     label = h4('Choose the groups that you would like to compare'),
-        #     choices = comparisonsConditions(),
-        #     # options = list(
-        #     #     `actions-box` = TRUE,
-        #     #     size = 10,
-        #     #     `selected-text-format` = "count > 3"
-        #     # ),
-        #     multiple = TRUE
-        #
-        #     )
+        shinyWidgets::pickerInput(
+            inputId = 'conditionsSelected',
+            label = h4('Choose the groups that you would like to compare'),
+            choices = comparisonsConditions(),
+            multiple = TRUE,
+            options = list(color = 'red')
+            )
 
 
-        shiny::selectInput(
-                inputId = 'conditionsSelected',
-                label = h4('Choose the groups that you would like to compare'),
-                choices = comparisonsConditions(),
-                multiple = TRUE
-        )
+        # shiny::selectInput(
+        #         inputId = 'conditionsSelected',
+        #         label = h4('Choose the groups that you would like to compare'),
+        #         choices = comparisonsConditions(),
+        #         multiple = TRUE
+        # )
 
     })
 
