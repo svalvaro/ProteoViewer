@@ -189,7 +189,7 @@ function(input, output) {
 
     #### Create table peptides & colours ####
 
-    dfPeptidesColors <- reactive({
+    dfPeptidesColorsNoGroups <- reactive({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
@@ -208,8 +208,11 @@ function(input, output) {
         # When plot_legend = FALSE, it returns a table containing
         # the peptides, and colors corresponding.
 
-        dfPeptidesColors <- ProteoViewer::createLegend(
+        dfPeptidesColorsNoGroups <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
+            experimentDesign = NULL,
+            compareConditions = FALSE,
+            conditionSelected = NULL,
             SelectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
@@ -218,10 +221,10 @@ function(input, output) {
 
 
         # If no peptides  for the given experiment
-        if (is.null(dfPeptidesColors)) {
+        if (is.null(dfPeptidesColorsNoGroups)) {
             return(NULL)
         } else{
-            return(dfPeptidesColors)
+            return(dfPeptidesColorsNoGroups)
         }
 
     })
@@ -230,12 +233,16 @@ function(input, output) {
 
     #### Render proteinImage ####
 
-    output$proteinImage <- renderUI({
+    output$proteinImageNoComparison <- renderUI({
 
-        if (is.null(dfPeptidesColors())) {
+        if (is.null(dfPeptidesColorsNoGroups())) {
             return(NULL)
         }
 
+
+        if (!is.null(input$compareConditions) && input$compareConditions == TRUE) {
+            return(NULL)
+        }
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -245,7 +252,7 @@ function(input, output) {
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
-            dfPeptidesColors = dfPeptidesColors(),
+            dfPeptidesColors = dfPeptidesColorsNoGroups(),
             SelectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
             )
@@ -254,6 +261,155 @@ function(input, output) {
         shiny::tags$img(src = url,
               width = input$zoomFigure)
     })
+
+
+
+    #### Render Comparison One ####
+
+
+    dfPeptidesColorsComparisonOne<- reactive({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
+
+
+        # Create the peptides and colours tabular format
+        # When plot_legend = FALSE, it returns a table containing
+        # the peptides, and colors corresponding.
+
+        dfPeptidesColorsComparisonOne <- ProteoViewer::createLegend(
+            evidence = proteomicsInput(),
+            experimentDesign = experimentDesignFinal$df,
+            compareConditions = TRUE,
+            conditionSelected = input$conditionsSelected[1],
+            SelectedProtein = proteinsSelected,
+            SelectedExperiment = input$SelectedExperiment,
+            combineExperiments = input$combineExperiments,
+            plot_legend = FALSE)
+
+
+
+        # If no peptides  for the given experiment
+        if (is.null(dfPeptidesColorsComparisonOne)) {
+            return(NULL)
+        } else{
+            return(dfPeptidesColorsComparisonOne)
+        }
+
+    })
+
+    output$proteinImageComparisonOne <- renderUI({
+
+        if (is.null(dfPeptidesColorsComparisonOne())) {
+            return(NULL)
+        }
+
+
+        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+            return(NULL)
+        }
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
+
+        # Create the url to connect to the API
+
+        url <- ProteoViewer::connectProtterAPI(
+            dfPeptidesColors = dfPeptidesColorsComparisonOne(),
+            SelectedProtein = proteinsSelected,
+            proteaseSelected = input$proteaseSelected
+        )
+
+        # render the image
+        shiny::tags$img(src = url,
+                        width = input$zoomFigure)
+    })
+
+
+    #### Render Comparison Two ####
+
+
+    dfPeptidesColorsComparisonTwo <- reactive({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
+
+
+        # Create the peptides and colours tabular format
+        # When plot_legend = FALSE, it returns a table containing
+        # the peptides, and colors corresponding.
+
+        dfPeptidesColorsComparisonTwo <- ProteoViewer::createLegend(
+            evidence = proteomicsInput(),
+            experimentDesign = experimentDesignFinal$df,
+            compareConditions = TRUE,
+            conditionSelected = input$conditionsSelected[2],
+            SelectedProtein = proteinsSelected,
+            SelectedExperiment = input$SelectedExperiment,
+            combineExperiments = input$combineExperiments,
+            plot_legend = FALSE)
+
+
+
+        # If no peptides  for the given experiment
+        if (is.null(dfPeptidesColorsComparisonTwo)) {
+            return(NULL)
+        } else{
+            return(dfPeptidesColorsComparisonTwo)
+        }
+
+    })
+
+    output$proteinImageComparisonTwo <- renderUI({
+
+        if (is.null(dfPeptidesColorsComparisonTwo())) {
+            return(NULL)
+        }
+
+
+        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+            return(NULL)
+        }
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+
+
+        # Create the url to connect to the API
+
+        url <- ProteoViewer::connectProtterAPI(
+            dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
+            SelectedProtein = proteinsSelected,
+            proteaseSelected = input$proteaseSelected
+        )
+
+        # render the image
+        shiny::tags$img(src = url,
+                        width = input$zoomFigure)
+    })
+
+
 
     #### Render the Legend ####
 
@@ -272,7 +428,7 @@ function(input, output) {
             plot_legend = TRUE)
 
 
-        if (is.null(legend) | is.null(dfPeptidesColors())) {
+        if (is.null(legend) | is.null(dfPeptidesColorsNoGroups())) {
             return(NULL)
         }else{
             return(legend)
@@ -282,7 +438,7 @@ function(input, output) {
 
     output$noPeptidesErrorMessage <- renderText({
 
-        if (is.null(dfPeptidesColors()) &
+        if (is.null(dfPeptidesColorsNoGroups()) &
             ! is.null(proteomicsInput())) {
             print('No peptides found for this experiment')
         }else{
@@ -429,16 +585,8 @@ function(input, output) {
             label = h4('Choose the groups that you would like to compare'),
             choices = comparisonsConditions(),
             multiple = TRUE,
-            options = list(color = 'red')
+            selected = comparisonsConditions()[c(1,2)]
             )
-
-
-        # shiny::selectInput(
-        #         inputId = 'conditionsSelected',
-        #         label = h4('Choose the groups that you would like to compare'),
-        #         choices = comparisonsConditions(),
-        #         multiple = TRUE
-        # )
 
     })
 

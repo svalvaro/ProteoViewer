@@ -153,7 +153,17 @@ dashboardPage(
                         # Error message in case no peptides found
                         h3(textOutput('noPeptidesErrorMessage')),
 
-                        uiOutput(outputId = 'proteinImage'),
+                        # If no
+                        # comparisons are selected (without experiment design)
+
+                        uiOutput(outputId = 'proteinImageNoComparison'),
+
+
+                        # If two comparisons are selected:
+
+                        uiOutput(outputId = 'proteinImageComparisonOne'),
+
+                        uiOutput(outputId = 'proteinImageComparisonTwo'),
 
                         plotOutput('legend')
                         )
