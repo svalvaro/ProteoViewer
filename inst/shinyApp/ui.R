@@ -142,7 +142,9 @@ dashboardPage(
 
                 fluidRow(
                     box(title = 'Experiment Design',
-                        rhandsontable::rHandsontableOutput('experimentDesignOutput')
+
+                        rhandsontable::rHandsontableOutput(
+                            'experimentDesignOutput')
                         )
                     )
                 )

@@ -290,9 +290,9 @@ function(input, output) {
 
 
             experimentDesign <- data.frame(
-                                        label = experimentNames(),
-                                        condition = ' ',
-                                        replicate = as.numeric(' ')
+                                        Experiment = experimentNames(),
+                                        Condition = ' ',
+                                        Replicate = as.numeric(' ')
                                         )
 
             # If the user starts the demo
@@ -329,20 +329,34 @@ function(input, output) {
             experimentDesign(),
             height =  500
             ) %>%
-            rhandsontable::hot_col('replicate', format = '0a') %>%
-            rhandsontable::hot_col('label', readOnly = TRUE)
+            rhandsontable::hot_col('Replicate', format = '0a') %>%
+            rhandsontable::hot_col('Experiment', readOnly = TRUE)
     })
 
 
-    # output$boxExperimentDesign <- renderUI({
-    #
-    #     box(
-    #         title = h3('Experiment Design'#,
-    #
-    #                    #rHandsontableOutput('experimentDesignOutput'),
-    #         )
-    #         )
-    # })
+
+    # Obtain possible modifications that the user can make in the experiment
+    # design
+
+    experimentDesignFinal <- shiny::reactiveValues()
+
+    observeEvent(input$experimentDesignOutput,{
+
+
+            experimentDesignFinal$df <- rhandsontable::hot_to_r(
+                input$experimentDesignOutput)
+
+        print('The experiment design is:')
+        print(experimentDesignFinal$df)
+
+    })
+
+
+
+
+
+
+
 
 
 
