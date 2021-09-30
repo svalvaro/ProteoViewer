@@ -267,9 +267,22 @@ function(input, output) {
     #### Render Comparison One ####
 
 
-    dfPeptidesColorsComparisonOne<- reactive({
+    dfPeptidesColorsComparisonOne <- reactive({
+
+        shiny::req(input$compareConditions)
+
+        shiny::req(input$conditionsSelected[1])
 
         if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        if(is.null(input$compareConditions)){
+            return(NULL)
+        }
+
+        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+
             return(NULL)
         }
 
@@ -279,8 +292,6 @@ function(input, output) {
         # which is the description of the protein.
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
-
-
 
         # Create the peptides and colours tabular format
         # When plot_legend = FALSE, it returns a table containing
@@ -297,7 +308,6 @@ function(input, output) {
             plot_legend = FALSE)
 
 
-
         # If no peptides  for the given experiment
         if (is.null(dfPeptidesColorsComparisonOne)) {
             return(NULL)
@@ -308,13 +318,15 @@ function(input, output) {
     })
 
     output$proteinImageComparisonOne <- renderUI({
+        shiny::req(input$compareConditions)
+        shiny::req(input$conditionsSelected[1])
 
-        if (is.null(dfPeptidesColorsComparisonOne())) {
-            return(NULL)
-        }
+        # if (is.null(dfPeptidesColorsComparisonOne())) {
+        #     return(NULL)
+        # }
 
 
-        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+        if (input$compareConditions == FALSE) {
             return(NULL)
         }
         # Remove everything after the ":" in the proteinSelected
@@ -337,12 +349,39 @@ function(input, output) {
     })
 
 
+
+    output$titleProteinComparisonOne <- renderText({
+
+        if (is.null(dfPeptidesColorsComparisonTwo())) {
+            return(NULL)
+        }
+
+
+        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+            return(NULL)
+        }
+        paste0('Condition: ',  input$conditionsSelected[1])
+    })
+
     #### Render Comparison Two ####
 
 
     dfPeptidesColorsComparisonTwo <- reactive({
 
+        shiny::req(input$compareConditions)
+
+        shiny::req(input$conditionsSelected[2])
+
         if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        if(is.null(input$compareConditions)){
+            return(NULL)
+        }
+
+        if (input$compareConditions == FALSE) {
+
             return(NULL)
         }
 
@@ -382,12 +421,20 @@ function(input, output) {
 
     output$proteinImageComparisonTwo <- renderUI({
 
-        if (is.null(dfPeptidesColorsComparisonTwo())) {
-            return(NULL)
-        }
+        # if (is.null(dfPeptidesColorsComparisonTwo())) {
+        #     return(NULL)
+        # }
+
+        shiny::req(input$compareConditions)
+
+        shiny::req(input$conditionsSelected[2])
+
+        # if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+        #     return(NULL)
+        # }
 
 
-        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+        if (input$compareConditions == FALSE) {
             return(NULL)
         }
         # Remove everything after the ":" in the proteinSelected
@@ -410,6 +457,19 @@ function(input, output) {
     })
 
 
+    output$titleProteinComparisonTwo <- renderText({
+
+        if (is.null(dfPeptidesColorsComparisonTwo())) {
+            return(NULL)
+        }
+
+
+        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+            return(NULL)
+        }
+
+        paste0('Condition: ',  input$conditionsSelected[2])
+    })
 
     #### Render the Legend ####
 
@@ -439,7 +499,8 @@ function(input, output) {
     output$noPeptidesErrorMessage <- renderText({
 
         if (is.null(dfPeptidesColorsNoGroups()) &
-            ! is.null(proteomicsInput())) {
+            ! is.null(proteomicsInput())
+            ) {
             print('No peptides found for this experiment')
         }else{
             return(NULL)
@@ -580,13 +641,20 @@ function(input, output) {
             return(NULL)
         }
 
+
+        colors <- base::rep('color:black;background:white',
+                            length(comparisonsConditions()))
+
         shinyWidgets::pickerInput(
             inputId = 'conditionsSelected',
             label = h4('Choose the groups that you would like to compare'),
             choices = comparisonsConditions(),
             multiple = TRUE,
-            selected = comparisonsConditions()[c(1,2)]
+            selected = comparisonsConditions()[c(1,2)],
+            options = list("max-options" = 2),
+            choicesOpt = list(style= colors)
             )
+
 
     })
 

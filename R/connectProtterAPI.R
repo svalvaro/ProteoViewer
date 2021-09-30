@@ -25,11 +25,17 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     # It will reduce a bit the length of the total query and might aliviate the
     # issues with long requests.
 
-    for (ii in seq_len(nrow(dfPeptidesColors))) {
 
-        url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
-                      dfPeptidesColors$Sequence[ii], '&' )
+    if (!is.null(dfPeptidesColors)>0) {
+
+        for (ii in seq_len(nrow(dfPeptidesColors))) {
+
+            url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
+                          dfPeptidesColors$Sequence[ii], '&' )
+        }
+
     }
+
 
     if (!proteaseSelected == 'none') {
 
