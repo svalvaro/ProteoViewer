@@ -32,19 +32,42 @@ dashboardPage(
                                    accept = 'text'
                          ),
 
+
+                         # Select the protein of interest
                          uiOutput('proteinsSelect'),
 
-                         checkboxInput('combineExperiments', h4('Combine the experiments'),
-                                                         value = FALSE#,
-                                                         #icon("paper-plane"),
-                                                         #style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
-                                           ),
+
+
+
+                         # Compare between conditions based on experiment design
+                         uiOutput('comparisonCheck'),
+                         uiOutput('comparisonSelector'),
+
+                         br(),
+
+                         # checkboxInput('combineExperiments',
+                         #               h4('Combine all the experiments'),
+                         #               value = FALSE#,
+                         #               #icon("paper-plane"),
+                         #               #style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
+                         # ),
+
+
+
+
+                         uiOutput('combineExperimentsOutput'),
+
+                         # checkboxInput('combineExperiments',
+                         #                h4('Combine all the experiments'),
+                         #                value = FALSE#,
+                         #                                 #icon("paper-plane"),
+                         #                                 #style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
+                         #                   ),
 
                            uiOutput('experimentSelect'),
 
-
                            selectInput(inputId = 'proteaseSelected',
-                                       label =  'Protease',
+                                       label =  h4('Protease'),
                                        choices = c('No protease' = 'none',
                                                    'Trypsin' = 'Tryps',
                                                    'LysC' = 'LysC',

@@ -114,7 +114,7 @@ function(input, output) {
             #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
             shiny::selectInput(inputId = 'SelectedProtein',
-                               label = 'Select a protein of interest',
+                               label = h4('Select a protein of interest'),
                                choices = proteinsToSelect$Display,
                                selected = proteinsToSelect$Display[1])
         }
@@ -143,15 +143,54 @@ function(input, output) {
 
     })
 
-    output$experimentSelect <- renderUI({
 
-        if (is.null(proteomicsInput()) |
-            input$combineExperiments == TRUE) {
+    # Output wether to combine or not the experiment. Don't show it if
+    # THe compare between conditions is TRUE
+
+
+    output$combineExperimentsOutput <- renderUI({
+
+        if (is.null(proteomicsInput())) {
             return(NULL)
         }
 
+
+        if (!is.null(input$compareConditions) &&
+            input$compareConditions == TRUE) {
+            return(NULL)
+        }
+
+        checkboxInput('combineExperiments',
+                      h4('Combine all the experiments'),
+                      value = FALSE#,
+                      #icon("paper-plane"),
+                      #style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
+        )
+    })
+
+    output$experimentSelect <- renderUI({
+
+
+
+          # if(!is.null(input$comparisonInput) & input$comparisonInput == TRUE) {
+          #
+          #       return(NULL)
+          # }
+          #
+        if (is.null(proteomicsInput()) || input$combineExperiments == TRUE) {
+
+              return(NULL)
+
+        }
+
+        if (!is.null(input$compareConditions) &&  input$compareConditions == TRUE) {
+            return(NULL)
+        }
+
+
+
             shiny::selectInput(inputId = 'SelectedExperiment',
-                               label = 'Select a Experiment',
+                               label = h4('Select a Experiment'),
                                choices = experimentNames(),
                                selected = experimentNames()[1])
 
@@ -353,13 +392,74 @@ function(input, output) {
 
 
 
+    #### Comparisons regarding experiment design ####
 
 
 
+    output$comparisonCheck <- shiny::renderUI({
+
+        if (is.null(experimentDesignFinal$df)) {
+            return(NULL)
+        }
 
 
 
+        shiny::checkboxInput(inputId = 'compareConditions',
+                      h4('Compare between conditions'),
+                      value = FALSE
+        )
+    })
 
+
+    comparisonsConditions <- reactive({
+
+        if (is.null(experimentDesignFinal$df)) {
+            return(NULL)
+        }
+
+        comparisonsConditions <- base::sort(
+            base::unique(
+            experimentDesignFinal$df$Condition)
+            )
+    })
+
+
+    output$comparisonSelector <- shiny::renderUI({
+
+        # If no experiment design is provided
+        if (is.null(experimentDesignFinal$df) |
+            # Avoid error message if is null
+            is.null(input$compareConditions)) {
+
+            return(NULL)
+
+        }else if(! is.null(input$compareConditions) &
+                 input$compareConditions == FALSE){
+            return(NULL)
+        }
+
+        # shinyWidgets::pickerInput(
+        #     inputId = 'conditionsSelected',
+        #     label = h4('Choose the groups that you would like to compare'),
+        #     choices = comparisonsConditions(),
+        #     # options = list(
+        #     #     `actions-box` = TRUE,
+        #     #     size = 10,
+        #     #     `selected-text-format` = "count > 3"
+        #     # ),
+        #     multiple = TRUE
+        #
+        #     )
+
+
+        shiny::selectInput(
+                inputId = 'conditionsSelected',
+                label = h4('Choose the groups that you would like to compare'),
+                choices = comparisonsConditions(),
+                multiple = TRUE
+        )
+
+    })
 
 
 }
