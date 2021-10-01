@@ -86,27 +86,25 @@ function(input, output) {
                 proteinsToSelect$Proteins, ': ', proteinsToSelect$Protein.names
             )
 
+             proteinsToSelect <- proteinsToSelect$Display
+
             # Obtain only the uniques
             proteinsToSelect <- base::unique(proteinsToSelect)
 
-
-
-
             # Sort them alphabetically
             proteinsToSelect <- proteinsToSelect[
-                base::order(proteinsToSelect$Display),]
-
+                base::order(proteinsToSelect)]
 
             # Remove residual (':')
 
-            proteinsToSelect <- proteinsToSelect[! proteinsToSelect %in% ':']
+            proteinsToSelect <- proteinsToSelect[! proteinsToSelect %in% ': ']
 
             #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
             shiny::selectInput(inputId = 'SelectedProtein',
                                label = h4('Select a protein of interest'),
-                               choices = proteinsToSelect$Display,
-                               selected = proteinsToSelect$Display[1])
+                               choices = proteinsToSelect,
+                               selected = proteinsToSelect[1])
         }
 
     })
