@@ -7,7 +7,8 @@
 connectProtterAPI(
   dfPeptidesColors = NULL,
   SelectedProtein = NULL,
-  proteaseSelected = "Tryps"
+  proteaseSelected = "Tryps",
+  openInProtter = FALSE
 )
 }
 \arguments{

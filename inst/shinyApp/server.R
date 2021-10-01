@@ -53,7 +53,6 @@ function(input, output) {
                                          package = 'ProteoViewer'))
 
 
-
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
             df$Proteins <- base::sub(";.*", "", df$Proteins)
@@ -265,7 +264,6 @@ function(input, output) {
     })
 
 
-
     #### Render Comparison One ####
 
 
@@ -343,7 +341,7 @@ function(input, output) {
             dfPeptidesColors = dfPeptidesColorsComparisonOne(),
             SelectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
-        )
+            )
 
         # render the image
         shiny::tags$img(src = url,
@@ -451,7 +449,7 @@ function(input, output) {
             dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
             SelectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
-        )
+            )
 
         # render the image
         shiny::tags$img(src = url,

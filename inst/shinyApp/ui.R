@@ -158,6 +158,11 @@ dashboardPage(
 
                         uiOutput(outputId = 'proteinImageNoComparison'),
 
+                        plotOutput('legend'),
+
+
+
+
 
                         # If two comparisons are selected:
                         box(title = h3(textOutput('titleProteinComparisonOne')),
@@ -166,11 +171,6 @@ dashboardPage(
                         box(title = h3(textOutput('titleProteinComparisonTwo')),
                             uiOutput(outputId = 'proteinImageComparisonTwo')),
 
-
-
-
-
-                        plotOutput('legend')
                         )
                     )
                 ),

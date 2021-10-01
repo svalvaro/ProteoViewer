@@ -12,13 +12,12 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
                               SelectedProtein = NULL,
                               proteaseSelected = 'Tryps'){
 
-
-
     # Generate url for protter API
 
+
     url <- paste0("http://wlab.ethz.ch/protter/create?up=",
-                  SelectedProtein,
-                  "&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&")
+                SelectedProtein,
+                "&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&")
 
 
     # Change it to comma separated color for peptides with the same color,

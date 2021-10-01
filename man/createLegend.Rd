@@ -5,7 +5,10 @@
 \title{Title}
 \usage{
 createLegend(
-  evidence = NULL,
+  evidence,
+  experimentDesign,
+  compareConditions = FALSE,
+  conditionSelected = NULL,
   SelectedExperiment = NULL,
   SelectedProtein = NULL,
   combineExperiments = FALSE,
