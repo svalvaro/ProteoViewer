@@ -43,9 +43,7 @@ function(input, output) {
 
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::sub(";.*", "", df$Proteins)
 
         }else if(demo$start == TRUE){
 
@@ -58,9 +56,7 @@ function(input, output) {
 
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
-            df$Proteins <- base::gsub("(.*);.*", "\\1", df$Proteins)
+            df$Proteins <- base::sub(";.*", "", df$Proteins)
 
         } else if (is.null(inFile)) {
             return(NULL)
@@ -93,9 +89,17 @@ function(input, output) {
             # Obtain only the uniques
             proteinsToSelect <- base::unique(proteinsToSelect)
 
+
+
+
             # Sort them alphabetically
             proteinsToSelect <- proteinsToSelect[
                 base::order(proteinsToSelect$Display),]
+
+
+            # Remove residual (':')
+
+            proteinsToSelect <- proteinsToSelect[! proteinsToSelect %in% ':']
 
             #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
