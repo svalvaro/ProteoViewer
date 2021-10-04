@@ -36,7 +36,9 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
 
     }
 
-    # If modified peptides are added
+    # If modified peptides are added, then a new part will be added to the url:
+    # oxidation in methynines will be added in the form:
+    # '...&modMox=' and the peptides separated by commas.
 
     if(!is.null(modifiedPeptides)){
 
