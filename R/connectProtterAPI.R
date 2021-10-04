@@ -9,6 +9,7 @@
 #'
 #' @examples
 connectProtterAPI <- function(dfPeptidesColors = NULL,
+                              modifiedPeptides = NULL,
                               SelectedProtein = NULL,
                               proteaseSelected = 'Tryps'){
 
@@ -32,6 +33,65 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
                           dfPeptidesColors$Sequence[ii], '&' )
         }
+
+    }
+
+    # If modified peptides are added
+
+    if(!is.null(modifiedPeptides)){
+
+        # For Oxidation (M):
+
+        # The indexes of modified peptides are:
+
+        OxidationIndexes <- which(modifiedPeptides$Modifications == 'Oxidation (M)')
+
+        if (length(OxidationIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modMox=', modifiedPeptides$Modified.sequence[OxidationIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has been added
+            if (length(OxidationIndexes)>1) {
+
+                # [-1] since the first modified peptide has been added to the url already
+                for (ii in OxidationIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
+        # For Acetyl (Protein N-term)
+
+        # The indexes of modified peptides are:
+
+        AcetylationIndexes <- which(modifiedPeptides$Modifications == 'Acetyl (Protein N-term)')
+
+        if (length(AcetylationIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modnac=', modifiedPeptides$Modified.sequence[AcetylationIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has been added
+            if (length(AcetylationIndexes)>1) {
+
+                # [-1] since the first modified peptide has been added to the url already
+                for (ii in AcetylationIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
+
+
 
     }
 
