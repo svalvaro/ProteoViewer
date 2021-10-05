@@ -1,6 +1,6 @@
 #' Title
 #'
-#' @param SelectedProtein
+#' @param selectedProtein
 #' @param dfPeptidesColors
 #' @param proteaseSelected
 #'
@@ -10,14 +10,14 @@
 #' @examples
 connectProtterAPI <- function(dfPeptidesColors = NULL,
                               modifiedPeptides = NULL,
-                              SelectedProtein = NULL,
+                              selectedProtein = NULL,
                               proteaseSelected = 'Tryps'){
 
     # Generate url for protter API
 
 
     url <- paste0("http://wlab.ethz.ch/protter/create?up=",
-                SelectedProtein,
+                selectedProtein,
                 "&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&")
 
 
@@ -36,6 +36,8 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
 
     }
 
+
+    #### PTMS ####
     # If modified peptides are added, then a new part will be added to the url:
     # oxidation in methynines will be added in the form:
     # '...&modMox=' and the peptides separated by commas.
@@ -92,9 +94,16 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url, '&')
         }
 
+    }
 
 
 
+    if ('Oxidation (M)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:forestgreen,cc:white=EX.MODMOX&' )
+    }
+
+    if ('Acetyl (Protein N-term)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:blue,cc:white=EX.MODnac&' )
     }
 
 

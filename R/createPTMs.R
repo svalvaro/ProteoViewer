@@ -18,6 +18,53 @@ createPTMs <- function(evidence,
 
     modifiedPeptides <- modifiedPeptides[! modifiedPeptides$Modifications == 'Unmodified',]
 
+    modifiedPeptides <- base::unique(modifiedPeptides)
+
+
+    # In order to colour individually the modifications, only one modification
+    # can exist per row. For those peptides containing multiple modificaitons:
+
+
+    multiplePTMIndexes <- which(
+      stringr::str_detect(modifiedPeptides$Modifications, ',')
+      )
+
+
+    df <- modifiedPeptides[multiplePTMIndexes,]
+
+
+    df <-  df %>% tidyr::separate_rows(Modifications, sep =  ',\\s?')
+
+
+
+    df$Modifications <-   gsub('[1-3] ', '', df$Modifications)
+
+
+    #gsub('Acetyl \\(Protein N-term\\)','', df$Modified.sequence)
+
+
+    for (ii in seq_len(nrow(df))) {
+
+
+      Modifications <- c('(Acetyl (Protein N-term))','(Dimethyl (KR))','(Methyl (KR))')
+
+      patterns <- Modifications[! Modifications %in% paste0('(',df$Modifications[ii],')')]
+
+      patterns <- gsub(pattern = '\\(', replacement = '\\\\(', patterns)
+
+      patterns <- gsub(pattern = '\\)', replacement = '\\\\)', patterns)
+
+      print(patterns)
+
+      df$Modified.sequence[ii] <- sapply(1:length(patterns),
+                                         function(x) gsub(pattern = patterns[x],
+                                                          '',
+                                                          x = df$Modified.sequence[ii] ))
+        #gsub(pattern = patterns,'', x = df$Modified.sequence[ii] )
+        #reg(patterns, '', df$Modified.sequence[ii])
+
+    }
+
 
 
     # Newer version of MaxQant
@@ -94,6 +141,8 @@ createPTMs <- function(evidence,
         replacement = '',
         x = modifiedPeptides$Modifications)
 
-
+   return(modifiedPeptides)
 
 }
+
+

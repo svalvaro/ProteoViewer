@@ -48,6 +48,8 @@ function(input, output) {
         }else if(demo$start == TRUE){
 
             # evidence <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
+            # methyl evidence:
+            # evidence <- read.delim('/run/user/1000/gvfs/afp-volume:host=FGU045NAS001.local,user=alvaro.sanchez,volume=045/ProteoLab_Projects/PLK_A_and_I/PLK057__A/PLK057__A-MQ__210817_Cunatova_LFQ_24x_Methyl/combined/txt/evidence.txt')
 
             df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
                                          package = 'ProteoViewer'))
@@ -214,7 +216,7 @@ function(input, output) {
             experimentDesign = NULL,
             compareConditions = FALSE,
             conditionSelected = NULL,
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = FALSE)
@@ -254,7 +256,7 @@ function(input, output) {
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsNoGroups(),
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
             )
 
@@ -302,7 +304,7 @@ function(input, output) {
             experimentDesign = experimentDesignFinal$df,
             compareConditions = TRUE,
             conditionSelected = input$conditionsSelected[1],
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = FALSE)
@@ -339,7 +341,7 @@ function(input, output) {
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsComparisonOne(),
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
             )
 

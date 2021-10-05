@@ -2,7 +2,7 @@
 #'
 #' @param evidence
 #' @param SelectedExperiment
-#' @param SelectedProtein
+#' @param selectedProtein
 #' @param combineExperiments
 #' @param plot_legend
 #'
@@ -15,7 +15,7 @@ createLegend <- function(evidence,
                         compareConditions = FALSE,
                         conditionSelected = NULL,
                         SelectedExperiment = NULL,
-                        SelectedProtein = NULL,
+                        selectedProtein = NULL,
                         combineExperiments = FALSE,
                         plot_legend = TRUE){
 
@@ -25,7 +25,7 @@ createLegend <- function(evidence,
     }
 
     # SelectedExperiment = "condition_A_1"
-    # SelectedProtein = "O75947"
+    # selectedProtein = "O75947"
 
     proteomicsInput <- evidence %>%
         dplyr::select(
@@ -43,9 +43,9 @@ createLegend <- function(evidence,
 
     # Select only for the selected protein
 
-    # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
+    # ProteoIndexed <- df[df$Proteins == selectedProtein,]
     ProteoIndexed <- proteomicsInput[
-        proteomicsInput$Proteins == SelectedProtein,]
+        proteomicsInput$Proteins == selectedProtein,]
 
 
     # If there are no peptides are found in that experiment.
@@ -164,7 +164,7 @@ createLegend <- function(evidence,
     if (combineExperiments == FALSE && compareConditions == FALSE) {
 
 
-        # ProteoIndexed <- df[df$Proteins == SelectedProtein,]
+        # ProteoIndexed <- df[df$Proteins == selectedProtein,]
         dfPeptidesColors <- dfPeptidesColors[
             dfPeptidesColors$Experiment == SelectedExperiment,]
     }
