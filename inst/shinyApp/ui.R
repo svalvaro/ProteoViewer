@@ -18,24 +18,25 @@ dashboardPage(
     #
     #     titleWidth =  300),
 
-    dashboardHeader(title = "ProteoViewer",
-                    tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+    dashboardHeader(title =  titlePanel(
+                title = 'ProteoViewer',
+
+                windowTitle = tags$head(
+                    tags$link(
+                        rel = "icon", type = "image/png", href = "logo_small.png"
+                        ),
+                    tags$title("ProteoViewer")
+                    )
+                ),
+                tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
                               icon("power-off"),
                               title = "Close ProteoViewer"),
                             class = "dropdown"),
-                    tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
-                              img(src = 'logo.png',
-                                  title = "ProteoViewer", height = "30px"),
+                tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+                          img(src = 'logo.png',
+                              title = "ProteoLab", height = "30px"),
                               style = "padding-top:10px; padding-bottom:10px;"),
-                            class = "dropdown")#,
-
-                            # windowTitle = tags$head(
-                            #     tags$link(
-                            #         rel = "icon", type = "image/png", href = "logo.png"
-                            #         ),
-                            #     tags$title("ProteoViewer")
-                            #     )
-
+                            class = "dropdown")
                     ),
 
     dashboardSidebar(width = 300,
