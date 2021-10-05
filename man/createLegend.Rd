@@ -10,7 +10,7 @@ createLegend(
   compareConditions = FALSE,
   conditionSelected = NULL,
   SelectedExperiment = NULL,
-  SelectedProtein = NULL,
+  selectedProtein = NULL,
   combineExperiments = FALSE,
   plot_legend = TRUE
 )

@@ -1,14 +1,30 @@
+#' Title
+#'
+#' @param evidence
+#' @param selectedProtein
+#' @param selectedExperiment
+#'
+#' @return
+#' @export
+#'
+#' @examples
 createPTMs <- function(evidence,
-                        selectedProtein){
+                        selectedProtein,
+                       selectedExperiment){
 
 
 
 
     modifiedPeptides <- evidence %>% dplyr::select(c(
         'Sequence', 'Modifications', 'Modified.sequence',
-        'Proteins'
+        'Proteins', 'Experiment'
     ))
 
+
+    if(! is.null(selectedExperiment)){
+
+      modifiedPeptides <- modifiedPeptides[modifiedPeptides$Experiment == selectedExperiment,]
+    }
 
     # Index by Selected protein and remove Unmodified peptides
 
@@ -135,11 +151,7 @@ createPTMs <- function(evidence,
    modifiedPeptides <-  unique(modifiedPeptides)
 
 
-   # Remove 1 , 2 , 3 , from the column modification since they're redundant
 
-   modifiedPeptides$Modifications <- gsub(pattern = '[1-3] ',
-        replacement = '',
-        x = modifiedPeptides$Modifications)
 
    return(modifiedPeptides)
 

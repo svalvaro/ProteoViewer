@@ -28,7 +28,7 @@ function(input, output) {
     #### Upload the Proteomics Table ####
 
     ## Set maximum upload size to 500MB
-    options(shiny.maxRequestSize=500*1024^2)
+    options(shiny.maxRequestSize=1000*1024^2)
 
     proteomicsInput <- reactive({
 
@@ -102,7 +102,7 @@ function(input, output) {
 
             #proteinsToSelect <- base::unique(proteomicsInput()$Proteins)
 
-            shiny::selectInput(inputId = 'SelectedProtein',
+            shiny::selectInput(inputId = 'selectedProtein',
                                label = h4('Select a protein of interest'),
                                choices = proteinsToSelect,
                                selected = proteinsToSelect[1])
@@ -186,7 +186,7 @@ function(input, output) {
     })
 
 
-    output$title_box <- renderText(input$SelectedProtein)
+    output$title_box <- renderText(input$selectedProtein)
 
 
 
@@ -203,7 +203,7 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
 
@@ -249,15 +249,23 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
+        # Obtain the PTMs table
+
+        modifiedPeptides <- ProteoViewer::createPTMs(
+            evidence = proteomicsInput(),
+            selectedProtein = proteinsSelected,
+            selectedExperiment = input$SelectedExperiment
+        )
 
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsNoGroups(),
             selectedProtein = proteinsSelected,
-            proteaseSelected = input$proteaseSelected
+            proteaseSelected = input$proteaseSelected,
+            modifiedPeptides = modifiedPeptides
             )
 
         # render the image
@@ -293,7 +301,7 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
         # Create the peptides and colours tabular format
         # When plot_legend = FALSE, it returns a table containing
@@ -334,7 +342,7 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
         # Create the url to connect to the API
@@ -392,7 +400,7 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
 
@@ -405,7 +413,7 @@ function(input, output) {
             experimentDesign = experimentDesignFinal$df,
             compareConditions = TRUE,
             conditionSelected = input$conditionsSelected[2],
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = FALSE)
@@ -442,14 +450,14 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected
             )
 
@@ -479,12 +487,12 @@ function(input, output) {
 
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$SelectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
-            SelectedProtein = proteinsSelected,
+            selectedProtein = proteinsSelected,
             SelectedExperiment = input$SelectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = TRUE)

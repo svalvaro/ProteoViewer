@@ -94,6 +94,87 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url, '&')
         }
 
+
+        # For Methyl (KR):
+
+        # The indexes of modified peptides are:
+
+        MetKRIndexes <- which(modifiedPeptides$Modifications == 'Methyl (KR)')
+
+        if (length(MetKRIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modMetKR=', modifiedPeptides$Modified.sequence[MetKRIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has been added
+            if (length(MetKRIndexes)>1) {
+
+                # [-1] since the first modified peptide has been added to the url already
+                for (ii in MetKRIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
+
+
+        # For Dimethyl (KR):
+
+        # The indexes of modified peptides are:
+
+        DiMetKRIndexes <- which(modifiedPeptides$Modifications == 'Dimethyl (KR)')
+
+        if (length(DiMetKRIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modDiMetKR=', modifiedPeptides$Modified.sequence[DiMetKRIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has been added
+            if (length(DiMetKRIndexes)>1) {
+
+                # [-1] since the first modified peptide has been added to the url already
+                for (ii in DiMetKRIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
+
+
+        # For Trimethyl (K):
+
+        # The indexes of modified peptides are:
+
+        TriMetKIndexes <- which(modifiedPeptides$Modifications == 'Trimethyl (K)')
+
+        if (length(TriMetKIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modTriMetK=', modifiedPeptides$Modified.sequence[TriMetKIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has been added
+            if (length(TriMetKIndexes)>1) {
+
+                # [-1] since the first modified peptide has been added to the url already
+                for (ii in TriMetKIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
+
     }
 
 
@@ -103,7 +184,19 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     }
 
     if ('Acetyl (Protein N-term)' %in% modifiedPeptides$Modifications) {
-        url <- paste0(url, 's:diamond,bc:blue,cc:white=EX.MODnac&' )
+        url <- paste0(url, 's:diamond,bc:yellow,cc:black=EX.MODnac&' )
+    }
+
+    if ('Methyl (KR)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:red,cc:white=EX.MODMetKR&' )
+    }
+
+    if ('Dimethyl (KR)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:blue,cc:white=EX.MODDiMetKR&' )
+    }
+
+    if ('Trimethyl (K)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:black,cc:white=EX.MODTriMetK&' )
     }
 
 
