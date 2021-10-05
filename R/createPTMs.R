@@ -25,45 +25,45 @@ createPTMs <- function(evidence,
     # can exist per row. For those peptides containing multiple modificaitons:
 
 
-    multiplePTMIndexes <- which(
-      stringr::str_detect(modifiedPeptides$Modifications, ',')
-      )
+    modifiedPeptides <-  modifiedPeptides %>% tidyr::separate_rows(Modifications, sep =  ',\\s?')
+
+    # Remove the 1 , 2 , 3  and PTM since it's not needed.
+    modifiedPeptides$Modifications <-   gsub('[1-3] ', '', modifiedPeptides$Modifications)
 
 
-    df <- modifiedPeptides[multiplePTMIndexes,]
+    for (ii in seq_len(nrow(modifiedPeptides))) {
 
 
-    df <-  df %>% tidyr::separate_rows(Modifications, sep =  ',\\s?')
+      # Obtain the total modifications and add parenthesis: '(Oxidation (M))'
+      Modifications <- base::paste0('(', base::unique(modifiedPeptides$Modifications), ')')
 
 
 
-    df$Modifications <-   gsub('[1-3] ', '', df$Modifications)
+      # Modifications to remove, is the list of modifications withouth the
+      # corresponding modification of that sequence
+
+      modsToRemove <- Modifications[! Modifications %in%
+                                  paste0('(',modifiedPeptides$Modifications[ii],')')]
 
 
-    #gsub('Acetyl \\(Protein N-term\\)','', df$Modified.sequence)
+      # Add back slash to the parentheses
+      modsToRemove <- gsub(pattern = '\\(', replacement = '\\\\(', modsToRemove)
+
+      modsToRemove <- gsub(pattern = '\\)', replacement = '\\\\)', modsToRemove)
+
+      # Collapse the modifications to remove together to make it regex pattern
+
+      modsToRemove <- paste(unlist(modsToRemove), collapse = '|')
 
 
-    for (ii in seq_len(nrow(df))) {
 
+      # Remove all the modifications for the modified sequence (except the one)
+      # that is in the modifiedPeptides$Modification
 
-      Modifications <- c('(Acetyl (Protein N-term))','(Dimethyl (KR))','(Methyl (KR))')
-
-      patterns <- Modifications[! Modifications %in% paste0('(',df$Modifications[ii],')')]
-
-      patterns <- gsub(pattern = '\\(', replacement = '\\\\(', patterns)
-
-      patterns <- gsub(pattern = '\\)', replacement = '\\\\)', patterns)
-
-      print(patterns)
-
-      df$Modified.sequence[ii] <- sapply(1:length(patterns),
-                                         function(x) gsub(pattern = patterns[x],
-                                                          '',
-                                                          x = df$Modified.sequence[ii] ))
-        #gsub(pattern = patterns,'', x = df$Modified.sequence[ii] )
-        #reg(patterns, '', df$Modified.sequence[ii])
-
+      modifiedPeptides$Modified.sequence[ii] <- gsub(pattern = modsToRemove,'',
+                                       x = modifiedPeptides$Modified.sequence[ii] )
     }
+
 
 
 
