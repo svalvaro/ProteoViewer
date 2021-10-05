@@ -1,19 +1,42 @@
 dashboardPage(
 
-    dashboardHeader(#title = "ProteoViewer",
-        title = titlePanel('ProteoViewer',
-                           tags$head(
-                               tags$link(
-                                   rel = "icon", type = "image/png", href = "logo.png"
-                               ),
-                               tags$title("ProteoViewer")#,
+    # dashboardHeader(title = title,
+    #     # title = titlePanel(
+    #     #     #title = title,
+    #     #
+    #     #
+    #     #     windowTitle = tags$head(
+    #     #         tags$link(
+    #     #             rel = "icon", type = "image/png", href = "logo.png"
+    #     #             ),
+    #     #         tags$title("ProteoViewer")
+    #     #         )
+    #     #     ),
+    #     #logo_path = tag$img(src = system.file('shinyApp/www/logo.png', package = 'ProteoViewer')),
+    #
+    #
+    #
+    #     titleWidth =  300),
 
-                               #tag$link(rel = 'icons', href = "Proteomika_logo_hires.png")
+    dashboardHeader(title = "ProteoViewer",
+                    tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+                              icon("power-off"),
+                              title = "Close ProteoViewer"),
+                            class = "dropdown"),
+                    tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+                              img(src = 'logo.png',
+                                  title = "ProteoViewer", height = "30px"),
+                              style = "padding-top:10px; padding-bottom:10px;"),
+                            class = "dropdown")#,
 
+                            # windowTitle = tags$head(
+                            #     tags$link(
+                            #         rel = "icon", type = "image/png", href = "logo.png"
+                            #         ),
+                            #     tags$title("ProteoViewer")
+                            #     )
 
-                           )
-        ),
-        titleWidth =  300),
+                    ),
 
     dashboardSidebar(width = 300,
 

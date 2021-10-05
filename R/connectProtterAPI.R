@@ -26,13 +26,29 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     # issues with long requests.
 
 
+
+
+
     if (!is.null(dfPeptidesColors)>0) {
 
-        for (ii in seq_len(nrow(dfPeptidesColors))) {
+        colorsCollapsed <- dfPeptidesColors %>%
+            group_by(Colour) %>%
+            summarise(Seq = base::toString(Sequence)) %>%
+            ungroup()
 
-            url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
-                          dfPeptidesColors$Sequence[ii], '&' )
+        colorsCollapsed$Seq <- gsub(' ','', colorsCollapsed$Seq)
+
+        for (ii in seq_len(nrow(colorsCollapsed))) {
+
+            url <- paste0(url,"bc:", colorsCollapsed$Colour[ii], "=",
+                          colorsCollapsed$Seq[ii], '&' )
         }
+
+        # for (ii in seq_len(nrow(dfPeptidesColors))) {
+        #
+        #     url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
+        #                   dfPeptidesColors$Sequence[ii], '&' )
+        # }
 
     }
 
