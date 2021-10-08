@@ -4,13 +4,16 @@
 #' @param selectedProtein
 #' @param selectedExperiment
 #'
+#' @importFrom grid rasterGrob
+#' @importFrom  gridExtra grid.arrange
 #' @return
 #' @export
 #'
 #' @examples
 createPTMs <- function(evidence,
-                        selectedProtein,
-                       selectedExperiment){
+                      selectedProtein,
+                      selectedExperiment,
+                      plotLegend = TRUE){
 
 
 
@@ -23,16 +26,19 @@ createPTMs <- function(evidence,
 
     if(! is.null(selectedExperiment)){
 
-      modifiedPeptides <- modifiedPeptides[modifiedPeptides$Experiment == selectedExperiment,]
+      modifiedPeptides <- modifiedPeptides[
+        modifiedPeptides$Experiment == selectedExperiment,]
     }
 
     # Index by Selected protein and remove Unmodified peptides
 
     # selectedProtein = 	'P10645'
 
-    modifiedPeptides <- modifiedPeptides[modifiedPeptides$Proteins == selectedProtein,]
+    modifiedPeptides <- modifiedPeptides[
+      modifiedPeptides$Proteins == selectedProtein,]
 
-    modifiedPeptides <- modifiedPeptides[! modifiedPeptides$Modifications == 'Unmodified',]
+    modifiedPeptides <- modifiedPeptides[
+      ! modifiedPeptides$Modifications == 'Unmodified',]
 
     modifiedPeptides <- base::unique(modifiedPeptides)
 
@@ -41,17 +47,25 @@ createPTMs <- function(evidence,
     # can exist per row. For those peptides containing multiple modificaitons:
 
 
-    modifiedPeptides <-  modifiedPeptides %>% tidyr::separate_rows(Modifications, sep =  ',\\s?')
+    modifiedPeptides <-  modifiedPeptides %>%
+      tidyr::separate_rows(Modifications,
+                           sep =  ',\\s?')
 
     # Remove the 1 , 2 , 3  and PTM since it's not needed.
-    modifiedPeptides$Modifications <-   gsub('[1-3] ', '', modifiedPeptides$Modifications)
+    modifiedPeptides$Modifications <-   gsub(
+      pattern = '[1-3] ',
+      replacement =  '',
+      x =  modifiedPeptides$Modifications)
 
 
     for (ii in seq_len(nrow(modifiedPeptides))) {
 
 
       # Obtain the total modifications and add parenthesis: '(Oxidation (M))'
-      Modifications <- base::paste0('(', base::unique(modifiedPeptides$Modifications), ')')
+      Modifications <- base::paste0('(',
+                                    base::unique(
+                                      modifiedPeptides$Modifications),
+                                    ')')
 
 
 
@@ -59,7 +73,9 @@ createPTMs <- function(evidence,
       # corresponding modification of that sequence
 
       modsToRemove <- Modifications[! Modifications %in%
-                                  paste0('(',modifiedPeptides$Modifications[ii],')')]
+                                  paste0('(',
+                                         modifiedPeptides$Modifications[ii],
+                                         ')')]
 
 
       # Add back slash to the parentheses
@@ -76,12 +92,11 @@ createPTMs <- function(evidence,
       # Remove all the modifications for the modified sequence (except the one)
       # that is in the modifiedPeptides$Modification
 
-      modifiedPeptides$Modified.sequence[ii] <- gsub(pattern = modsToRemove,'',
-                                       x = modifiedPeptides$Modified.sequence[ii] )
+      modifiedPeptides$Modified.sequence[ii] <- gsub(
+        pattern = modsToRemove,
+        replacement = '',
+        x = modifiedPeptides$Modified.sequence[ii] )
     }
-
-
-
 
     # Newer version of MaxQant
 
@@ -148,12 +163,89 @@ createPTMs <- function(evidence,
             x = modifiedPeptides$Modified.sequence)
 
 
-   modifiedPeptides <-  unique(modifiedPeptides)
+    modifiedPeptides <-  unique(modifiedPeptides)
+
+    if (plotLegend == FALSE) {
+     return(modifiedPeptides)
+    }
+
+   # If the the legend has to be creaetd, the software has to select
+   # the corresponding images from /www/ folder
+
+    ptmsToPlot <- unique(modifiedPeptides$Modifications)
+
+    if (length(ptmsToPlot)== 0) {
+      message('No PTMs to create a legend')
+      return(NULL)
+    }
+
+    ptmImages <- list()
+
+    if ('Oxidation (M)' %in% ptmsToPlot) {
+
+      p <- png::readPNG(
+        source = system.file('shinyApp/www/legendImages/oxidationM.png',
+                             package = 'ProteoViewer'))
+
+      ptmImages[[length(ptmImages)+1]] <- p
+    }
+
+    if ('Acetyl (Protein N-term)' %in% ptmsToPlot) {
+
+      p <- png::readPNG(
+        source = system.file('shinyApp/www/legendImages/acetyl.png',
+                             package = 'ProteoViewer'))
+
+      ptmImages[[length(ptmImages)+1]] <- p
+    }
+
+
+    if ('Methyl (KR)' %in% ptmsToPlot) {
+
+      p <- png::readPNG(
+        source = system.file('shinyApp/www/legendImages/methyl.png',
+                             package = 'ProteoViewer'))
+
+      ptmImages[[length(ptmImages)+1]] <- p
+    }
+
+
+    if ('Dimethyl (KR)' %in% ptmsToPlot) {
+
+      p <- png::readPNG(
+        source = system.file('shinyApp/www/legendImages/Dimethyl.png',
+                             package = 'ProteoViewer'))
+
+      ptmImages[[length(ptmImages)+1]] <- p
+    }
+
+    if ('Trimethyl (K)' %in% ptmsToPlot) {
+
+      p <- png::readPNG(
+        source = system.file('shinyApp/www/legendImages/Trimethyl.png',
+                             package = 'ProteoViewer'))
+
+      ptmImages[[length(ptmImages)+1]] <- p
+    }
+
+
+    ptmImages <- base::lapply(ptmImages, grid::rasterGrob)
 
 
 
 
-   return(modifiedPeptides)
+    return(
+      gridExtra::grid.arrange(grobs=ptmImages, ncol = 1)
+    )
+
+
+
+
+
+
+
+
+
 
 }
 

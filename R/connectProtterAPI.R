@@ -212,7 +212,7 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     }
 
     if ('Trimethyl (K)' %in% modifiedPeptides$Modifications) {
-        url <- paste0(url, 's:diamond,bc:black,cc:white=EX.MODTriMetK&' )
+        url <- paste0(url, 's:diamond,bc:purple,cc:white=EX.MODTriMetK&' )
     }
 
 

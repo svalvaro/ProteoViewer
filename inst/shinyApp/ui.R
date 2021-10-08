@@ -5,21 +5,27 @@ dashboardPage(
 
             windowTitle = tags$head(
                 tags$link(
-                    rel = "icon", type = "image/png", href = "logo_small.png"
+                    rel = "icon",
+                    type = "image/png",
+                    href = "logo_small.png"
                     ),
                 tags$title("ProteoViewer")
                 )
             ),
-            tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
-                          icon("power-off"),
-                          title = "Close ProteoViewer"),
-                        class = "dropdown"),
-            tags$li(a(href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
-                      img(src = 'logo.png',
-                          title = "ProteoLab", height = "30px"),
-                          style = "padding-top:10px; padding-bottom:10px;"),
-                        class = "dropdown")
-                ),
+        tags$li(a(
+            href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+            icon("power-off"),
+            title = "Close ProteoViewer"),
+            class = "dropdown"),
+
+        tags$li(a(
+            href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+            img(src = 'logo.png',
+                title = "ProteoLab",
+                height = "30px"),
+            style = "padding-top:10px; padding-bottom:10px;"),
+            class = "dropdown")
+        ),
 
     dashboardSidebar(
         width = 300,
@@ -37,10 +43,11 @@ dashboardPage(
 
                     startExpanded = TRUE,
 
-                    fileInput(inputId = "proteomics_table",
-                       label =  h4("Upload the evidence.txt file"),
-                       multiple = FALSE,
-                       accept = 'text'
+                    fileInput(
+                        inputId = "proteomics_table",
+                        label =  h4("Upload the evidence.txt file"),
+                        multiple = FALSE,
+                        accept = 'text'
                     ),
 
                     # Select the protein of interest
@@ -108,10 +115,9 @@ dashboardPage(
                         inputId = 'zoomFigure',
                         label = h4('Select the size of the image'),
                         min = 100, max = 5000, value = 1000)
-
                     ),
-                tabName = 'proteinviz'
 
+                tabName = 'proteinviz'
                 ),
 
             ProteoViewer:::convertMenuItem(
@@ -129,14 +135,15 @@ dashboardPage(
                 )
             ),
 
-        shinyWidgets::actionBttn(inputId = 'Demo',
-                                 label = 'Start Demo',
-                                 icon = NULL,
-                                 style = "unite",
-                                 color = "default",
-                                 size = "md",
-                                 block = FALSE,
-                                 no_outline = TRUE)
+        shinyWidgets::actionBttn(
+            inputId = 'Demo',
+            label = 'Start Demo',
+            icon = NULL,
+            style = "unite",
+            color = "default",
+            size = "md",
+            block = FALSE,
+            no_outline = TRUE)
         ),
 
     dashboardBody(
@@ -147,27 +154,36 @@ dashboardPage(
 
                 fluidRow(
 
-                    # Box containing everything
-                    box(# Name of the protein
-                        title = h2(textOutput('title_box')),
-                        width = 1000,
-                        # Error message in case no peptides found
-                        h3(textOutput('noPeptidesErrorMessage')),
+                    column(
+                        width = 8,
 
-                        # If no
-                        # comparisons are selected (without experiment design)
+                        # Box containing everything
+                        box(# Name of the protein
+                            title = h2(textOutput('title_box')),
+                            width = 1000,
+                            # Error message in case no peptides found
+                            h3(textOutput('noPeptidesErrorMessage')),
 
-                        uiOutput(outputId = 'proteinImageNoComparison'),
+                            # If no
+                            # comparisons are selected (without experiment design)
 
-                        plotOutput('legend'),
+                            uiOutput(outputId = 'proteinImageNoComparison'),
 
-                        # If two comparisons are selected:
-                        box(title = h3(textOutput('titleProteinComparisonOne')),
-                            uiOutput(outputId = 'proteinImageComparisonOne')),
+                            plotOutput('legend'),
 
-                        box(title = h3(textOutput('titleProteinComparisonTwo')),
-                            uiOutput(outputId = 'proteinImageComparisonTwo')),
+                            # If two comparisons are selected:
+                            box(title = h3(textOutput('titleProteinComparisonOne')),
+                                uiOutput(outputId = 'proteinImageComparisonOne')),
 
+                            box(title = h3(textOutput('titleProteinComparisonTwo')),
+                                uiOutput(outputId = 'proteinImageComparisonTwo')),
+
+                        )
+                        ),
+                    column(
+                        width = 4,
+                        box(plotOutput('legendPTMs')
+                            )
                         )
                     )
                 ),

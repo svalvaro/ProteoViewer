@@ -256,7 +256,8 @@ function(input, output) {
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$SelectedExperiment
+            selectedExperiment = input$SelectedExperiment,
+            plotLegend = FALSE
         )
 
         # Create the url to connect to the API
@@ -272,6 +273,33 @@ function(input, output) {
         shiny::tags$img(src = url,
               width = input$zoomFigure)
     })
+
+    #### Legend PTMs ####
+
+
+    output$legendPTMs <- renderPlot(width = 300,{
+
+        if (is.null(dfPeptidesColorsNoGroups())) {
+            return(NULL)
+        }
+
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
+
+        modifiedPeptides <- ProteoViewer::createPTMs(
+            evidence = proteomicsInput(),
+            selectedProtein = proteinsSelected,
+            selectedExperiment = input$SelectedExperiment,
+            plotLegend = TRUE
+        )
+
+
+    })
+
+
 
 
     #### Render Comparison One ####
