@@ -257,6 +257,8 @@ function(input, output) {
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
             selectedExperiment = input$SelectedExperiment,
+            experimentDesign = NULL,
+            selectedCondition = NULL,
             plotLegend = FALSE
         )
 
@@ -293,6 +295,8 @@ function(input, output) {
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
             selectedExperiment = input$SelectedExperiment,
+            experimentDesign = NULL,
+            selectedCondition = NULL,
             plotLegend = TRUE
         )
 
@@ -373,12 +377,27 @@ function(input, output) {
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
+        # Obtain the PTM for the combined condition:
+
+        # Obtain the PTMs table
+
+        modifiedPeptides <- ProteoViewer::createPTMs(
+            evidence = proteomicsInput(),
+            selectedProtein = proteinsSelected,
+            selectedExperiment = NULL,
+            experimentDesign = experimentDesignFinal$df,
+            selectedCondition = input$conditionsSelected[1],
+            plotLegend = FALSE
+        )
+
+
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsComparisonOne(),
             selectedProtein = proteinsSelected,
-            proteaseSelected = input$proteaseSelected
+            proteaseSelected = input$proteaseSelected,
+            modifiedPeptides = modifiedPeptides
             )
 
         # render the image
@@ -481,12 +500,25 @@ function(input, output) {
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
 
+        # Obtain the PTMs table
+
+        modifiedPeptides <- ProteoViewer::createPTMs(
+            evidence = proteomicsInput(),
+            selectedProtein = proteinsSelected,
+            selectedExperiment = NULL,
+            experimentDesign = experimentDesignFinal$df,
+            selectedCondition = input$conditionsSelected[2],
+            plotLegend = FALSE
+        )
+
+
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
             dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
             selectedProtein = proteinsSelected,
-            proteaseSelected = input$proteaseSelected
+            proteaseSelected = input$proteaseSelected,
+            modifiedPeptides = modifiedPeptides
             )
 
         # render the image

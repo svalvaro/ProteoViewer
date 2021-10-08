@@ -3,6 +3,9 @@
 #' @param evidence
 #' @param selectedProtein
 #' @param selectedExperiment
+#' @param experimentDesign
+#' @param selectedCondition
+#' @param plotLegend
 #'
 #' @importFrom grid rasterGrob
 #' @importFrom  gridExtra grid.arrange
@@ -13,6 +16,8 @@
 createPTMs <- function(evidence,
                       selectedProtein,
                       selectedExperiment,
+                      experimentDesign = NULL,
+                      selectedCondition = NULL,
                       plotLegend = TRUE){
 
 
@@ -41,6 +46,20 @@ createPTMs <- function(evidence,
       ! modifiedPeptides$Modifications == 'Unmodified',]
 
     modifiedPeptides <- base::unique(modifiedPeptides)
+
+    # If Experiment Design is provided (when comparing conditions)
+
+    if(!is.null(experimentDesign) && !is.null(selectedCondition)){
+      modifiedPeptides$Condition <- experimentDesign$Condition[
+        base::match(modifiedPeptides$Experiment, experimentDesign$Experiment)
+      ]
+
+      modifiedPeptides <- modifiedPeptides[
+        modifiedPeptides$Condition == selectedCondition,]
+    }
+
+
+
 
 
     # In order to colour individually the modifications, only one modification
