@@ -160,21 +160,28 @@ function(input, output) {
     output$experimentSelect <- renderUI({
 
 
+        shiny::req(input$combineExperiments == FALSE )
 
-          # if(!is.null(input$comparisonInput) & input$comparisonInput == TRUE) {
-          #
-          #       return(NULL)
-          # }
-          #
         if (is.null(proteomicsInput()) || input$combineExperiments == TRUE) {
 
               return(NULL)
 
         }
 
+        # if (input$combineExperiments == TRUE) {
+        #
+        #     return(NULL)
+        # }
+
         if (!is.null(input$compareConditions) &&  input$compareConditions == TRUE) {
             return(NULL)
         }
+
+        shiny::validate(
+            need(proteomicsInput(), 'Check at least one letter!')
+        )
+
+
 
 
 
@@ -323,7 +330,8 @@ function(input, output) {
             return(NULL)
         }
 
-        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+        if (!is.null(input$compareConditions) &&
+            input$compareConditions == FALSE) {
 
             return(NULL)
         }
@@ -414,7 +422,8 @@ function(input, output) {
         }
 
 
-        if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
+        if (!is.null(input$compareConditions) &&
+            input$compareConditions == FALSE) {
             return(NULL)
         }
         paste0('Condition: ',  input$conditionsSelected[1])

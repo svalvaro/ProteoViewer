@@ -1,4 +1,6 @@
 dashboardPage(
+
+#### DashBoard Header ####
     dashboardHeader(
         title =  titlePanel(
             title = 'ProteoViewer',
@@ -27,6 +29,7 @@ dashboardPage(
             class = "dropdown")
         ),
 
+#### DashBoard side bar ####
     dashboardSidebar(
         width = 300,
 
@@ -145,7 +148,7 @@ dashboardPage(
             block = FALSE,
             no_outline = TRUE)
         ),
-
+#### DashBoard Body ####
     dashboardBody(
 
         tabItems(
@@ -172,13 +175,22 @@ dashboardPage(
                             plotOutput('legend'),
 
                             # If two comparisons are selected:
-                            box(title = h3(textOutput('titleProteinComparisonOne')),
-                                uiOutput(outputId = 'proteinImageComparisonOne')),
+                            box(
+                                title = h3(
+                                    textOutput('titleProteinComparisonOne')
+                                    ),
 
-                            box(title = h3(textOutput('titleProteinComparisonTwo')),
-                                uiOutput(outputId = 'proteinImageComparisonTwo')),
+                                uiOutput(outputId = 'proteinImageComparisonOne')
+                                ),
 
-                        )
+                            box(
+                                title = h3(
+                                    textOutput('titleProteinComparisonTwo')
+                                    ),
+
+                                uiOutput(outputId = 'proteinImageComparisonTwo')
+                                )
+                            )
                         ),
                     column(
                         width = 4,
