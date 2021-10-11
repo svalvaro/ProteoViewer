@@ -139,7 +139,6 @@ function(input, output) {
               return(NULL)
         }
 
-
         if (input$inputComparison == 'individualExperiments' ) {
 
             shiny::selectInput(
@@ -148,11 +147,7 @@ function(input, output) {
                 choices = experimentNames(),
                 selected = experimentNames()[1])
         }
-
-
     })
-
-
 
     # Make the selected Experiment reactive, that way it will be NULL when
     # is combineExperiments or conditions are selected.
@@ -417,7 +412,7 @@ function(input, output) {
 
     output$titleProteinComparisonOne <- renderText({
 
-        if (is.null(dfPeptidesColorsComparisonTwo())) {
+        if (is.null(dfPeptidesColorsComparisonOne())) {
             return(NULL)
         }
 
@@ -692,4 +687,64 @@ function(input, output) {
                 )
             }
     })
+
+    #### User Interface Reactive ####
+
+    output$UserInterNoGroups <- renderUI({
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        if (input$inputComparison == 'conditions') {
+            return(NULL)
+        }
+
+        shinydashboard::box(
+
+            title = h2(textOutput('title_box')),
+            width = 1000,
+            # Error message in case no peptides found
+            h3(textOutput('noPeptidesErrorMessage')),
+
+            # If no
+            # comparisons are selected (without experiment design)
+
+            uiOutput(outputId = 'proteinImageNoComparison')#,
+
+            #plotOutput('legend')
+
+        )
+    })
+
+    output$UserInterGroups <- renderUI({
+
+        if (input$inputComparison != 'conditions') {
+            return(NULL)
+        }
+
+        #fluidPage(
+            fluidRow(
+                column(
+                    width = 11,
+
+                    box(title = h3(textOutput('titleProteinComparisonOne')
+                    ),
+                    uiOutput(outputId = 'proteinImageComparisonOne')
+
+                    ),
+
+
+
+                    box(title = h3(
+                        textOutput('titleProteinComparisonTwo')
+                    ),
+
+                    uiOutput(outputId = 'proteinImageComparisonTwo')
+                    )
+
+                )
+            )
+
+    })
+
 }

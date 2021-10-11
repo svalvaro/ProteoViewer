@@ -163,37 +163,13 @@ dashboardPage(
                     column(
                         width = 8,
 
-                        # Box containing everything
-                        box(# Name of the protein
-                            title = h2(textOutput('title_box')),
-                            width = 1000,
-                            # Error message in case no peptides found
-                            h3(textOutput('noPeptidesErrorMessage')),
 
-                            # If no
-                            # comparisons are selected (without experiment design)
+                            uiOutput('UserInterNoGroups'),
 
-                            uiOutput(outputId = 'proteinImageNoComparison'),
+                            uiOutput('UserInterGroups'),
 
-                            plotOutput('legend'),
+                            plotOutput('legend')
 
-                            # If two comparisons are selected:
-                            box(
-                                title = h3(
-                                    textOutput('titleProteinComparisonOne')
-                                    ),
-
-                                uiOutput(outputId = 'proteinImageComparisonOne')
-                                ),
-
-                            box(
-                                title = h3(
-                                    textOutput('titleProteinComparisonTwo')
-                                    ),
-
-                                uiOutput(outputId = 'proteinImageComparisonTwo')
-                                )
-                            )
                         ),
                     column(
                         width = 4,
