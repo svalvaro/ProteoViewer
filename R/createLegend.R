@@ -45,11 +45,13 @@ createLegend <- function(evidence,
             )
         )
 
+
     # Select only for the selected protein
 
     # ProteoIndexed <- df[df$Proteins == selectedProtein,]
     ProteoIndexed <- proteomicsInput[
         proteomicsInput$Proteins == selectedProtein,]
+
 
 
     # If there are no peptides are found in that experiment.
@@ -93,7 +95,7 @@ createLegend <- function(evidence,
 
     dfColorsMin$Intensity <- log2(dfColorsMin$Intensity)
 
-    dfColorsMin <- dfColorsMin[base::order(dfColorsLegend$Intensity), ]
+    dfColorsMin <- dfColorsMin[base::order(dfColorsMin$Intensity), ]
 
     dfColorsMin$Intensity <- as.numeric(dfColorsMin$Intensity)
 
