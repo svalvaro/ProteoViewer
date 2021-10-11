@@ -153,6 +153,22 @@ function(input, output) {
     })
 
 
+
+    # Make the selected Experiment reactive, that way it will be NULL when
+    # is combineExperiments or conditions are selected.
+
+    selectedExperiment <- reactive({
+        req(input$inputComparison)
+
+        if (input$inputComparison != 'individualExperiments' ) {
+            selectedExperiment <- NULL
+        }else{
+            selectedExperiment <- input$selectedExperiment
+        }
+        return(selectedExperiment)
+    })
+
+
     # Name of the protein on top of the plot
 
     output$title_box <- renderText(input$selectedProtein)
@@ -216,7 +232,7 @@ function(input, output) {
             experimentDesign = NULL,
             conditionSelected = NULL,
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$selectedExperiment,
+            selectedExperiment = selectedExperiment(),
             comparison = input$inputComparison,
             plot_legend = FALSE)
 
@@ -243,17 +259,19 @@ function(input, output) {
             return(NULL)
         }
 
+        message(paste0('Experiment Selected is: ',selectedExperiment()))
+
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein )
 
         # Obtain the PTMs table
 
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$selectedExperiment,
+            selectedExperiment = selectedExperiment(),
             experimentDesign = NULL,
             selectedCondition = NULL,
             plotLegend = FALSE
@@ -275,13 +293,11 @@ function(input, output) {
 
     #### Legend PTMs ####
 
-
     output$legendPTMs <- renderPlot(width = 300,{
 
-        if (is.null(dfPeptidesColorsNoGroups())) {
+        if (is.null(proteomicsInput())) {
             return(NULL)
         }
-
 
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
@@ -291,17 +307,12 @@ function(input, output) {
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$selectedExperiment,
+            selectedExperiment = NULL,
             experimentDesign = NULL,
             selectedCondition = NULL,
             plotLegend = TRUE
         )
-
-
     })
-
-
-
 
     #### Render Comparison One ####
 
@@ -531,7 +542,7 @@ function(input, output) {
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$selectedExperiment,
+            selectedExperiment = selectedExperiment(),
             comparison = NULL,
             plot_legend = TRUE)
 
@@ -555,10 +566,8 @@ function(input, output) {
         }
     })
 
-
     output$legend <- renderPlot(height = 100, width = 500,{
             legend()
-
     })
 
 
