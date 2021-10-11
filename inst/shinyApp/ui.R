@@ -56,8 +56,11 @@ dashboardPage(
                     # Select the protein of interest
                     uiOutput('proteinsSelect'),
 
+
+                    uiOutput('comparisonAll'),
+
                     # Compare between conditions based on experiment design
-                    uiOutput('comparisonCheck'),
+                    #uiOutput('comparisonCheck'),
 
                     uiOutput('comparisonSelector'),
 

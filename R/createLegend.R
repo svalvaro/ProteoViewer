@@ -5,6 +5,8 @@
 #' @param selectedProtein
 #' @param combineExperiments
 #' @param plot_legend
+#' @param experimentDesign
+#' @param conditionSelected
 #'
 #' @return
 #' @export
@@ -12,11 +14,13 @@
 #' @examples
 createLegend <- function(evidence,
                         experimentDesign,
-                        compareConditions = FALSE,
+                        comparison = c('individualExperiments',
+                                       'combineExperiments',
+                                       'conditions'),
                         conditionSelected = NULL,
-                        SelectedExperiment = NULL,
+                        selectedExperiment = NULL,
                         selectedProtein = NULL,
-                        combineExperiments = FALSE,
+                        #combineExperiments = TRUE,
                         plot_legend = TRUE){
 
 
@@ -59,35 +63,58 @@ createLegend <- function(evidence,
 
     ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
 
-    ## Deal with repeated Sequences, obtain the SUM of Sequence and group.
+    # First aggregate the sum of the same peptide for the same experiment,
+    # Because this step has to be done for the three possible conditions:
 
     dfPeptidesColors <- ProteoIndexed %>%
         group_by(Sequence, Experiment) %>%
         summarise(Intensity = sum(Intensity))
 
-    # Calculate the log2 of the intensities and reorder
+    # For the palette and for obtaining matching the color to the intensities:
+    # I need to group the sequence independently of the experiment:
 
-    dfPeptidesColors$Intensity <- log2(dfPeptidesColors$Intensity)
-
-    dfPeptidesColors <- dfPeptidesColors[base::order(dfPeptidesColors$Intensity), ]
-
-    dfPeptidesColors$Intensity <- as.numeric(dfPeptidesColors$Intensity)
-
-
-    # Create continous scale for the combined protein independtly of the
-    # experiment. That way it is easy to compare the experiments against each
-    # other
+    dfColorsMax <- ProteoIndexed %>%
+        group_by(Sequence) %>%
+        summarise(Intensity = sum(Intensity))
 
 
+    # The maximum colors will be combining all peptides by the sum
 
-    continuous_breaks <- seq(from = trunc(min(dfPeptidesColors$Intensity)),
-                             to = trunc(max(dfPeptidesColors$Intensity)))
+    dfColorsMax$Intensity <- log2(dfColorsMax$Intensity)
+
+    dfColorsMax <- dfColorsMax[base::order(dfColorsMax$Intensity), ]
+
+    dfColorsMax$Intensity <- as.numeric(dfColorsMax$Intensity)
+
+
+    dfColorsMin <- dfPeptidesColors
+
+    # The minimum colors will be those one when aggregated by experiment by sum
+
+    dfColorsMin$Intensity <- log2(dfColorsMin$Intensity)
+
+    dfColorsMin <- dfColorsMin[base::order(dfColorsLegend$Intensity), ]
+
+    dfColorsMin$Intensity <- as.numeric(dfColorsMin$Intensity)
+
+
+
+    # # Obtain the number of breaks to
+    #
+    # continuous_breaks <- seq(from = trunc(min(dfPeptidesColorsCombined$Intensity)),
+    #                          to = trunc(max(dfPeptidesColorsCombined$Intensity)))
+
+
+    # Obtain the number of breaks to
+
+    continuous_breaks <- seq(from = trunc(min(dfColorsMin$Intensity)),
+                             to = trunc(max(dfColorsMax$Intensity)))
 
 
     myColors <- grDevices::colorRampPalette(c(
         "#2166AC",
         "#D1E5F0",
-        '#D0F5BC',
+        '#ECF5BC',
         "#FDDBC7",
         "#B2182B"
     ))
@@ -124,31 +151,57 @@ createLegend <- function(evidence,
 
     }
 
-    # If ExperimentDesign and condition selected are provided
+    # If the plotting of the palette is not requried, I need to match
+    # the peptide intensites to the color
 
-    if (!is.null(experimentDesign)) {
 
-        dfPeptidesColors$Condition <- experimentDesign$Condition[
-            match(dfPeptidesColors$Experiment,experimentDesign$Experiment)]
+    if (comparison == 'individualExperiments') {
+        # Index by the experiment
+        dfPeptidesColors <- dfPeptidesColors[
+            dfPeptidesColors$Experiment == selectedExperiment,
+        ]
     }
 
-    if(!is.null(conditionSelected)){
 
-        # Obtain the median of the peptide sequence by group
+    if (comparison == 'combineExperiments') {
 
-        dfPeptidesColors <- dfPeptidesColors %>%
-            group_by(Sequence, Condition) %>%
-            summarise(Intensity = median(Intensity))
+        dfPeptidesColors <-  ProteoIndexed %>%
+            group_by(Sequence) %>%
+            summarise(Intensity = sum(Intensity))
+    }
 
+
+    if (comparison == 'conditions') {
+
+        # Match the experiments to the conditions
+        dfPeptidesColors$Condition <- experimentDesign$Condition[
+            match(dfPeptidesColors$Experiment,experimentDesign$Experiment)]
 
         # Index by the conditionSelected
 
+        dfPeptidesColors <- dfPeptidesColors[
+            dfPeptidesColors$Condition == conditionSelected,
+        ]
 
-        dfPeptidesColors <- dfPeptidesColors[dfPeptidesColors$Condition == conditionSelected,]
+        # Obtain the median of the condition
+
+        dfPeptidesColors <- dfPeptidesColors %>%
+            group_by(Sequence) %>%
+            summarise(Intensity = median(Intensity))
     }
 
 
-    # Match the colour of the legend to each sequence to generate the image
+
+    # Calculate the log2 of the intensities and reorder
+
+    dfPeptidesColors$Intensity <- log2(dfPeptidesColors$Intensity)
+
+    dfPeptidesColors <- dfPeptidesColors[base::order(dfPeptidesColors$Intensity), ]
+
+    dfPeptidesColors$Intensity <- as.numeric(dfPeptidesColors$Intensity)
+
+
+    #   # Match the colour of the legend to each sequence to generate the image
 
     dfPeptidesColors$Colour <- dfToPlot$Colour[
         match( trunc(dfPeptidesColors$Intensity),dfToPlot$breaks)]
@@ -158,29 +211,12 @@ createLegend <- function(evidence,
     dfPeptidesColors$Colour <- base::gsub('#', '', dfPeptidesColors$Colour)
 
 
-    # If the user now wants to select a specific experiment
-
-    # This part might cause some trouble.
-    if (combineExperiments == FALSE && compareConditions == FALSE) {
-
-
-        # ProteoIndexed <- df[df$Proteins == selectedProtein,]
-        dfPeptidesColors <- dfPeptidesColors[
-            dfPeptidesColors$Experiment == SelectedExperiment,]
-    }
-
-
-
-    if (nrow(dfPeptidesColors) == 0 & plot_legend == FALSE) {
+    if (nrow(dfPeptidesColors) == 0 && plot_legend == FALSE) {
         message('No peptides found in this experiment for this protein and
                 experiment.')
         return(NULL)
     }
 
-
-
     return(dfPeptidesColors)
-
-
 
 }

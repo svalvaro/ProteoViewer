@@ -12,22 +12,18 @@ function(input, output) {
 
         demo$start <-  TRUE
 
-
-
-        shinyalert::shinyalert("Demo Data Loaded",
+       shinyalert::shinyalert("Demo Data Loaded",
                                "Now you can visualize some proteins!",
                                type="success",
                                closeOnClickOutside = TRUE,
                                closeOnEsc = TRUE,
                                timer = 6000)
-
-
     })
 
 
     #### Upload the Proteomics Table ####
 
-    ## Set maximum upload size to 500MB
+    ## Set maximum upload size to 1000MB
     options(shiny.maxRequestSize=1000*1024^2)
 
     proteomicsInput <- reactive({
@@ -133,67 +129,68 @@ function(input, output) {
     })
 
 
-    # Output wether to combine or not the experiment. Don't show it if
-    # THe compare between conditions is TRUE
-
-
-    output$combineExperimentsOutput <- renderUI({
-
-        if (is.null(proteomicsInput())) {
-            return(NULL)
-        }
-
-
-        if (!is.null(input$compareConditions) &&
-            input$compareConditions == TRUE) {
-            return(NULL)
-        }
-
-        checkboxInput('combineExperiments',
-                      h4('Combine all the experiments'),
-                      value = FALSE#,
-                      #icon("paper-plane"),
-                      #style="color: #fff; background-color: #337ab7; border-color: #2e6da4"
-        )
-    })
-
     output$experimentSelect <- renderUI({
 
 
-        shiny::req(input$combineExperiments == FALSE )
+        shiny::req(input$inputComparison == 'individualExperiments' )
 
-        if (is.null(proteomicsInput()) || input$combineExperiments == TRUE) {
+        if (is.null(proteomicsInput()) ||
+            !input$inputComparison == 'individualExperiments' ) {
 
               return(NULL)
-
         }
 
-        # if (input$combineExperiments == TRUE) {
-        #
-        #     return(NULL)
-        # }
 
-        if (!is.null(input$compareConditions) &&  input$compareConditions == TRUE) {
-            return(NULL)
+        if (input$inputComparison == 'individualExperiments' ) {
+
+            shiny::selectInput(
+                inputId = 'selectedExperiment',
+                label = h4('Select a Experiment'),
+                choices = experimentNames(),
+                selected = experimentNames()[1])
         }
 
-        shiny::validate(
-            need(proteomicsInput(), 'Check at least one letter!')
-        )
-
-
-
-
-
-            shiny::selectInput(inputId = 'SelectedExperiment',
-                               label = h4('Select a Experiment'),
-                               choices = experimentNames(),
-                               selected = experimentNames()[1])
 
     })
 
 
+    # Name of the protein
     output$title_box <- renderText(input$selectedProtein)
+
+
+    output$comparisonAll <- renderUI({
+
+        if (is.null(experimentDesignFinal$df)) {
+
+            shinyWidgets::radioGroupButtons(
+                inputId = "inputComparison",
+                label = h4("What would you like to visualize?"),
+                choices = c("Individual Experiments" = "individualExperiments",
+                            "Combine all experiments together" = "combineExperiments"),
+
+                status = "primary",
+                direction = "vertical",
+            )
+
+        }else{
+
+            shinyWidgets::radioGroupButtons(
+                inputId = "inputComparison",
+                label = h4("What would you like to visualize?"),
+                choices = c("Individual Experiments" = "individualExperiments",
+                            "Combine all experiments together" = "combineExperiments",
+                            "Conditions based on Exp. Design" = "Conditions"),
+
+                selected = 'Conditions',
+
+                status = "primary",
+                direction = "vertical",
+            )
+
+        }
+
+
+    })
 
 
 
@@ -204,6 +201,8 @@ function(input, output) {
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
+
+        #shiny::req(input$inputComparison)
 
 
 
@@ -221,13 +220,14 @@ function(input, output) {
         dfPeptidesColorsNoGroups <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
             experimentDesign = NULL,
-            compareConditions = FALSE,
             conditionSelected = NULL,
             selectedProtein = proteinsSelected,
-            SelectedExperiment = input$SelectedExperiment,
-            combineExperiments = input$combineExperiments,
+            selectedExperiment = input$selectedExperiment,
+            comparison = input$inputComparison,
             plot_legend = FALSE)
 
+
+        message(paste0('number of peptides:', nrow(dfPeptidesColorsNoGroups)))
 
 
         # If no peptides  for the given experiment
@@ -249,10 +249,6 @@ function(input, output) {
             return(NULL)
         }
 
-
-        if (!is.null(input$compareConditions) && input$compareConditions == TRUE) {
-            return(NULL)
-        }
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -263,7 +259,7 @@ function(input, output) {
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$SelectedExperiment,
+            selectedExperiment = input$selectedExperiment,
             experimentDesign = NULL,
             selectedCondition = NULL,
             plotLegend = FALSE
@@ -301,7 +297,7 @@ function(input, output) {
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            selectedExperiment = input$SelectedExperiment,
+            selectedExperiment = input$selectedExperiment,
             experimentDesign = NULL,
             selectedCondition = NULL,
             plotLegend = TRUE
@@ -318,7 +314,7 @@ function(input, output) {
 
     dfPeptidesColorsComparisonOne <- reactive({
 
-        shiny::req(input$compareConditions)
+        shiny::req(input$inputComparison == 'Conditions')
 
         shiny::req(input$conditionsSelected[1])
 
@@ -326,15 +322,15 @@ function(input, output) {
             return(NULL)
         }
 
-        if(is.null(input$compareConditions)){
+        if(!input$inputComparison == 'Conditions'){
             return(NULL)
         }
 
-        if (!is.null(input$compareConditions) &&
-            input$compareConditions == FALSE) {
-
-            return(NULL)
-        }
+        # if (!is.null(input$compareConditions) &&
+        #     input$compareConditions == FALSE) {
+        #
+        #     return(NULL)
+        # }
 
 
 
@@ -350,10 +346,10 @@ function(input, output) {
         dfPeptidesColorsComparisonOne <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
             experimentDesign = experimentDesignFinal$df,
-            compareConditions = TRUE,
+            # compareConditions = TRUE,
             conditionSelected = input$conditionsSelected[1],
             selectedProtein = proteinsSelected,
-            SelectedExperiment = input$SelectedExperiment,
+            selectedExperiment = input$selectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = FALSE)
 
@@ -368,7 +364,7 @@ function(input, output) {
     })
 
     output$proteinImageComparisonOne <- renderUI({
-        shiny::req(input$compareConditions)
+        shiny::req(input$inputComparison == 'Conditions')
         shiny::req(input$conditionsSelected[1])
 
         # if (is.null(dfPeptidesColorsComparisonOne())) {
@@ -376,7 +372,7 @@ function(input, output) {
         # }
 
 
-        if (input$compareConditions == FALSE) {
+        if (!input$inputComparison == 'Conditions') {
             return(NULL)
         }
         # Remove everything after the ":" in the proteinSelected
@@ -470,7 +466,7 @@ function(input, output) {
             compareConditions = TRUE,
             conditionSelected = input$conditionsSelected[2],
             selectedProtein = proteinsSelected,
-            SelectedExperiment = input$SelectedExperiment,
+            selectedExperiment = input$selectedExperiment,
             combineExperiments = input$combineExperiments,
             plot_legend = FALSE)
 
@@ -562,8 +558,8 @@ function(input, output) {
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
             selectedProtein = proteinsSelected,
-            SelectedExperiment = input$SelectedExperiment,
-            combineExperiments = input$combineExperiments,
+            selectedExperiment = input$selectedExperiment,
+            comparison = NULL,
             plot_legend = TRUE)
 
 
@@ -577,7 +573,7 @@ function(input, output) {
 
     output$noPeptidesErrorMessage <- renderText({
 
-        if (is.null(dfPeptidesColorsNoGroups()) &
+        if (is.null(dfPeptidesColorsNoGroups()) &&
             ! is.null(proteomicsInput())
             ) {
             print('No peptides found for this experiment')
@@ -678,19 +674,19 @@ function(input, output) {
 
 
 
-    output$comparisonCheck <- shiny::renderUI({
-
-        if (is.null(experimentDesignFinal$df)) {
-            return(NULL)
-        }
-
-
-
-        shiny::checkboxInput(inputId = 'compareConditions',
-                      h4('Compare between conditions'),
-                      value = FALSE
-        )
-    })
+    # output$comparisonCheck <- shiny::renderUI({
+    #
+    #     if (is.null(experimentDesignFinal$df)) {
+    #         return(NULL)
+    #     }
+    #
+    #
+    #
+    #     shiny::checkboxInput(inputId = 'compareConditions',
+    #                   h4('Compare between conditions'),
+    #                   value = FALSE
+    #     )
+    # })
 
 
     comparisonsConditions <- reactive({
@@ -709,31 +705,28 @@ function(input, output) {
     output$comparisonSelector <- shiny::renderUI({
 
         # If no experiment design is provided
-        if (is.null(experimentDesignFinal$df) |
-            # Avoid error message if is null
-            is.null(input$compareConditions)) {
+        if (is.null(experimentDesignFinal$df) ||
+            !input$inputComparison == 'Conditions'){
 
             return(NULL)
+            }
 
-        }else if(! is.null(input$compareConditions) &
-                 input$compareConditions == FALSE){
-            return(NULL)
-        }
+        if(input$inputComparison == 'Conditions'){
 
+            colors <- base::rep('color:black;background:white',
+                                length(comparisonsConditions()))
 
-        colors <- base::rep('color:black;background:white',
-                            length(comparisonsConditions()))
-
-        shinyWidgets::pickerInput(
-            inputId = 'conditionsSelected',
-            label = h4('Choose the groups that you would like to compare'),
-            choices = comparisonsConditions(),
-            multiple = TRUE,
-            selected = comparisonsConditions()[c(1,2)],
-            options = list("max-options" = 2),
-            choicesOpt = list(style= colors)
+            shinyWidgets::pickerInput(
+                inputId = 'conditionsSelected',
+                label = h4('Choose the groups that you would like to compare'),
+                choices = comparisonsConditions(),
+                multiple = TRUE,
+                selected = comparisonsConditions()[c(1,2)],
+                options = list("max-options" = 2),
+                choicesOpt = list(style= colors)
             )
 
+        }
 
     })
 
