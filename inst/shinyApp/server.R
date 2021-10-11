@@ -103,7 +103,6 @@ function(input, output) {
                                choices = proteinsToSelect,
                                selected = proteinsToSelect[1])
         }
-
     })
 
 
@@ -154,9 +153,14 @@ function(input, output) {
     })
 
 
-    # Name of the protein
+    # Name of the protein on top of the plot
+
     output$title_box <- renderText(input$selectedProtein)
 
+
+    #### Comparison Selector ####
+    # Choose what the users wants to visualize: Individual experiments,
+    # all experiments combined, or conditions based on  experiment design
 
     output$comparisonAll <- renderUI({
 
@@ -185,16 +189,11 @@ function(input, output) {
 
                 status = "primary",
                 direction = "vertical",
-            )
-
-        }
-
-
+                )
+            }
     })
 
-
-
-    #### Create table peptides & colours ####
+    #### Create table Protein No Conditions ####
 
     dfPeptidesColorsNoGroups <- reactive({
 
@@ -203,17 +202,10 @@ function(input, output) {
             return(NULL)
         }
 
-
-        #shiny::req(input$inputComparison)
-
-
-
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
-
-
 
         # Create the peptides and colours tabular format
         # When plot_legend = FALSE, it returns a table containing
@@ -544,18 +536,18 @@ function(input, output) {
             plot_legend = TRUE)
 
 
-        if (is.null(legend) | is.null(dfPeptidesColorsNoGroups())) {
+        if (is.null(legend)) {
             return(NULL)
-        }else{
-            return(legend)
         }
+
+        return(legend)
     })
 
 
     output$noPeptidesErrorMessage <- renderText({
 
         if (is.null(dfPeptidesColorsNoGroups()) &&
-            ! is.null(proteomicsInput())
+            (!is.null(proteomicsInput()) && (input$inputComparison != 'conditions'))
             ) {
             print('No peptides found for this experiment')
         }else{
@@ -653,23 +645,6 @@ function(input, output) {
 
     #### Comparisons regarding experiment design ####
 
-
-
-    # output$comparisonCheck <- shiny::renderUI({
-    #
-    #     if (is.null(experimentDesignFinal$df)) {
-    #         return(NULL)
-    #     }
-    #
-    #
-    #
-    #     shiny::checkboxInput(inputId = 'compareConditions',
-    #                   h4('Compare between conditions'),
-    #                   value = FALSE
-    #     )
-    # })
-
-
     comparisonsConditions <- reactive({
 
         if (is.null(experimentDesignFinal$df)) {
@@ -705,12 +680,7 @@ function(input, output) {
                 selected = comparisonsConditions()[c(1,2)],
                 options = list("max-options" = 2),
                 choicesOpt = list(style= colors)
-            )
-
-        }
-
+                )
+            }
     })
-
-
 }
-
