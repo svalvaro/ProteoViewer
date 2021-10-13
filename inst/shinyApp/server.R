@@ -571,13 +571,18 @@ function(input, output) {
 
     experimentDesign <- reactive({
 
-        if(! is.null(input$expDesignUpload)){
+        if(!is.null(input$expDesignUpload)){
 
             experimentDesign <- utils::read.delim(
                 input$expDesignUpload$datapath, header = TRUE)
 
             # If no experiment is provided but the user has uploaded the
             # evidence txt
+
+            message(input$Demo)
+
+
+            return(experimentDesign)
 
         } else if(!is.null(input$proteomics_table)  ){
 
@@ -588,6 +593,11 @@ function(input, output) {
                                         Condition = ' ',
                                         Replicate = as.numeric(' ')
                                         )
+
+            message(input$Demo)
+
+
+            return(experimentDesign)
 
             # If the user starts the demo
             # For some reason input$Demo is 0 when False
@@ -600,13 +610,15 @@ function(input, output) {
                 system.file('shinyApp/www/experiment_design_example.txt',
                             package = 'ProteoViewer'),
                 header = TRUE)
+
+            message(input$Demo)
+
+
+            return(experimentDesign)
         }
 
 
-        message(input$Demo)
 
-
-        return(experimentDesign)
 
     })
 
@@ -717,6 +729,8 @@ function(input, output) {
     })
 
     output$UserInterGroups <- renderUI({
+
+        shiny::req(input$inputComparison)
 
         if (input$inputComparison != 'conditions') {
             return(NULL)
