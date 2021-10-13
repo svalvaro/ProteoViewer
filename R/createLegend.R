@@ -176,8 +176,8 @@ createLegend <- function(evidence,
     if (comparison == 'conditions') {
 
         # Match the experiments to the conditions
-        dfPeptidesColors$Condition <- experimentDesign$Condition[
-            match(dfPeptidesColors$Experiment,experimentDesign$Experiment)]
+        dfPeptidesColors$Condition <- experimentDesign$condition[
+            match(dfPeptidesColors$Experiment,experimentDesign$label)]
 
         # Index by the conditionSelected
 

@@ -581,6 +581,8 @@ function(input, output) {
 
             message(input$Demo)
 
+            print(experimentDesign)
+
 
             return(experimentDesign)
 
@@ -589,9 +591,9 @@ function(input, output) {
 
 
             experimentDesign <- data.frame(
-                                        Experiment = experimentNames(),
-                                        Condition = ' ',
-                                        Replicate = as.numeric(' ')
+                                        label = experimentNames(),
+                                        condition = ' ',
+                                        replicate = as.numeric(' ')
                                         )
 
             message(input$Demo)
@@ -635,8 +637,8 @@ function(input, output) {
             experimentDesign(),
             height =  500
             ) %>%
-            rhandsontable::hot_col('Replicate', format = '0a') %>%
-            rhandsontable::hot_col('Experiment', readOnly = TRUE)
+            rhandsontable::hot_col('replicate', format = '0a') %>%
+            rhandsontable::hot_col('label', readOnly = TRUE)
     })
 
 
@@ -669,7 +671,7 @@ function(input, output) {
 
         comparisonsConditions <- base::sort(
             base::unique(
-            experimentDesignFinal$df$Condition)
+            experimentDesignFinal$df$condition)
             )
     })
 
@@ -746,8 +748,6 @@ function(input, output) {
                     uiOutput(outputId = 'proteinImageComparisonOne')
 
                     ),
-
-
 
                     box(title = h3(
                         textOutput('titleProteinComparisonTwo')

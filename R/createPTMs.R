@@ -50,8 +50,8 @@ createPTMs <- function(evidence,
     # If Experiment Design is provided (when comparing conditions)
 
     if(!is.null(experimentDesign) && !is.null(selectedCondition)){
-      modifiedPeptides$Condition <- experimentDesign$Condition[
-        base::match(modifiedPeptides$Experiment, experimentDesign$Experiment)
+      modifiedPeptides$Condition <- experimentDesign$condition[
+        base::match(modifiedPeptides$Experiment, experimentDesign$label)
       ]
 
       modifiedPeptides <- modifiedPeptides[

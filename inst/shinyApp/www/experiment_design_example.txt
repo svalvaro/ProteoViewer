@@ -1,4 +1,4 @@
-Experiment	Condition	Replicate
+label	condition	replicate
 condition_A_1	A	1
 condition_A_2	A	2
 condition_A_3	A	3
