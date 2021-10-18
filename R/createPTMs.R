@@ -20,14 +20,10 @@ createPTMs <- function(evidence,
                       selectedCondition = NULL,
                       plotLegend = TRUE){
 
-
-
-
-    modifiedPeptides <- evidence %>% dplyr::select(c(
+      modifiedPeptides <- evidence %>% dplyr::select(c(
         'Sequence', 'Modifications', 'Modified.sequence',
         'Proteins', 'Experiment'
     ))
-
 
     if(! is.null(selectedExperiment)){
 
@@ -58,13 +54,8 @@ createPTMs <- function(evidence,
         modifiedPeptides$Condition == selectedCondition,]
     }
 
-
-
-
-
     # In order to colour individually the modifications, only one modification
     # can exist per row. For those peptides containing multiple modificaitons:
-
 
     modifiedPeptides <-  modifiedPeptides %>%
       tidyr::separate_rows(Modifications,
@@ -79,14 +70,11 @@ createPTMs <- function(evidence,
 
     for (ii in seq_len(nrow(modifiedPeptides))) {
 
-
       # Obtain the total modifications and add parenthesis: '(Oxidation (M))'
       Modifications <- base::paste0('(',
                                     base::unique(
                                       modifiedPeptides$Modifications),
                                     ')')
-
-
 
       # Modifications to remove, is the list of modifications withouth the
       # corresponding modification of that sequence
@@ -96,7 +84,6 @@ createPTMs <- function(evidence,
                                          modifiedPeptides$Modifications[ii],
                                          ')')]
 
-
       # Add back slash to the parentheses
       modsToRemove <- gsub(pattern = '\\(', replacement = '\\\\(', modsToRemove)
 
@@ -105,8 +92,6 @@ createPTMs <- function(evidence,
       # Collapse the modifications to remove together to make it regex pattern
 
       modsToRemove <- paste(unlist(modsToRemove), collapse = '|')
-
-
 
       # Remove all the modifications for the modified sequence (except the one)
       # that is in the modifiedPeptides$Modification
@@ -138,7 +123,6 @@ createPTMs <- function(evidence,
         modifiedPeptides$Modified.sequence
     )
 
-
     # For (Acetyl Protein N-term ) # Put the next one in parenthesis.
 
     modifiedPeptides$Modified.sequence <-
@@ -146,7 +130,6 @@ createPTMs <- function(evidence,
              replacement = '(\\1)',
              x = modifiedPeptides$Modified.sequence
     )
-
 
     # For Methyl (KR)
 
@@ -164,7 +147,6 @@ createPTMs <- function(evidence,
              x = modifiedPeptides$Modified.sequence
     )
 
-
     # For Trimethyl (K)
 
     modifiedPeptides$Modified.sequence <-
@@ -172,7 +154,6 @@ createPTMs <- function(evidence,
              replacement = '(\\1)',
              x = modifiedPeptides$Modified.sequence
     )
-
 
     # Remove the underscores:
 
@@ -218,7 +199,6 @@ createPTMs <- function(evidence,
       ptmImages[[length(ptmImages)+1]] <- p
     }
 
-
     if ('Methyl (KR)' %in% ptmsToPlot) {
 
       p <- png::readPNG(
@@ -227,7 +207,6 @@ createPTMs <- function(evidence,
 
       ptmImages[[length(ptmImages)+1]] <- p
     }
-
 
     if ('Dimethyl (KR)' %in% ptmsToPlot) {
 
@@ -247,25 +226,9 @@ createPTMs <- function(evidence,
       ptmImages[[length(ptmImages)+1]] <- p
     }
 
-
     ptmImages <- base::lapply(ptmImages, grid::rasterGrob)
-
-
-
 
     return(
       gridExtra::grid.arrange(grobs=ptmImages, ncol = 1)
     )
-
-
-
-
-
-
-
-
-
-
 }
-
-

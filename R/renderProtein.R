@@ -19,4 +19,3 @@ renderProtein <- function(url){
 
     return(destfile)
 }
-

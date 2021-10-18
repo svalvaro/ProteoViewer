@@ -59,9 +59,6 @@ function(input, output) {
             return(NULL)
 
         }
-
-
-
         return(df)
     })
 
@@ -105,12 +102,9 @@ function(input, output) {
         }
     })
 
-
     #### Experiment to select ####
 
-
     # First we need the experiment names.
-
 
     experimentNames <- reactive({
 
@@ -121,10 +115,7 @@ function(input, output) {
         experimentNames <- base::sort(
             base::unique(proteomicsInput()$Experiment)
             )
-
-
         return(experimentNames)
-
     })
 
 
@@ -244,8 +235,6 @@ function(input, output) {
 
     })
 
-
-
     #### Render proteinImage ####
 
         output$proteinImageNoComparison <- renderImage({
@@ -306,8 +295,6 @@ function(input, output) {
         )
     })
 
-
-
     #### Render Comparison One ####
 
 
@@ -354,13 +341,9 @@ function(input, output) {
     })
 
     output$proteinImageComparisonOne <- renderImage({
+
         shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
-
-        # if (is.null(dfPeptidesColorsComparisonOne())) {
-        #     return(NULL)
-        # }
-
 
         if (!input$inputComparison == 'conditions') {
             return(NULL)
@@ -369,7 +352,6 @@ function(input, output) {
         # which is the description of the protein.
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
-
 
         # Obtain the PTM for the combined condition:
 
@@ -397,7 +379,6 @@ function(input, output) {
              width = input$zoomFigure)
     },
     deleteFile = TRUE)
-
 
     # Title comparison
     output$titleProteinComparisonOne <- renderText({
@@ -446,7 +427,6 @@ function(input, output) {
         } else{
             return(dfPeptidesColorsComparisonTwo)
         }
-
     })
 
     output$proteinImageComparisonTwo <- renderImage({
@@ -457,7 +437,6 @@ function(input, output) {
         # which is the description of the protein.
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
-
 
         # Obtain the PTMs table
 
@@ -484,8 +463,6 @@ function(input, output) {
     },
     deleteFile = TRUE)
 
-
-
     output$titleProteinComparisonTwo <- renderText({
 
         paste0('Condition: ',  input$conditionsSelected[2])
@@ -507,14 +484,12 @@ function(input, output) {
             comparison = NULL,
             plot_legend = TRUE)
 
-
         if (is.null(legend)) {
             return(NULL)
         }
 
         return(legend)
     })
-
 
     output$noPeptidesErrorMessage <- renderText({
 
@@ -531,9 +506,7 @@ function(input, output) {
             legend()
     })
 
-
     #### Experiment Design ####
-
 
     experimentDesign <- reactive({
 
@@ -564,14 +537,13 @@ function(input, output) {
 
             message(input$Demo)
 
-
             return(experimentDesign)
 
-            # If the user starts the demo
-            # For some reason input$Demo is 0 when False
-            # then 1 when true, and if pressed multiple times, it continues to
-            # increase. So for input$Demo >0  means when the user press demo
-            # many times
+    # If the user starts the demo For some reason input$Demo is 0 when False
+    # then 1 when true, and if pressed multiple times, it continues to
+    # increase. So for input$Demo >0  means when the user press demo
+    # many times
+
         } else if(input$Demo > 0){
 
             experimentDesign <- utils::read.delim(
@@ -584,10 +556,6 @@ function(input, output) {
 
             return(experimentDesign)
         }
-
-
-
-
     })
 
 
@@ -680,7 +648,7 @@ function(input, output) {
             return(NULL)
         }
 
-        shinydashboard::box(
+        shinydashboard::box(height = 'auto',
 
             title = h2(textOutput('title_box')),
             width = 1000,
@@ -723,5 +691,4 @@ function(input, output) {
             )
 
     })
-
 }

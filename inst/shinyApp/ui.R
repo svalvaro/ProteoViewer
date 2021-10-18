@@ -56,7 +56,6 @@ dashboardPage(
                     # Select the protein of interest
                     uiOutput('proteinsSelect'),
 
-
                     uiOutput('comparisonAll'),
 
                     # Compare between conditions based on experiment design
@@ -120,7 +119,7 @@ dashboardPage(
                     sliderInput(
                         inputId = 'zoomFigure',
                         label = h4('Select the size of the image'),
-                        min = 100, max = 5000, value = 1000)
+                        min = 20, max = 2000, value = 150)
                     ),
 
                 tabName = 'proteinviz'
@@ -151,17 +150,18 @@ dashboardPage(
             block = FALSE,
             no_outline = TRUE)
         ),
+
 #### DashBoard Body ####
     dashboardBody(
-
         tabItems(
             tabItem(
                 tabName = 'proteinViz',
 
-                fluidRow(
+                fluidRow(style = "height:5000px;",
 
                     column(
                         width = 8,
+
 
 
                             uiOutput('UserInterNoGroups'),
@@ -192,5 +192,4 @@ dashboardPage(
                 )
             )
         )
-    )
-
+)

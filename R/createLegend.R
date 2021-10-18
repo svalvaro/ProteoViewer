@@ -45,7 +45,6 @@ createLegend <- function(evidence,
             )
         )
 
-
     # Select only for the selected protein
 
     # ProteoIndexed <- df[df$Proteins == selectedProtein,]
@@ -79,7 +78,6 @@ createLegend <- function(evidence,
         group_by(Sequence) %>%
         summarise(Intensity = sum(Intensity))
 
-
     # The maximum colors will be combining all peptides by the sum
 
     dfColorsMax$Intensity <- log2(dfColorsMax$Intensity)
@@ -87,7 +85,6 @@ createLegend <- function(evidence,
     dfColorsMax <- dfColorsMax[base::order(dfColorsMax$Intensity), ]
 
     dfColorsMax$Intensity <- as.numeric(dfColorsMax$Intensity)
-
 
     dfColorsMin <- dfPeptidesColors
 
@@ -98,14 +95,6 @@ createLegend <- function(evidence,
     dfColorsMin <- dfColorsMin[base::order(dfColorsMin$Intensity), ]
 
     dfColorsMin$Intensity <- as.numeric(dfColorsMin$Intensity)
-
-
-
-    # # Obtain the number of breaks to
-    #
-    # continuous_breaks <- seq(from = trunc(min(dfPeptidesColorsCombined$Intensity)),
-    #                          to = trunc(max(dfPeptidesColorsCombined$Intensity)))
-
 
     # Obtain the number of breaks to
 
@@ -126,7 +115,6 @@ createLegend <- function(evidence,
     # data frame to be plotted to generate the legend.
     dfToPlot <- data.frame(breaks = continuous_breaks,
                            Colour = colorsToPlot)
-
 
     # Plot the palette if required
 
@@ -156,14 +144,11 @@ createLegend <- function(evidence,
     # If the plotting of the palette is not requried, I need to match
     # the peptide intensites to the color
 
-
     if (comparison == 'individualExperiments') {
         # Index by the experiment
         dfPeptidesColors <- dfPeptidesColors[
-            dfPeptidesColors$Experiment == selectedExperiment,
-        ]
+            dfPeptidesColors$Experiment == selectedExperiment,]
     }
-
 
     if (comparison == 'combineExperiments') {
 
@@ -182,8 +167,7 @@ createLegend <- function(evidence,
         # Index by the conditionSelected
 
         dfPeptidesColors <- dfPeptidesColors[
-            dfPeptidesColors$Condition == conditionSelected,
-        ]
+            dfPeptidesColors$Condition == conditionSelected,]
 
         # Obtain the median of the condition
 
@@ -192,13 +176,12 @@ createLegend <- function(evidence,
             summarise(Intensity = median(Intensity))
     }
 
-
-
     # Calculate the log2 of the intensities and reorder
 
     dfPeptidesColors$Intensity <- log2(dfPeptidesColors$Intensity)
 
-    dfPeptidesColors <- dfPeptidesColors[base::order(dfPeptidesColors$Intensity), ]
+    dfPeptidesColors <- dfPeptidesColors[
+        base::order(dfPeptidesColors$Intensity),]
 
     dfPeptidesColors$Intensity <- as.numeric(dfPeptidesColors$Intensity)
 
@@ -220,5 +203,4 @@ createLegend <- function(evidence,
     }
 
     return(dfPeptidesColors)
-
 }
