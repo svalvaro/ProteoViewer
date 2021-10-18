@@ -293,6 +293,7 @@ function(input, output) {
             selectedCondition = NULL,
             plotLegend = TRUE
         )
+
     })
 
     #### Render Comparison One ####
@@ -527,8 +528,6 @@ function(input, output) {
 
         } else if(!is.null(input$proteomics_table)  ){
 
-
-
             experimentDesign <- data.frame(
                                         label = experimentNames(),
                                         condition = ' ',
@@ -557,8 +556,6 @@ function(input, output) {
             return(experimentDesign)
         }
     })
-
-
 
     output$experimentDesignOutput <- rhandsontable::renderRHandsontable({
 
@@ -648,7 +645,7 @@ function(input, output) {
             return(NULL)
         }
 
-        shinydashboard::box(height = 'auto',
+        shinydashboard::box(height = paste0(input$zoomFigure+400, 'px'),
 
             title = h2(textOutput('title_box')),
             width = 1000,
@@ -659,9 +656,14 @@ function(input, output) {
 
             imageOutput(outputId = 'proteinImageNoComparison')
             )
+
     })
 
     output$UserInterGroups <- renderUI({
+
+        # if (is.null(proteomicsInput())) {
+        #     return(NULL)
+        # }
 
         shiny::req(input$inputComparison)
 
@@ -674,13 +676,16 @@ function(input, output) {
                 column(
                     width = 11,
 
-                    box(title = h3(textOutput('titleProteinComparisonOne')
+                    box(height = paste0(input$zoomFigure+400, 'px'),
+                        title = h3(textOutput('titleProteinComparisonOne')
                     ),
                     imageOutput(outputId = 'proteinImageComparisonOne')
 
                     ),
 
-                    box(title = h3(
+                    box(
+                        height = paste0(input$zoomFigure+400, 'px'),
+                        title = h3(
                         textOutput('titleProteinComparisonTwo')
                     ),
 
@@ -690,5 +695,39 @@ function(input, output) {
                 )
             )
 
+    })
+
+    output$proteinImagesUIAll <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        column(
+            width = 8,
+
+
+
+            uiOutput('UserInterNoGroups'),
+
+            uiOutput('UserInterGroups'),
+
+            plotOutput('legend')
+
+        )
+    })
+
+
+    output$PTMSlegendUI <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        column(
+            width = 4,
+            box(plotOutput('legendPTMs')
+            )
+        )
     })
 }

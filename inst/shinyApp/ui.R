@@ -157,25 +157,24 @@ dashboardPage(
             tabItem(
                 tabName = 'proteinViz',
 
-                fluidRow(style = "height:5000px;",
+                fluidRow(
 
-                    column(
-                        width = 8,
+                    # column(
+                    #     width = 8,
+                    #
+                    #
+                    #
+                    #         uiOutput('UserInterNoGroups'),
+                    #
+                    #         uiOutput('UserInterGroups'),
+                    #
+                    #         plotOutput('legend')
+                    #
+                    #     ),
 
+                    uiOutput('proteinImagesUIAll'),
 
-
-                            uiOutput('UserInterNoGroups'),
-
-                            uiOutput('UserInterGroups'),
-
-                            plotOutput('legend')
-
-                        ),
-                    column(
-                        width = 4,
-                        box(plotOutput('legendPTMs')
-                            )
-                        )
+                    uiOutput('PTMSlegendUI')
                     )
                 ),
 
