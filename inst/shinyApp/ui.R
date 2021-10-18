@@ -158,23 +158,31 @@ dashboardPage(
                 tabName = 'proteinViz',
 
                 fluidRow(
-
-                    # column(
-                    #     width = 8,
-                    #
-                    #
-                    #
-                    #         uiOutput('UserInterNoGroups'),
-                    #
-                    #         uiOutput('UserInterGroups'),
-                    #
-                    #         plotOutput('legend')
-                    #
-                    #     ),
-
                     uiOutput('proteinImagesUIAll'),
 
                     uiOutput('PTMSlegendUI')
+                    ),
+                hr(style = "border-color: #cbcbcb;"),
+
+                fluidRow(
+                    column(9,
+
+                           p("App created by ",
+                             tags$a(href = "https://www.linkedin.com/in/svalvaro/",
+                                    'Alvaro Sanchez-Villalba',
+                                    target = '_blank'),
+                             HTML("&bull;"),
+                             style = "font-size: 85%"),
+
+                           p("Have a question? Spot an error? Send an email ",
+                             tags$a(href = "mailto:alvaro.sanchez@fgu.cas.cz",
+                                    tags$i(class = 'fa fa-envelope',
+                                           style = 'color:#990000'),
+                                    target = '_blank'),
+                             style = "font-size: 85%"),
+                           p(tags$em("Last updated: October 2021"),
+                             style = 'font-size:75%')
+                           )
                     )
                 ),
 
@@ -187,6 +195,28 @@ dashboardPage(
                         rhandsontable::rHandsontableOutput(
                             'experimentDesignOutput')
                         )
+                    ),
+                hr(style = "border-color: #cbcbcb;"),
+
+                fluidRow(
+                    column(9,
+
+                           p("App created by ",
+                             tags$a(href = "https://www.linkedin.com/in/svalvaro/",
+                                    'Alvaro Sanchez-Villalba',
+                                    target = '_blank'),
+                             HTML("&bull;"),
+                             style = "font-size: 85%"),
+
+                           p("Have a question? Spot an error? Send an email ",
+                             tags$a(href = "mailto:alvaro.sanchez@fgu.cas.cz",
+                                    tags$i(class = 'fa fa-envelope',
+                                           style = 'color:#990000'),
+                                    target = '_blank'),
+                             style = "font-size: 85%"),
+                           p(tags$em("Last updated: October 2021"),
+                             style = 'font-size:75%')
+                           )
                     )
                 )
             )
