@@ -221,6 +221,7 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
         url <- paste0(url, "cutAt=peptidecutter.", proteaseSelected,"&")
     }
 
+    #url <- paste0(url, "format=png")
     url <- paste0(url, "format=svg")
 
     message(paste0('The url is: \n', url))

@@ -3,4 +3,7 @@
 export(connectProtterAPI)
 export(createLegend)
 export(createPTMs)
+export(renderProtein)
 export(runProteoViewerApp)
+importFrom(grid,rasterGrob)
+importFrom(gridExtra,grid.arrange)

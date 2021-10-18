@@ -7,16 +7,15 @@
 createLegend(
   evidence,
   experimentDesign,
-  compareConditions = FALSE,
+  comparison = c("individualExperiments", "combineExperiments", "conditions"),
   conditionSelected = NULL,
-  SelectedExperiment = NULL,
+  selectedExperiment = NULL,
   selectedProtein = NULL,
-  combineExperiments = FALSE,
   plot_legend = TRUE
 )
 }
 \arguments{
-\item{plot_legend}{}
+\item{conditionSelected}{}
 }
 \value{
 

@@ -4,10 +4,17 @@
 \alias{createPTMs}
 \title{Title}
 \usage{
-createPTMs(evidence, selectedProtein, selectedExperiment)
+createPTMs(
+  evidence,
+  selectedProtein,
+  selectedExperiment,
+  experimentDesign = NULL,
+  selectedCondition = NULL,
+  plotLegend = TRUE
+)
 }
 \arguments{
-\item{selectedExperiment}{}
+\item{plotLegend}{}
 }
 \value{
 

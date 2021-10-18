@@ -248,11 +248,7 @@ function(input, output) {
 
     #### Render proteinImage ####
 
-    output$proteinImageNoComparison <- renderUI({
-
-        if (is.null(dfPeptidesColorsNoGroups())) {
-            return(NULL)
-        }
+        output$proteinImageNoComparison <- renderImage({
 
         message(paste0('Experiment Selected is: ',selectedExperiment()))
 
@@ -279,12 +275,13 @@ function(input, output) {
             selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected,
             modifiedPeptides = modifiedPeptides
-            )
+        )
 
-        # render the image
-        shiny::tags$img(src = url,
-              width = input$zoomFigure)
-    })
+        # Return a list containing the filename
+        list(src = ProteoViewer::renderProtein(url = url),
+             width = input$zoomFigure)
+    },
+    deleteFile = TRUE)
 
     #### Legend PTMs ####
 
@@ -328,14 +325,6 @@ function(input, output) {
             return(NULL)
         }
 
-        # if (!is.null(input$compareConditions) &&
-        #     input$compareConditions == FALSE) {
-        #
-        #     return(NULL)
-        # }
-
-
-
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -364,7 +353,7 @@ function(input, output) {
 
     })
 
-    output$proteinImageComparisonOne <- renderUI({
+    output$proteinImageComparisonOne <- renderImage({
         shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
 
@@ -395,7 +384,6 @@ function(input, output) {
             plotLegend = FALSE
         )
 
-
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
@@ -405,18 +393,14 @@ function(input, output) {
             modifiedPeptides = modifiedPeptides
             )
 
-        # render the image
-        shiny::tags$img(src = url,
-                        width = input$zoomFigure)
-    })
+        list(src = ProteoViewer::renderProtein(url = url),
+             width = input$zoomFigure)
+    },
+    deleteFile = TRUE)
 
 
-
+    # Title comparison
     output$titleProteinComparisonOne <- renderText({
-
-        if (is.null(dfPeptidesColorsComparisonOne())) {
-            return(NULL)
-        }
 
         paste0('Condition: ',  input$conditionsSelected[1])
     })
@@ -425,7 +409,6 @@ function(input, output) {
 
 
     dfPeptidesColorsComparisonTwo <- reactive({
-
 
         shiny::req(input$inputComparison == 'conditions')
 
@@ -444,8 +427,6 @@ function(input, output) {
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
-
-
         # Create the peptides and colours tabular format
         # When plot_legend = FALSE, it returns a table containing
         # the peptides, and colors corresponding.
@@ -459,8 +440,6 @@ function(input, output) {
             comparison = 'conditions',
             plot_legend = FALSE)
 
-
-
         # If no peptides  for the given experiment
         if (is.null(dfPeptidesColorsComparisonTwo)) {
             return(NULL)
@@ -470,20 +449,9 @@ function(input, output) {
 
     })
 
-    output$proteinImageComparisonTwo <- renderUI({
-
-        # if (is.null(dfPeptidesColorsComparisonTwo())) {
-        #     return(NULL)
-        # }
-
-
+    output$proteinImageComparisonTwo <- renderImage({
 
         shiny::req(input$conditionsSelected[2])
-
-        # if (!is.null(input$compareConditions) && input$compareConditions == FALSE) {
-        #     return(NULL)
-        # }
-
 
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
@@ -502,7 +470,6 @@ function(input, output) {
             plotLegend = FALSE
         )
 
-
         # Create the url to connect to the API
 
         url <- ProteoViewer::connectProtterAPI(
@@ -512,17 +479,14 @@ function(input, output) {
             modifiedPeptides = modifiedPeptides
             )
 
-        # render the image
-        shiny::tags$img(src = url,
-                        width = input$zoomFigure)
-    })
+        list(src = ProteoViewer::renderProtein(url = url),
+             width = input$zoomFigure)
+    },
+    deleteFile = TRUE)
+
 
 
     output$titleProteinComparisonTwo <- renderText({
-
-        if (is.null(dfPeptidesColorsComparisonTwo())) {
-            return(NULL)
-        }
 
         paste0('Condition: ',  input$conditionsSelected[2])
     })
@@ -711,6 +675,7 @@ function(input, output) {
             return(NULL)
         }
 
+
         if (input$inputComparison == 'conditions') {
             return(NULL)
         }
@@ -722,14 +687,10 @@ function(input, output) {
             # Error message in case no peptides found
             h3(textOutput('noPeptidesErrorMessage')),
 
-            # If no
-            # comparisons are selected (without experiment design)
+            # If no comparisons are selected (without experiment design)
 
-            uiOutput(outputId = 'proteinImageNoComparison')#,
-
-            #plotOutput('legend')
-
-        )
+            imageOutput(outputId = 'proteinImageNoComparison')
+            )
     })
 
     output$UserInterGroups <- renderUI({
@@ -747,7 +708,7 @@ function(input, output) {
 
                     box(title = h3(textOutput('titleProteinComparisonOne')
                     ),
-                    uiOutput(outputId = 'proteinImageComparisonOne')
+                    imageOutput(outputId = 'proteinImageComparisonOne')
 
                     ),
 
@@ -755,7 +716,7 @@ function(input, output) {
                         textOutput('titleProteinComparisonTwo')
                     ),
 
-                    uiOutput(outputId = 'proteinImageComparisonTwo')
+                    imageOutput(outputId = 'proteinImageComparisonTwo')
                     )
 
                 )
