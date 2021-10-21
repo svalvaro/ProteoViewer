@@ -647,7 +647,7 @@ function(input, output) {
 
         shinydashboard::box(height = paste0(input$zoomFigure+400, 'px'),
 
-            title = h2(textOutput('title_box')),
+            #title = h2(textOutput('title_box')),
             width = 1000,
             # Error message in case no peptides found
             h3(textOutput('noPeptidesErrorMessage')),
@@ -661,25 +661,22 @@ function(input, output) {
 
     output$UserInterGroups <- renderUI({
 
-        # if (is.null(proteomicsInput())) {
-        #     return(NULL)
-        # }
-
         shiny::req(input$inputComparison)
 
         if (input$inputComparison != 'conditions') {
             return(NULL)
         }
 
-        #fluidPage(
+
             fluidRow(
                 column(
                     width = 11,
 
-                    box(height = paste0(input$zoomFigure+400, 'px'),
+                    box(
+                        height = paste0(input$zoomFigure+400, 'px'),
                         title = h3(textOutput('titleProteinComparisonOne')
-                    ),
-                    imageOutput(outputId = 'proteinImageComparisonOne')
+                                   ),
+                        imageOutput(outputId = 'proteinImageComparisonOne')
 
                     ),
 
@@ -687,13 +684,13 @@ function(input, output) {
                         height = paste0(input$zoomFigure+400, 'px'),
                         title = h3(
                         textOutput('titleProteinComparisonTwo')
-                    ),
-
-                    imageOutput(outputId = 'proteinImageComparisonTwo')
+                        ),
+                        imageOutput(outputId = 'proteinImageComparisonTwo')
                     )
 
                 )
             )
+
 
     })
 
@@ -706,7 +703,7 @@ function(input, output) {
         column(
             width = 8,
 
-
+            h2(textOutput('title_box')),
 
             uiOutput('UserInterNoGroups'),
 
