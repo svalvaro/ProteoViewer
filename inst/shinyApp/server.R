@@ -4,7 +4,6 @@ function(input, output) {
 
     demo <- shiny::reactiveValues(start = FALSE)
 
-
     observeEvent(input$Demo, {
         shiny::req(input$Demo)
 
@@ -50,18 +49,15 @@ function(input, output) {
             df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
                                          package = 'ProteoViewer'))
 
-
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
             df$Proteins <- base::sub(";.*", "", df$Proteins)
 
         } else if (is.null(inFile)) {
             return(NULL)
-
         }
         return(df)
     })
-
 
     #### Proteins to select ####
 
@@ -118,7 +114,6 @@ function(input, output) {
         return(experimentNames)
     })
 
-
     output$experimentSelect <- renderUI({
 
 
@@ -159,7 +154,6 @@ function(input, output) {
 
     output$title_box <- renderText(input$selectedProtein)
 
-
     #### Comparison Selector ####
     # Choose what the users wants to visualize: Individual experiments,
     # all experiments combined, or conditions based on  experiment design
@@ -173,7 +167,6 @@ function(input, output) {
                 label = h4("What would you like to visualize?"),
                 choices = c("Individual Experiments" = "individualExperiments",
                             "Combine all experiments together" = "combineExperiments"),
-
                 status = "primary",
                 direction = "vertical",
             )
@@ -186,9 +179,7 @@ function(input, output) {
                 choices = c("Individual Experiments" = "individualExperiments",
                             "Combine all experiments together" = "combineExperiments",
                             "Conditions based on Exp. Design" = "conditions"),
-
                 selected = 'conditions',
-
                 status = "primary",
                 direction = "vertical",
                 )
@@ -222,9 +213,7 @@ function(input, output) {
             comparison = input$inputComparison,
             plot_legend = FALSE)
 
-
         message(paste0('number of peptides:', nrow(dfPeptidesColorsNoGroups)))
-
 
         # If no peptides  for the given experiment
         if (is.null(dfPeptidesColorsNoGroups)) {
@@ -232,7 +221,6 @@ function(input, output) {
         } else{
             return(dfPeptidesColorsNoGroups)
         }
-
     })
 
     #### Render proteinImage ####
@@ -293,11 +281,9 @@ function(input, output) {
             selectedCondition = NULL,
             plotLegend = TRUE
         )
-
     })
 
     #### Render Comparison One ####
-
 
     dfPeptidesColorsComparisonOne <- reactive({
 
@@ -331,14 +317,12 @@ function(input, output) {
             comparison = 'conditions',
             plot_legend = FALSE)
 
-
         # If no peptides  for the given experiment
         if (is.null(dfPeptidesColorsComparisonOne)) {
             return(NULL)
         } else{
             return(dfPeptidesColorsComparisonOne)
         }
-
     })
 
     output$proteinImageComparisonOne <- renderImage({
@@ -388,7 +372,6 @@ function(input, output) {
     })
 
     #### Render Comparison Two ####
-
 
     dfPeptidesColorsComparisonTwo <- reactive({
 
@@ -475,8 +458,7 @@ function(input, output) {
 
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
-
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein)
 
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
@@ -488,7 +470,6 @@ function(input, output) {
         if (is.null(legend)) {
             return(NULL)
         }
-
         return(legend)
     })
 
@@ -523,7 +504,6 @@ function(input, output) {
 
             print(experimentDesign)
 
-
             return(experimentDesign)
 
         } else if(!is.null(input$proteomics_table)  ){
@@ -552,13 +532,11 @@ function(input, output) {
 
             message(input$Demo)
 
-
             return(experimentDesign)
         }
     })
 
     output$experimentDesignOutput <- rhandsontable::renderRHandsontable({
-
 
         if (is.null(experimentNames())) {
             return(NULL)
@@ -572,15 +550,12 @@ function(input, output) {
             rhandsontable::hot_col('label', readOnly = TRUE)
     })
 
-
-
     # Obtain possible modifications that the user can make in the experiment
     # design
 
     experimentDesignFinal <- shiny::reactiveValues()
 
     observeEvent(input$experimentDesignOutput,{
-
 
             experimentDesignFinal$df <- rhandsontable::hot_to_r(
                 input$experimentDesignOutput)
@@ -589,8 +564,6 @@ function(input, output) {
         print(experimentDesignFinal$df)
 
     })
-
-
 
     #### Comparisons regarding experiment design ####
 
@@ -605,7 +578,6 @@ function(input, output) {
             experimentDesignFinal$df$condition)
             )
     })
-
 
     output$comparisonSelector <- shiny::renderUI({
 
@@ -640,7 +612,6 @@ function(input, output) {
             return(NULL)
         }
 
-
         if (input$inputComparison == 'conditions') {
             return(NULL)
         }
@@ -656,7 +627,6 @@ function(input, output) {
 
             imageOutput(outputId = 'proteinImageNoComparison')
             )
-
     })
 
     output$UserInterGroups <- renderUI({
@@ -667,31 +637,27 @@ function(input, output) {
             return(NULL)
         }
 
+        fluidRow(
+            column(
+                width = 11,
 
-            fluidRow(
-                column(
-                    width = 11,
+                box(
+                    height = paste0(input$zoomFigure+400, 'px'),
+                    title = h3(textOutput('titleProteinComparisonOne')
+                               ),
+                    imageOutput(outputId = 'proteinImageComparisonOne')
+                ),
 
-                    box(
-                        height = paste0(input$zoomFigure+400, 'px'),
-                        title = h3(textOutput('titleProteinComparisonOne')
-                                   ),
-                        imageOutput(outputId = 'proteinImageComparisonOne')
-
+                box(
+                    height = paste0(input$zoomFigure+400, 'px'),
+                    title = h3(
+                    textOutput('titleProteinComparisonTwo')
                     ),
-
-                    box(
-                        height = paste0(input$zoomFigure+400, 'px'),
-                        title = h3(
-                        textOutput('titleProteinComparisonTwo')
-                        ),
-                        imageOutput(outputId = 'proteinImageComparisonTwo')
-                    )
-
+                    imageOutput(outputId = 'proteinImageComparisonTwo')
                 )
+
             )
-
-
+        )
     })
 
     output$proteinImagesUIAll <- renderUI({
@@ -710,10 +676,8 @@ function(input, output) {
             uiOutput('UserInterGroups'),
 
             plotOutput('legend')
-
         )
     })
-
 
     output$PTMSlegendUI <- renderUI({
 
