@@ -195,7 +195,6 @@ createLegend <- function(evidence,
 
     dfPeptidesColors$Colour <- base::gsub('#', '', dfPeptidesColors$Colour)
 
-
     if (nrow(dfPeptidesColors) == 0 && plot_legend == FALSE) {
         message('No peptides found in this experiment for this protein and
                 experiment.')

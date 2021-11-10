@@ -16,24 +16,42 @@ comparisonPTMs <- function(evidence,
                            experimentDesign = NULL,
                            selectedCondition = NULL){
 
+    # Obtain the table
     modifiedPeptides <- evidence %>% dplyr::select(c(
         'Sequence', 'Modifications', 'Modified.sequence',
         'Proteins', 'Experiment', 'Intensity'
     ))
 
 
+    # Index by selected protein
+    modifiedPeptides <- modifiedPeptides[
+        modifiedPeptides$Proteins == selectedProtein,]
+
+
+    # Remove empty values
     modifiedPeptides <- modifiedPeptides[!is.na(modifiedPeptides$Intensity),]
 
+    # If provide an experiment, index by it
     if(! is.null(selectedExperiment)){
 
         modifiedPeptides <- modifiedPeptides[
             modifiedPeptides$Experiment == selectedExperiment,]
+
     }
 
-    # Index by Selected protein and remove Unmodified peptides
+    # Group by Sequence and modification, sum intensities
+    modifiedPeptides <- modifiedPeptides %>%
+        group_by(Sequence,  Modifications) %>%
+        summarise(Intensity = sum(Intensity))
 
-    # selectedProtein = 	'P10645'
+    # Format the Intensity column to log2 and only one decimal
+    modifiedPeptides$Intensity <- format(
+        round(
+            log2(modifiedPeptides$Intensity),
+            digits = 1
+        ), nsmall = 1
+    )
 
-    modifiedPeptides <- modifiedPeptides[
-        modifiedPeptides$Proteins == selectedProtein,]
+    return(modifiedPeptides)
+
 }

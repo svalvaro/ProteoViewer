@@ -25,10 +25,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     # It will reduce a bit the length of the total query and might aliviate the
     # issues with long requests.
 
-
-
-
-
     if (!is.null(dfPeptidesColors)>0) {
 
         colorsCollapsed <- dfPeptidesColors %>%

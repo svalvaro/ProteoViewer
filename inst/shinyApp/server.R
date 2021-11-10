@@ -42,7 +42,8 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            # evidence <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
+            # proteomicsInput <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
+            # proteomicsInput$Proteins <- base::sub(";.*", "", proteomicsInput$Proteins)
             # methyl evidence:
             # evidence <- read.delim('/run/user/1000/gvfs/afp-volume:host=FGU045NAS001.local,user=alvaro.sanchez,volume=045/ProteoLab_Projects/PLK_A_and_I/PLK057__A/PLK057__A-MQ__210817_Cunatova_LFQ_24x_Methyl/combined/txt/evidence.txt')
 
@@ -95,6 +96,8 @@ function(input, output) {
                                label = h4('Select a protein of interest'),
                                choices = proteinsToSelect,
                                selected = proteinsToSelect[1])
+
+
         }
     })
 
@@ -605,6 +608,40 @@ function(input, output) {
             }
     })
 
+    #### Table with peptide intensities ####
+
+    peptideIntensityTable <- reactive({
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
+
+        selectedExperiment <- input$selectedExperiment
+
+
+        if (input$inputComparison == 'combineExperiments') {
+            selectedExperiment <- NULL
+        }
+
+        peptideIntensityTable <- ProteoViewer::comparisonPTMs(
+            evidence = proteomicsInput(),
+            selectedProtein = proteinsSelected,
+            selectedExperiment = selectedExperiment
+        )
+
+        return(peptideIntensityTable)
+    })
+
+
+    output$peptideIntensityTableOut <- rhandsontable::renderRHandsontable({
+
+
+        rhandsontable::rhandsontable(
+            peptideIntensityTable(),
+            height =  500
+        ) #%>%
+            # rhandsontable::hot_col('replicate', format = '0a') %>%
+            # rhandsontable::hot_col('label', readOnly = TRUE)
+    })
+
     #### User Interface Reactive ####
 
     output$UserInterNoGroups <- renderUI({
@@ -655,7 +692,6 @@ function(input, output) {
                     ),
                     imageOutput(outputId = 'proteinImageComparisonTwo')
                 )
-
             )
         )
     })
@@ -687,7 +723,12 @@ function(input, output) {
 
         column(
             width = 4,
-            box(plotOutput('legendPTMs')
+            box(width = 400,
+                plotOutput('legendPTMs'),
+
+                rhandsontable::rHandsontableOutput('peptideIntensityTableOut')
+
+
             )
         )
     })
