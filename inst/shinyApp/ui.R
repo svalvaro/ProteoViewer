@@ -15,13 +15,13 @@ dashboardPage(
                 )
             ),
         tags$li(a(
-            href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+            href = 'https://proteomics.fgu.cas.cz/',
             icon("power-off"),
             title = "Close ProteoViewer"),
             class = "dropdown"),
 
         tags$li(a(
-            href = 'https://fgu.cas.cz/departments/proteomicka-servisni-laborator',
+            href = 'https://proteomics.fgu.cas.cz/',
             img(src = 'logo.png',
                 title = "ProteoLab",
                 height = "30px"),
