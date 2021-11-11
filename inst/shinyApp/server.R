@@ -614,25 +614,60 @@ function(input, output) {
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
-        selectedExperiment <- input$selectedExperiment
 
+        # Option 1: the user wants to see only one experiment
 
-        if (input$inputComparison == 'combineExperiments') {
-            selectedExperiment <- NULL
+        if (input$inputComparison == 'individualExperiments') {
+
+            selectedExperiment <- input$selectedExperiment
+
+            peptideIntensityTable <- ProteoViewer::comparisonPTMs(
+                evidence = proteomicsInput(),
+                selectedProtein = proteinsSelected,
+                selectedExperiment = selectedExperiment,
+                experimentDesign = NULL,
+                selectedCondition = NULL
+            )
+
         }
 
-        peptideIntensityTable <- ProteoViewer::comparisonPTMs(
-            evidence = proteomicsInput(),
-            selectedProtein = proteinsSelected,
-            selectedExperiment = selectedExperiment
-        )
+
+        # Option 2: the user wants to see the combination of experiments
+
+        if (input$inputComparison == 'combineExperiments') {
+
+            peptideIntensityTable <- ProteoViewer::comparisonPTMs(
+                evidence = proteomicsInput(),
+                selectedProtein = proteinsSelected,
+                selectedExperiment = NULL,
+                experimentDesign = NULL,
+                selectedCondition = NULL
+            )
+
+        }
+
+        # Option 3: the user wants to see the comparison between conditions
+
+        selectedConditions <- c( input$conditionsSelected[1],  input$conditionsSelected[2])
+
+        if (input$inputComparison == 'conditions') {
+
+            peptideIntensityTable <- ProteoViewer::comparisonPTMs(
+                evidence = proteomicsInput(),
+                selectedProtein = proteinsSelected,
+                selectedExperiment = NULL,
+                experimentDesign = experimentDesignFinal$df,
+                selectedConditions = selectedConditions
+            )
+
+        }
+
+
 
         return(peptideIntensityTable)
     })
 
-
     output$peptideIntensityTableOut <- rhandsontable::renderRHandsontable({
-
 
         rhandsontable::rhandsontable(
             peptideIntensityTable(),

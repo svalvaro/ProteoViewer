@@ -14,7 +14,7 @@ comparisonPTMs <- function(evidence,
                            selectedProtein,
                            selectedExperiment,
                            experimentDesign = NULL,
-                           selectedCondition = NULL){
+                           selectedConditions = NULL){
 
     # Obtain the table
     modifiedPeptides <- evidence %>% dplyr::select(c(
@@ -31,18 +31,70 @@ comparisonPTMs <- function(evidence,
     # Remove empty values
     modifiedPeptides <- modifiedPeptides[!is.na(modifiedPeptides$Intensity),]
 
+    # Group by Sequence and modification, sum intensities
+    modifiedPeptides <- modifiedPeptides %>%
+        group_by(Sequence,  Modifications, Experiment) %>%
+        summarise(Intensity = sum(Intensity))
+
+
+    # Option 1: the user wants to see the only one experiment
+
     # If provide an experiment, index by it
     if(! is.null(selectedExperiment)){
 
         modifiedPeptides <- modifiedPeptides[
             modifiedPeptides$Experiment == selectedExperiment,]
 
+
+        modifiedPeptides$Experiment <- NULL
+
     }
 
-    # Group by Sequence and modification, sum intensities
-    modifiedPeptides <- modifiedPeptides %>%
-        group_by(Sequence,  Modifications) %>%
-        summarise(Intensity = sum(Intensity))
+
+    # Option 2: The user wants to see the combined version of all experiments:
+
+    # If provide an experiment, index by it
+    if(is.null(selectedExperiment) && is.null(selectedConditions)){
+
+        # Group by Sequence and modification, sum intensities
+        modifiedPeptides <- modifiedPeptides %>%
+            group_by(Sequence,  Modifications) %>%
+            summarise(Intensity = sum(Intensity))
+    }
+
+
+    # Option 3: The user wants to compare one or two conditions:
+
+
+
+
+
+    # If two conditions are compared, return a table with:
+    # 'Condition' 'Sequence' 'Modification' and 'Intensity'
+    if(!is.null(experimentDesign) && !is.null(selectedConditions)){
+
+        # Match the conditions to the experiment design
+
+        modifiedPeptides$Condition <- experimentDesign$condition[
+            base::match(modifiedPeptides$Experiment, experimentDesign$label)
+        ]
+
+        # Select those conditions selected
+
+        modifiedPeptides <- modifiedPeptides[
+            modifiedPeptides$Condition %in% selectedConditions,]
+
+
+        # Intensities is the SUM of the sequence and group, then the median of
+        # the conditions
+
+        # Group by Sequence and modification, sum intensities
+        modifiedPeptides <- modifiedPeptides %>%
+            group_by(Sequence,  Modifications, Condition) %>%
+            summarise(Intensity = median(Intensity))
+
+    }
+
 
     # Format the Intensity column to log2 and only one decimal
     modifiedPeptides$Intensity <- format(
