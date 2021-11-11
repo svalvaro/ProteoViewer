@@ -614,7 +614,6 @@ function(input, output) {
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
-
         # Option 1: the user wants to see only one experiment
 
         if (input$inputComparison == 'individualExperiments') {
@@ -628,9 +627,7 @@ function(input, output) {
                 experimentDesign = NULL,
                 selectedCondition = NULL
             )
-
         }
-
 
         # Option 2: the user wants to see the combination of experiments
 
@@ -643,7 +640,6 @@ function(input, output) {
                 experimentDesign = NULL,
                 selectedCondition = NULL
             )
-
         }
 
         # Option 3: the user wants to see the comparison between conditions
@@ -659,28 +655,28 @@ function(input, output) {
                 experimentDesign = experimentDesignFinal$df,
                 selectedConditions = selectedConditions
             )
-
         }
-
-
 
         return(peptideIntensityTable)
     })
 
-    # output$peptideIntensityTableOut <- rhandsontable::renderRHandsontable({
-    #
-    #     rhandsontable::rhandsontable(
-    #         peptideIntensityTable(),
-    #         height =  500
-    #     ) #%>%
-    #         # rhandsontable::hot_col('replicate', format = '0a') %>%
-    #         # rhandsontable::hot_col('label', readOnly = TRUE)
-    # })
-
     output$peptideIntensityTableOut <- shiny::renderDataTable({
         peptideIntensityTable()
-
     })
+
+    # Download the table button
+
+    output$downloadTable <- downloadHandler(
+
+
+        filename = function(){paste0(
+            base::gsub("(.*):.*", "\\1",input$selectedProtein),
+            '_protein_peptides_intensiteis.csv'
+        )},
+        content = function(fname){
+            write.csv(peptideIntensityTable(), fname,row.names = FALSE)
+        }
+    )
 
     #### User Interface Reactive ####
 
@@ -766,8 +762,9 @@ function(input, output) {
             box(width = 400,
                 plotOutput('legendPTMs'),
 
-                #rhandsontable::rHandsontableOutput('peptideIntensityTableOut')
-                dataTableOutput('peptideIntensityTableOut')
+                dataTableOutput('peptideIntensityTableOut'),
+                downloadButton(outputId = 'downloadTable',
+                               label = 'Download')
 
 
             )
