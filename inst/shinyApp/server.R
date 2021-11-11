@@ -667,14 +667,19 @@ function(input, output) {
         return(peptideIntensityTable)
     })
 
-    output$peptideIntensityTableOut <- rhandsontable::renderRHandsontable({
+    # output$peptideIntensityTableOut <- rhandsontable::renderRHandsontable({
+    #
+    #     rhandsontable::rhandsontable(
+    #         peptideIntensityTable(),
+    #         height =  500
+    #     ) #%>%
+    #         # rhandsontable::hot_col('replicate', format = '0a') %>%
+    #         # rhandsontable::hot_col('label', readOnly = TRUE)
+    # })
 
-        rhandsontable::rhandsontable(
-            peptideIntensityTable(),
-            height =  500
-        ) #%>%
-            # rhandsontable::hot_col('replicate', format = '0a') %>%
-            # rhandsontable::hot_col('label', readOnly = TRUE)
+    output$peptideIntensityTableOut <- shiny::renderDataTable({
+        peptideIntensityTable()
+
     })
 
     #### User Interface Reactive ####
@@ -761,7 +766,8 @@ function(input, output) {
             box(width = 400,
                 plotOutput('legendPTMs'),
 
-                rhandsontable::rHandsontableOutput('peptideIntensityTableOut')
+                #rhandsontable::rHandsontableOutput('peptideIntensityTableOut')
+                dataTableOutput('peptideIntensityTableOut')
 
 
             )
