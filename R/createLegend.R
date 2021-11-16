@@ -23,12 +23,15 @@ createLegend <- function(evidence,
                         #combineExperiments = TRUE,
                         plot_legend = TRUE){
 
+    #### First part ####
+    # Creation of a plot containing a table with and a plot with the intensities
+    # coloured.
 
     if (!is.data.frame(evidence)) {
         return(NULL)
     }
 
-    # SelectedExperiment = "condition_A_1"
+    # selectedExperiment = "condition_A_1"
     # selectedProtein = "O75947"
 
     proteomicsInput <- evidence %>%
@@ -47,35 +50,30 @@ createLegend <- function(evidence,
 
     # Select only for the selected protein
 
-    # ProteoIndexed <- df[df$Proteins == selectedProtein,]
-    ProteoIndexed <- proteomicsInput[
-        proteomicsInput$Proteins == selectedProtein,]
-
-
 
     # If there are no peptides are found in that experiment.
 
-    if (nrow(ProteoIndexed) == 0) {
+    if (nrow(proteomicsInput) == 0) {
         message('No peptides found in this experiment for this protein.')
         return(NULL)
     }
 
     # Remove rows containing NAs in the Intensity colum
 
-    ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
+    proteomicsInput <- proteomicsInput[!is.na(ProteoIndexed$Intensity),]
 
     # First aggregate the sum of the same peptide for the same experiment,
     # Because this step has to be done for the three possible conditions:
 
-    dfPeptidesColors <- ProteoIndexed %>%
-        group_by(Sequence, Experiment) %>%
+    dfPeptidesColors <- proteomicsInput %>%
+        group_by(Sequence, Experiment, Proteins) %>%
         summarise(Intensity = sum(Intensity))
 
     # For the palette and for obtaining matching the color to the intensities:
     # I need to group the sequence independently of the experiment:
 
-    dfColorsMax <- ProteoIndexed %>%
-        group_by(Sequence) %>%
+    dfColorsMax <- proteomicsInput %>%
+        group_by(Sequence, Proteins) %>%
         summarise(Intensity = sum(Intensity))
 
     # The maximum colors will be combining all peptides by the sum
@@ -85,6 +83,12 @@ createLegend <- function(evidence,
     dfColorsMax <- dfColorsMax[base::order(dfColorsMax$Intensity), ]
 
     dfColorsMax$Intensity <- as.numeric(dfColorsMax$Intensity)
+    # Remove NAs
+
+    dfColorsMax <- dfColorsMax[!is.na(dfColorsMax$Intensity),]
+
+
+    # Minimium colours
 
     dfColorsMin <- dfPeptidesColors
 
@@ -96,10 +100,13 @@ createLegend <- function(evidence,
 
     dfColorsMin$Intensity <- as.numeric(dfColorsMin$Intensity)
 
+
+    dfColorsMin <- dfColorsMin[!is.na(dfColorsMin$Intensity),]
+
     # Obtain the number of breaks to
 
     continuous_breaks <- seq(from = trunc(min(dfColorsMin$Intensity)),
-                             to = trunc(max(dfColorsMax$Intensity)))
+                             to = trunc(max(dfColorsMax$Intensity))+1)
 
 
     myColors <- grDevices::colorRampPalette(c(
@@ -141,6 +148,39 @@ createLegend <- function(evidence,
 
     }
 
+
+    ##### Second part #####
+
+    # If the legend is not required, then we can now index by the protein
+
+
+
+    # Select only for the selected protein
+
+    # ProteoIndexed <- df[df$Proteins == selectedProtein,]
+    ProteoIndexed <- dfPeptidesColors[
+        dfPeptidesColors$Proteins == selectedProtein,]
+
+
+
+    # If there are no peptides are found in that experiment.
+
+    if (nrow(ProteoIndexed) == 0) {
+        message('No peptides found in this experiment for this protein.')
+        return(NULL)
+    }
+
+    # Remove rows containing NAs in the Intensity colum
+
+    ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
+
+    # First aggregate the sum of the same peptide for the same experiment,
+    # Because this step has to be done for the three possible conditions:
+
+    # dfPeptidesColors2 <- ProteoIndexed %>%
+    #     group_by(Sequence, Experiment) %>%
+    #     summarise(Intensity = sum(Intensity))
+
     # If the plotting of the palette is not requried, I need to match
     # the peptide intensites to the color
 
@@ -175,6 +215,10 @@ createLegend <- function(evidence,
             group_by(Sequence) %>%
             summarise(Intensity = median(Intensity))
     }
+
+    # Remove rows containing NAs in the Intensity colum
+
+    dfPeptidesColors <- dfPeptidesColors[!is.na(dfPeptidesColors$Intensity),]
 
     # Calculate the log2 of the intensities and reorder
 

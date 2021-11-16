@@ -42,7 +42,7 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            # proteomicsInput <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
+            # evidence <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
             # proteomicsInput$Proteins <- base::sub(";.*", "", proteomicsInput$Proteins)
             # methyl evidence:
             # evidence <- read.delim('/run/user/1000/gvfs/afp-volume:host=FGU045NAS001.local,user=alvaro.sanchez,volume=045/ProteoLab_Projects/PLK_A_and_I/PLK057__A/PLK057__A-MQ__210817_Cunatova_LFQ_24x_Methyl/combined/txt/evidence.txt')
