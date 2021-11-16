@@ -60,7 +60,7 @@ createLegend <- function(evidence,
 
     # Remove rows containing NAs in the Intensity colum
 
-    proteomicsInput <- proteomicsInput[!is.na(ProteoIndexed$Intensity),]
+    proteomicsInput <- proteomicsInput[!is.na(proteomicsInput$Intensity),]
 
     # First aggregate the sum of the same peptide for the same experiment,
     # Because this step has to be done for the three possible conditions:
