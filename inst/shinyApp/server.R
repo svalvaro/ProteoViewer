@@ -459,6 +459,8 @@ function(input, output) {
 
     legend <- reactive({
 
+
+
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein)
@@ -745,9 +747,7 @@ function(input, output) {
 
             uiOutput('UserInterNoGroups'),
 
-            uiOutput('UserInterGroups'),
-
-            plotOutput('legend')
+            uiOutput('UserInterGroups')
         )
     })
 
@@ -758,7 +758,7 @@ function(input, output) {
         }
 
         column(
-            width = 4,
+            width = 12,
             box(width = 400,
                 plotOutput('legendPTMs'),
 
@@ -768,6 +768,19 @@ function(input, output) {
 
 
             )
+        )
+    })
+
+
+    output$legendIntensities <- renderUI({
+
+        if (is.null(legend())) {
+            return(NULL)
+        }
+        box(
+            height = '120px',
+            width = '100px',
+            plotOutput('legend')
         )
     })
 }

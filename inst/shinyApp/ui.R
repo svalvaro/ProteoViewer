@@ -152,16 +152,28 @@ dashboardPage(
         ),
 
 #### DashBoard Body ####
+
     dashboardBody(
         tabItems(
             tabItem(
                 tabName = 'proteinViz',
 
-                fluidRow(
-                    uiOutput('proteinImagesUIAll'),
+                # First plot the legends independently of the selection
+                # Since it's the same for all proteins
+                uiOutput('legendIntensities'),
 
-                    uiOutput('PTMSlegendUI')
+                fluidRow(
+                    # Plotting of the Rendered proteins
+                    column(width = 8,
+
+                        uiOutput('proteinImagesUIAll')),
+
+                    # Plotting of the PTM image and the table
+                    column(width = 4,
+                        uiOutput('PTMSlegendUI')
+                        )
                     ),
+
                 hr(style = "border-color: #cbcbcb;"),
 
                 fluidRow(
