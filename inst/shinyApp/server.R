@@ -60,6 +60,9 @@ function(input, output) {
         return(df)
     })
 
+
+
+
     #### Proteins to select ####
 
     output$proteinsSelect <- renderUI({
@@ -198,6 +201,8 @@ function(input, output) {
             return(NULL)
         }
 
+        shiny::req(input$peptidesType)
+
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -209,6 +214,7 @@ function(input, output) {
 
         dfPeptidesColorsNoGroups <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             experimentDesign = NULL,
             conditionSelected = NULL,
             selectedProtein = proteinsSelected,
@@ -294,6 +300,8 @@ function(input, output) {
 
         shiny::req(input$conditionsSelected[1])
 
+        shiny::req(input$peptidesType)
+
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
@@ -313,6 +321,7 @@ function(input, output) {
 
         dfPeptidesColorsComparisonOne <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             experimentDesign = experimentDesignFinal$df,
             conditionSelected = input$conditionsSelected[1],
             selectedProtein = proteinsSelected,
@@ -382,6 +391,8 @@ function(input, output) {
 
         shiny::req(input$conditionsSelected[2])
 
+        shiny::req(input$peptidesType)
+
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
@@ -401,6 +412,7 @@ function(input, output) {
 
         dfPeptidesColorsComparisonTwo <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             experimentDesign = experimentDesignFinal$df,
             conditionSelected = input$conditionsSelected[2],
             selectedProtein = proteinsSelected,
@@ -459,14 +471,13 @@ function(input, output) {
 
     legend <- reactive({
 
-
-
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein)
 
         legend <- ProteoViewer::createLegend(
             evidence = proteomicsInput(),
+            peptideType = 'Both',
             selectedProtein = proteinsSelected,
             selectedExperiment = selectedExperiment(),
             comparison = NULL,
@@ -681,6 +692,22 @@ function(input, output) {
     )
 
     #### User Interface Reactive ####
+
+    # Peptides type
+
+    output$peptidesIntensitySelector <- renderUI({
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        shinyWidgets::radioGroupButtons(
+            inputId = "peptidesType",
+            label = "Type of peptides to visualize?",
+            choices = c("Unmodified", "Modified", "Both"),
+            status = "primary",
+            selected = 'Both',
+        )
+    })
 
     output$UserInterNoGroups <- renderUI({
         if (is.null(proteomicsInput())) {

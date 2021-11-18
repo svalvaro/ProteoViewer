@@ -13,6 +13,7 @@
 #'
 #' @examples
 createLegend <- function(evidence,
+                        peptideType = c("Unmodified", "Modified", "Both"),
                         experimentDesign,
                         comparison = c('individualExperiments',
                                        'combineExperiments',
@@ -24,12 +25,28 @@ createLegend <- function(evidence,
                         plot_legend = TRUE){
 
     #### First part ####
+
+    if (peptideType == 'Unmodified') {
+        evidence <- evidence[evidence$Modifications == 'Unmodified',]
+    }
+
+    if (peptideType == 'Modified') {
+        evidence <- evidence[! evidence$Modifications == 'Unmodified',]
+    }
+
+    # If the peptide type is "Both" do nothing.
+
+
     # Creation of a plot containing a table with and a plot with the intensities
     # coloured.
 
     if (!is.data.frame(evidence)) {
         return(NULL)
     }
+
+    # Select the peptide type
+
+
 
     # selectedExperiment = "condition_A_1"
     # selectedProtein = "O75947"

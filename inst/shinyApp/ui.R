@@ -53,6 +53,10 @@ dashboardPage(
                         accept = 'text'
                     ),
 
+                    # Select the type of peptide to visualize
+
+                    uiOutput('peptidesIntensitySelector'),
+
                     # Select the protein of interest
                     uiOutput('proteinsSelect'),
 
