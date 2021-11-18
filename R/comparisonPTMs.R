@@ -11,10 +11,19 @@
 #'
 #' @examples
 comparisonPTMs <- function(evidence,
+                           peptideType = c("Unmodified", "Modified", "Both"),
                            selectedProtein,
                            selectedExperiment,
                            experimentDesign = NULL,
                            selectedConditions = NULL){
+
+    if (peptideType == 'Unmodified') {
+        evidence <- evidence[evidence$Modifications == 'Unmodified',]
+    }
+
+    if (peptideType == 'Modified') {
+        evidence <- evidence[! evidence$Modifications == 'Unmodified',]
+    }
 
     # Obtain the table
     modifiedPeptides <- evidence %>% dplyr::select(c(

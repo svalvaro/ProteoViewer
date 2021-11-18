@@ -240,38 +240,42 @@ function(input, output) {
 
         output$proteinImageNoComparison <- renderImage({
 
-        message(paste0('Experiment Selected is: ',selectedExperiment()))
+            message(paste0('Experiment Selected is: ',selectedExperiment()))
 
-        # Remove everything after the ":" in the proteinSelected
-        # which is the description of the protein.
+            shiny::req(input$peptidesType)
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein )
+            # Remove everything after the ":" in the proteinSelected
+            # which is the description of the protein.
 
-        # Obtain the PTMs table
+            proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein )
 
-        modifiedPeptides <- ProteoViewer::createPTMs(
-            evidence = proteomicsInput(),
-            selectedProtein = proteinsSelected,
-            selectedExperiment = selectedExperiment(),
-            experimentDesign = NULL,
-            selectedCondition = NULL,
-            plotLegend = FALSE
-        )
+            # Obtain the PTMs table
 
-        # Create the url to connect to the API
+            modifiedPeptides <- ProteoViewer::createPTMs(
+                evidence = proteomicsInput(),
+                peptideType = input$peptidesType,
+                selectedProtein = proteinsSelected,
+                selectedExperiment = selectedExperiment(),
+                experimentDesign = NULL,
+                selectedCondition = NULL,
+                plotLegend = FALSE
+            )
 
-        url <- ProteoViewer::connectProtterAPI(
-            dfPeptidesColors = dfPeptidesColorsNoGroups(),
-            selectedProtein = proteinsSelected,
-            proteaseSelected = input$proteaseSelected,
-            modifiedPeptides = modifiedPeptides
-        )
+            # Create the url to connect to the API
 
-        # Return a list containing the filename
-        list(src = ProteoViewer::renderProtein(url = url),
-             width = input$zoomFigure)
-    },
-    deleteFile = TRUE)
+            url <- ProteoViewer::connectProtterAPI(
+                dfPeptidesColors = dfPeptidesColorsNoGroups(),
+                selectedProtein = proteinsSelected,
+                proteaseSelected = input$proteaseSelected,
+                modifiedPeptides = modifiedPeptides
+            )
+
+            # Return a list containing the filename
+            list(src = ProteoViewer::renderProtein(url = url),
+                 width = input$zoomFigure)
+            },
+            deleteFile = TRUE
+            )
 
     #### Legend PTMs ####
 
@@ -281,6 +285,8 @@ function(input, output) {
             return(NULL)
         }
 
+        shiny::req(input$peptidesType)
+
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -288,6 +294,7 @@ function(input, output) {
 
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             selectedProtein = proteinsSelected,
             selectedExperiment = NULL,
             experimentDesign = NULL,
@@ -345,6 +352,7 @@ function(input, output) {
 
         shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
+        shiny::req(input$peptidesType)
 
         if (!input$inputComparison == 'conditions') {
             return(NULL)
@@ -360,6 +368,7 @@ function(input, output) {
 
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             selectedProtein = proteinsSelected,
             selectedExperiment = NULL,
             experimentDesign = experimentDesignFinal$df,
@@ -435,6 +444,7 @@ function(input, output) {
     output$proteinImageComparisonTwo <- renderImage({
 
         shiny::req(input$conditionsSelected[2])
+        shiny::req(input$peptidesType)
 
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
@@ -445,6 +455,7 @@ function(input, output) {
 
         modifiedPeptides <- ProteoViewer::createPTMs(
             evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
             selectedProtein = proteinsSelected,
             selectedExperiment = NULL,
             experimentDesign = experimentDesignFinal$df,
@@ -631,6 +642,8 @@ function(input, output) {
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
 
+        #shiny::req(input$peptideType)
+
         # Option 1: the user wants to see only one experiment
 
         if (input$inputComparison == 'individualExperiments') {
@@ -639,6 +652,7 @@ function(input, output) {
 
             peptideIntensityTable <- ProteoViewer::comparisonPTMs(
                 evidence = proteomicsInput(),
+                peptideType = input$peptidesType,
                 selectedProtein = proteinsSelected,
                 selectedExperiment = selectedExperiment,
                 experimentDesign = NULL,
@@ -652,6 +666,7 @@ function(input, output) {
 
             peptideIntensityTable <- ProteoViewer::comparisonPTMs(
                 evidence = proteomicsInput(),
+                peptideType = input$peptidesType,
                 selectedProtein = proteinsSelected,
                 selectedExperiment = NULL,
                 experimentDesign = NULL,
@@ -667,6 +682,7 @@ function(input, output) {
 
             peptideIntensityTable <- ProteoViewer::comparisonPTMs(
                 evidence = proteomicsInput(),
+                peptideType = input$peptidesType,
                 selectedProtein = proteinsSelected,
                 selectedExperiment = NULL,
                 experimentDesign = experimentDesignFinal$df,
