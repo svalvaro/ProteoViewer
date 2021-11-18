@@ -819,7 +819,7 @@ function(input, output) {
 
         fluidRow(
             column(
-                width = 11,
+                width = 12,
 
                 box(
                     height = paste0(input$zoomFigure+400, 'px'),
@@ -846,7 +846,7 @@ function(input, output) {
         }
 
         column(
-            width = 8,
+            width = 12,
 
             h2(textOutput('title_box')),
 
