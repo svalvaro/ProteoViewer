@@ -67,9 +67,16 @@ function(input, output) {
         if (is.null(proteomicsInput())) {
             return(NULL)
         }else{
+
+            # Remove proteins that peptides in the intensities, some proteins
+            # are present but all their peptides have NAs in their
+            # Intensity
+            proteinsToSelect <- proteomicsInput()[!is.na(proteomicsInput()$Intensity),]
+
+
             # Show also the protein name, create a column for that.
 
-            proteinsToSelect <- proteomicsInput() %>% select(contains(
+            proteinsToSelect <- proteinsToSelect %>% select(contains(
                 c('Proteins', 'names')
             ))
 

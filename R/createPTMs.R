@@ -21,6 +21,8 @@ createPTMs <- function(evidence,
                       selectedCondition = NULL,
                       plotLegend = TRUE){
 
+  evidence <- evidence[!is.na(evidence$Intensity),]
+
   if (peptideType == 'Unmodified') {
     evidence <- evidence[evidence$Modifications == 'Unmodified',]
   }
