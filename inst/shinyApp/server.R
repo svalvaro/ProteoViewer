@@ -60,9 +60,6 @@ function(input, output) {
         return(df)
     })
 
-
-
-
     #### Proteins to select ####
 
     output$proteinsSelect <- renderUI({

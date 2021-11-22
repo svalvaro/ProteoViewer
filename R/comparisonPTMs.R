@@ -59,9 +59,7 @@ comparisonPTMs <- function(evidence,
         modifiedPeptides <- modifiedPeptides[
             modifiedPeptides$Experiment == selectedExperiment,]
 
-
         modifiedPeptides$Experiment <- NULL
-
     }
 
 

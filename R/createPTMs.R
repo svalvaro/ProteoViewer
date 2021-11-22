@@ -169,6 +169,16 @@ createPTMs <- function(evidence,
            x = modifiedPeptides$Modified.sequence
   )
 
+  # For Phosphorylations (STY)
+
+  modifiedPeptides$Modified.sequence <-
+    gsub(pattern = '(S|T|Y)\\(Phospho \\(STY\\)\\)',
+         replacement = '(\\1)',
+         x = modifiedPeptides$Modified.sequence
+    )
+
+
+
   # Remove the underscores:
 
   modifiedPeptides$Modified.sequence <-
@@ -235,6 +245,16 @@ createPTMs <- function(evidence,
 
     p <- png::readPNG(
       source = system.file('shinyApp/www/legendImages/Trimethyl.png',
+                           package = 'ProteoViewer'))
+
+    ptmImages[[length(ptmImages)+1]] <- p
+  }
+
+
+  if ('Phospho (STY)' %in% ptmsToPlot) {
+
+    p <- png::readPNG(
+      source = system.file('shinyApp/www/legendImages/phospho.png',
                            package = 'ProteoViewer'))
 
     ptmImages[[length(ptmImages)+1]] <- p

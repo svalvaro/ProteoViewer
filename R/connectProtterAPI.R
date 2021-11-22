@@ -186,9 +186,39 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url, '&')
         }
 
+        # For Phospho (STY):
+
+        # The indexes of modified peptides are:
+
+        PhosphoSTYIndexes <- which(modifiedPeptides$Modifications == 'Phospho (STY)')
+
+        if (length(PhosphoSTYIndexes)>0) {
+
+            # Add the first peptide with Oxidation (M)
+            url <- paste0(url, 'modPhosphoSTY=', modifiedPeptides$Modified.sequence[PhosphoSTYIndexes[1]])
+
+            # If there are more than one oxidations, add commas between the peptides
+            # since the first one has bemodPhosphoSTYen added
+            if (length(PhosphoSTYIndexes)>1) {
+
+                # [-1] since the PhosphoSTYIndexes modified peptide has been added to the url already
+                for (ii in PhosphoSTYIndexes[-1]) {
+
+                    url <- paste0(url,',', modifiedPeptides$Modified.sequence[ii])
+                }
+            }
+
+            url <- paste0(url, '&')
+        }
+
 
     }
 
+
+    # This part creates the style of in the rendered protein of the PTMs
+    # s: shape
+    # bc" background color
+    # cc: contour color
 
 
     if ('Oxidation (M)' %in% modifiedPeptides$Modifications) {
@@ -209,6 +239,10 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
 
     if ('Trimethyl (K)' %in% modifiedPeptides$Modifications) {
         url <- paste0(url, 's:diamond,bc:purple,cc:white=EX.MODTriMetK&' )
+    }
+
+    if ('Phospho (STY)' %in% modifiedPeptides$Modifications) {
+        url <- paste0(url, 's:diamond,bc:purple,cc:white=EX.modPhosphoSTY&' )
     }
 
 
