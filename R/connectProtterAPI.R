@@ -15,6 +15,12 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
 
     # Generate url for protter API
 
+    # If the protein is a contaminant (CON__) it needs to be removed that part.
+
+    selectedProtein <- gsub(pattern = 'CON__',
+                            replacement = '',
+                            x = selectedProtein)
+
 
     url <- paste0("http://wlab.ethz.ch/protter/create?up=",
                 selectedProtein,
