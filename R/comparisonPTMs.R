@@ -36,6 +36,11 @@ comparisonPTMs <- function(evidence,
     modifiedPeptides <- modifiedPeptides[
         modifiedPeptides$Proteins == selectedProtein,]
 
+    # modifiedPeptides <- modifiedPeptides[
+    #     grep(pattern = selectedProtein,
+    #          x = modifiedPeptides$Proteins),
+    #     ]
+
 
     # Remove empty values
     modifiedPeptides <- modifiedPeptides[!is.na(modifiedPeptides$Intensity),]

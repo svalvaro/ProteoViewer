@@ -174,22 +174,30 @@ createLegend <- function(evidence,
 
     # Select only for the selected protein
 
-    # ProteoIndexed <- df[df$Proteins == selectedProtein,]
-    ProteoIndexed <- dfPeptidesColors[
+    # The problem with this is that if there are multiple proteins it will not
+    # find it: Q432423;Q324923;QR230;..
+    # GREP might work better
+
+    dfPeptidesColors <- dfPeptidesColors[
         dfPeptidesColors$Proteins == selectedProtein,]
+
+    # dfPeptidesColors <- dfPeptidesColors[
+    #     grep(pattern = selectedProtein,
+    #          x = dfPeptidesColors$Proteins),
+    # ]
 
 
 
     # If there are no peptides are found in that experiment.
 
-    if (nrow(ProteoIndexed) == 0) {
+    if (nrow(dfPeptidesColors) == 0) {
         message('No peptides found in this experiment for this protein.')
         return(NULL)
     }
 
     # Remove rows containing NAs in the Intensity colum
 
-    ProteoIndexed <- ProteoIndexed[!is.na(ProteoIndexed$Intensity),]
+    dfPeptidesColors <- dfPeptidesColors[!is.na(dfPeptidesColors$Intensity),]
 
     # First aggregate the sum of the same peptide for the same experiment,
     # Because this step has to be done for the three possible conditions:
@@ -209,7 +217,7 @@ createLegend <- function(evidence,
 
     if (comparison == 'combineExperiments') {
 
-        dfPeptidesColors <-  ProteoIndexed %>%
+        dfPeptidesColors <-  dfPeptidesColors %>%
             group_by(Sequence) %>%
             summarise(Intensity = sum(Intensity))
     }

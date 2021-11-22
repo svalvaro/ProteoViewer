@@ -44,6 +44,11 @@ createPTMs <- function(evidence,
 
   # selectedProtein = 	'P10645'
 
+  # modifiedPeptides <- modifiedPeptides[
+  #   grep(pattern = selectedProtein,
+  #        x = modifiedPeptides$Proteins),
+  #   ]
+
   modifiedPeptides <- modifiedPeptides[
     modifiedPeptides$Proteins == selectedProtein,]
 
