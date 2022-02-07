@@ -15,6 +15,8 @@ renderProtein <- function(url){
 
     destfile <- base::tempfile(fileext = '.svg')
 
+    message(paste0('The temporary directory for the file is: ', destfile))
+
     utils::download.file(url = url, destfile = destfile)
 
     return(destfile)

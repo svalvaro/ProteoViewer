@@ -1,3 +1,4 @@
+
 dashboardPage(
 
 #### DashBoard Header ####
@@ -11,7 +12,14 @@ dashboardPage(
                     type = "image/png",
                     href = "logo_small.png"
                     ),
-                tags$title("ProteoViewer")
+                tags$title("ProteoViewer"),
+
+                # tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
+                # tags$script(HTML(js))
+
+
+                tags$script(src = "javascript/zoom.js"),
+                tags$script(src = "javascript/panzoom.js")
                 )
             ),
         tags$li(a(
@@ -28,6 +36,7 @@ dashboardPage(
             style = "padding-top:10px; padding-bottom:10px;"),
             class = "dropdown")
         ),
+
 
 #### DashBoard side bar ####
     dashboardSidebar(

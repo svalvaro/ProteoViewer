@@ -42,11 +42,6 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            # evidence <- read.delim(system.file('shinyApp/www/evidence.txt', package = 'ProteoViewer'))
-            # proteomicsInput$Proteins <- base::sub(";.*", "", proteomicsInput$Proteins)
-            # methyl evidence:
-            # evidence <- read.delim('/run/user/1000/gvfs/smb-share:server=fgu045nas001.fgu.local,share=045/ProteoLab_Projects/PLK_A_and_I/PLK051__A/PLK051__A-MQ__211114_Macurek_IP_3x3_all_0-5uL_PhosphoSTY/combined/txt/evidence.txt')
-
             df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
                                          package = 'ProteoViewer'))
 
@@ -278,8 +273,13 @@ function(input, output) {
             list(src = ProteoViewer::renderProtein(url = url),
                  width = input$zoomFigure)
             },
-            deleteFile = TRUE
+            deleteFile = T
             )
+
+
+
+
+
 
     #### Legend PTMs ####
 
@@ -388,6 +388,8 @@ function(input, output) {
             proteaseSelected = input$proteaseSelected,
             modifiedPeptides = modifiedPeptides
             )
+
+        # Add error in case that the URL is too long.
 
         list(src = ProteoViewer::renderProtein(url = url),
              width = input$zoomFigure)
@@ -525,6 +527,9 @@ function(input, output) {
 
     #### Experiment Design ####
 
+    # Addition of a fourth column containing boolean values (TRUE/FALSE) to
+    # include that experiment or not.
+
     experimentDesign <- reactive({
 
         if(!is.null(input$expDesignUpload)){
@@ -577,8 +582,15 @@ function(input, output) {
             return(NULL)
         }
 
+        # Add the new column Include
+
+        df <- experimentDesign()
+
+        df$include <- TRUE
+
         rhandsontable::rhandsontable(
-            experimentDesign(),
+            #experimentDesign(),
+            df,
             height =  500
             ) %>%
             rhandsontable::hot_col('replicate', format = '0a') %>%
@@ -733,9 +745,6 @@ function(input, output) {
         )
     })
 
-
-
-
     ## Protease ##
 
     output$proteaseSelector <- renderUI({
@@ -816,7 +825,8 @@ function(input, output) {
             return(NULL)
         }
 
-        shinydashboard::box(height = paste0(input$zoomFigure+400, 'px'),
+        div(
+        #shinydashboard::box(height = paste0(input$zoomFigure+400, 'px'),
 
             #title = h2(textOutput('title_box')),
             width = 1000,
@@ -825,9 +835,30 @@ function(input, output) {
 
             # If no comparisons are selected (without experiment design)
 
-            imageOutput(outputId = 'proteinImageNoComparison')
+            imageOutput(outputId = 'proteinImageNoComparison'),
+
+            #DiagrammeR::grVizOutput("grr", width = "100%", height = "90vh"),
+
+            actionGroupButtons(
+                inputIds = c("zoomout", "zoomin"),
+                labels = list(icon("minus"), icon("plus")),
+                status = "primary"
+            )
             )
     })
+
+
+    output$grr <- DiagrammeR::renderGrViz(render_graph(
+        create_graph() %>%
+            add_n_nodes(n = 2) %>%
+            add_edge(
+                from = 1,
+                to = 2,
+                edge_data = edge_data(
+                    value = 4.3
+                )
+            )
+    ))
 
     output$UserInterGroups <- renderUI({
 
@@ -842,14 +873,14 @@ function(input, output) {
                 width = 12,
 
                 box(
-                    height = paste0(input$zoomFigure+400, 'px'),
+                    height = paste0(input$zoomFigure+1000, 'px'),
                     title = h3(textOutput('titleProteinComparisonOne')
                                ),
                     imageOutput(outputId = 'proteinImageComparisonOne')
                 ),
 
                 box(
-                    height = paste0(input$zoomFigure+400, 'px'),
+                    height = paste0(input$zoomFigure+1000, 'px'),
                     title = h3(
                     textOutput('titleProteinComparisonTwo')
                     ),
