@@ -835,30 +835,18 @@ function(input, output) {
 
             # If no comparisons are selected (without experiment design)
 
-            imageOutput(outputId = 'proteinImageNoComparison'),
 
-            #DiagrammeR::grVizOutput("grr", width = "100%", height = "90vh"),
+           imageOutput(outputId = 'proteinImageNoComparison'),
 
             actionGroupButtons(
                 inputIds = c("zoomout", "zoomin"),
                 labels = list(icon("minus"), icon("plus")),
                 status = "primary"
             )
-            )
+           )
     })
 
 
-    output$grr <- DiagrammeR::renderGrViz(render_graph(
-        create_graph() %>%
-            add_n_nodes(n = 2) %>%
-            add_edge(
-                from = 1,
-                to = 2,
-                edge_data = edge_data(
-                    value = 4.3
-                )
-            )
-    ))
 
     output$UserInterGroups <- renderUI({
 
@@ -872,19 +860,36 @@ function(input, output) {
             column(
                 width = 12,
 
-                box(
-                    height = paste0(input$zoomFigure+1000, 'px'),
-                    title = h3(textOutput('titleProteinComparisonOne')
-                               ),
+                # box(
+                #     height = paste0(input$zoomFigure+1000, 'px'),
+                #     title = h3(textOutput('titleProteinComparisonOne')
+                #                ),
+                #     imageOutput(outputId = 'proteinImageComparisonOne')
+                # ),
+
+                # box(
+                #     height = paste0(input$zoomFigure+1000, 'px'),
+                #     title = h3(
+                #     textOutput('titleProteinComparisonTwo')
+                #     ),
+                #     imageOutput(outputId = 'proteinImageComparisonTwo')
+                # )
+
+                div(
+                    h3(textOutput('titleProteinComparisonOne')),
                     imageOutput(outputId = 'proteinImageComparisonOne')
+
                 ),
 
-                box(
-                    height = paste0(input$zoomFigure+1000, 'px'),
-                    title = h3(
-                    textOutput('titleProteinComparisonTwo')
-                    ),
+                div(
+                    h3(textOutput('titleProteinComparisonTwo')),
                     imageOutput(outputId = 'proteinImageComparisonTwo')
+                ),
+
+                actionGroupButtons(
+                    inputIds = c("zoomout", "zoomin"),
+                    labels = list(icon("minus"), icon("plus")),
+                    status = "primary"
                 )
             )
         )

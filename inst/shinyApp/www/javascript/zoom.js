@@ -6,24 +6,20 @@ $(document).ready(function(){
       clearInterval(myinterval);
       instance = panzoom(element);
     }
-  }, 100);
+  }, 2000);
   var z = 1;
-  $("body").on("click", "#zoomout", function(){
-    instance.smoothZoom(0, 0, 0.7);
+
+  $("#zoomout").on("click", function(){
     z *= 0.9;
+    panzoom.zoom(z, { animate: true });
   });
-  $("body").on("click", "#zoomin", function(){
-    instance.smoothZoom(0, 0, 1.1);
+  $("#zoomin").on("click", function(){
     z *= 1.1;
+    panzoom.zoom(z, { animate: true });
   });
-  $("body").on("click", "#reset", function(){
-    instance.smoothZoom(0, 0, 1/z);
+  $("#reset").on("click", function(){
     z = 1;
+    panzoom.reset();
   });
-  $("body").on("dblclick", "#zoomout", function(){
-    return false;
-  });
-  $("body").on("dblclick", "#zoomin", function(){
-    return false;
-  });
+
 });

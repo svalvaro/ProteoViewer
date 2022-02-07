@@ -19,6 +19,8 @@ dashboardPage(
 
 
                 tags$script(src = "javascript/zoom.js"),
+                tags$script(src = "javascript/zoom2.js"),
+                tags$script(src = "javascript/zoom3.js"),
                 tags$script(src = "javascript/panzoom.js")
                 )
             ),
