@@ -237,41 +237,59 @@ function(input, output) {
 
     #### Render proteinImage ####
 
+
+    proteinImage_url <- reactive({
+
+        message(paste0('Experiment Selected is: ',selectedExperiment()))
+
+
+        if (input$inputComparison == 'conditions') {
+            return(NULL)
+        }
+
+        #shiny::req(input$peptidesType)
+
+        # Remove everything after the ":" in the proteinSelected
+        # which is the description of the protein.
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein )
+
+        # Obtain the PTMs table
+
+        modifiedPeptides <- ProteoViewer::createPTMs(
+            evidence = proteomicsInput(),
+            peptideType = input$peptidesType,
+            selectedProtein = proteinsSelected,
+            selectedExperiment = selectedExperiment(),
+            experimentDesign = NULL,
+            selectedCondition = NULL,
+            plotLegend = FALSE
+        )
+
+        # Create the url to connect to the API
+
+        url <- ProteoViewer::connectProtterAPI(
+            dfPeptidesColors = dfPeptidesColorsNoGroups(),
+            selectedProtein = proteinsSelected,
+            proteaseSelected = input$proteaseSelected,
+            modifiedPeptides = modifiedPeptides
+        )
+
+        return(url)
+
+    })
+
         output$proteinImageNoComparison <- renderImage({
 
-            message(paste0('Experiment Selected is: ',selectedExperiment()))
+            # if (is.null(proteinImage_url())) {
+            #     return(NULL)
+            # }
 
-            shiny::req(input$peptidesType)
 
-            # Remove everything after the ":" in the proteinSelected
-            # which is the description of the protein.
-
-            proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein )
-
-            # Obtain the PTMs table
-
-            modifiedPeptides <- ProteoViewer::createPTMs(
-                evidence = proteomicsInput(),
-                peptideType = input$peptidesType,
-                selectedProtein = proteinsSelected,
-                selectedExperiment = selectedExperiment(),
-                experimentDesign = NULL,
-                selectedCondition = NULL,
-                plotLegend = FALSE
-            )
-
-            # Create the url to connect to the API
-
-            url <- ProteoViewer::connectProtterAPI(
-                dfPeptidesColors = dfPeptidesColorsNoGroups(),
-                selectedProtein = proteinsSelected,
-                proteaseSelected = input$proteaseSelected,
-                modifiedPeptides = modifiedPeptides
-            )
 
             # Return a list containing the filename
-            list(src = ProteoViewer::renderProtein(url = url),
-                 width = input$zoomFigure)
+            list(src = ProteoViewer::renderProtein(url = proteinImage_url()),
+                 width = 200)
             },
             deleteFile = T
             )
@@ -802,59 +820,53 @@ function(input, output) {
 
     # Size of the image
 
-    output$imageSizeSelector <- renderUI({
-
-        if (is.null(proteomicsInput())) {
-            return(NULL)
-        }
-
-        sliderInput(
-            inputId = 'zoomFigure',
-            label = h4('Select the size of the image'),
-            min = 20, max = 2000, value = 150)
-    })
 
 
 
     output$UserInterNoGroups <- renderUI({
+
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
 
-        if (input$inputComparison == 'conditions') {
-            return(NULL)
-        }
+        #shiny::req(input$inputComparison)
 
-        div(
-        #shinydashboard::box(height = paste0(input$zoomFigure+400, 'px'),
+        #message(paste0('Comparison: ', input$inputComparison))
 
-            #title = h2(textOutput('title_box')),
+
+
+
+        #shiny::req(input$inputComparison != 'conditions')
+
+
+
+
+        shinydashboard::box(title = h2(textOutput('title_box')),
             width = 1000,
             # Error message in case no peptides found
             h3(textOutput('noPeptidesErrorMessage')),
 
             # If no comparisons are selected (without experiment design)
 
-
            imageOutput(outputId = 'proteinImageNoComparison'),
 
-            actionGroupButtons(
-                inputIds = c("zoomout", "zoomin"),
-                labels = list(icon("minus"), icon("plus")),
-                status = "primary"
-            )
+
            )
     })
 
 
 
+
+
     output$UserInterGroups <- renderUI({
 
-        shiny::req(input$inputComparison)
+        #shiny::req(input$inputComparison)
+
 
         if (input$inputComparison != 'conditions') {
             return(NULL)
         }
+
 
         fluidRow(
             column(
@@ -884,13 +896,13 @@ function(input, output) {
                 div(
                     h3(textOutput('titleProteinComparisonTwo')),
                     imageOutput(outputId = 'proteinImageComparisonTwo')
-                ),
+                )#,
 
-                actionGroupButtons(
-                    inputIds = c("zoomout", "zoomin"),
-                    labels = list(icon("minus"), icon("plus")),
-                    status = "primary"
-                )
+                # actionGroupButtons(
+                #     inputIds = c("zoomout", "zoomin"),
+                #     labels = list(icon("minus"), icon("plus")),
+                #     status = "primary"
+                # )
             )
         )
     })
@@ -900,6 +912,8 @@ function(input, output) {
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
+
+
 
         column(
             width = 12,

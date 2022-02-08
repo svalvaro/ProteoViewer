@@ -18,10 +18,15 @@ dashboardPage(
                 # tags$script(HTML(js))
 
 
-                tags$script(src = "javascript/zoom.js"),
-                tags$script(src = "javascript/zoom2.js"),
-                tags$script(src = "javascript/zoom3.js"),
-                tags$script(src = "javascript/panzoom.js"),
+                 tags$script(src = "javascript/zoom.js"),
+                 tags$script(src = "javascript/zoom2.js"),
+                 tags$script(src = "javascript/zoom3.js"),
+                tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
+
+
+
+
+                #tags$script(src = "javascript/panzoom.js"),
                 shiny::includeCSS(path = "www/css/styles.css")
                 )
             ),
@@ -137,7 +142,9 @@ dashboardPage(
                     # Plotting of the Rendered proteins
                     column(width = 8,
 
-                        uiOutput('proteinImagesUIAll')),
+                        uiOutput('proteinImagesUIAll')
+                        #imageOutput('proteinImageNoComparison')
+                        ),
 
                     # Plotting of the PTM image and the table
                     column(width = 4,
