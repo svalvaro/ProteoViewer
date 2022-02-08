@@ -1,5 +1,11 @@
 $(document).ready(function(){
-  var element = document.querySelector("proteinImageComparisonTwo");
-  var instance = panzoom(element);
+  var instance;
+  var myinterval = setInterval(function(){
+    var element = document.getElementById("proteinImageComparisonTwo");
+    if(element !== null){
+      clearInterval(myinterval);
+      instance = panzoom(element);
+    }
+  }, 100);
 
 });

@@ -18,10 +18,10 @@ dashboardPage(
                 # tags$script(HTML(js))
 
 
-                 tags$script(src = "javascript/zoom.js"),
+                 tags$script(src = "javascript/zoom1.js"),
                  tags$script(src = "javascript/zoom2.js"),
                  tags$script(src = "javascript/zoom3.js"),
-                tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
+                 tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
 
 
 

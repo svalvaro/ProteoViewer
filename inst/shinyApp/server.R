@@ -291,12 +291,8 @@ function(input, output) {
             list(src = ProteoViewer::renderProtein(url = proteinImage_url()),
                  width = 200)
             },
-            deleteFile = T
+            deleteFile = TRUE
             )
-
-
-
-
 
 
     #### Legend PTMs ####
@@ -410,7 +406,7 @@ function(input, output) {
         # Add error in case that the URL is too long.
 
         list(src = ProteoViewer::renderProtein(url = url),
-             width = input$zoomFigure)
+             width = 200)
     },
     deleteFile = TRUE)
 
@@ -497,7 +493,7 @@ function(input, output) {
             )
 
         list(src = ProteoViewer::renderProtein(url = url),
-             width = input$zoomFigure)
+             width = 200)
     },
     deleteFile = TRUE)
 
@@ -763,7 +759,7 @@ function(input, output) {
         )
     })
 
-    ## Protease ##
+    # Protease
 
     output$proteaseSelector <- renderUI({
         if (is.null(proteomicsInput())) {
@@ -818,7 +814,8 @@ function(input, output) {
             selected = 'none')
     })
 
-    # Size of the image
+
+    ##
 
 
 
@@ -887,22 +884,16 @@ function(input, output) {
                 #     imageOutput(outputId = 'proteinImageComparisonTwo')
                 # )
 
-                div(
+               # div(
                     h3(textOutput('titleProteinComparisonOne')),
-                    imageOutput(outputId = 'proteinImageComparisonOne')
+                    imageOutput(outputId = 'proteinImageComparisonOne'),
 
-                ),
+                #),
 
-                div(
+                #div(
                     h3(textOutput('titleProteinComparisonTwo')),
                     imageOutput(outputId = 'proteinImageComparisonTwo')
-                )#,
-
-                # actionGroupButtons(
-                #     inputIds = c("zoomout", "zoomin"),
-                #     labels = list(icon("minus"), icon("plus")),
-                #     status = "primary"
-                # )
+                #)
             )
         )
     })
