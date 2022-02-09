@@ -42,8 +42,11 @@ function(input, output) {
 
         }else if(demo$start == TRUE){
 
-            df <- utils::read.delim(system.file('shinyApp/www/evidence.txt',
+            df <- utils::read.delim(system.file('shinyApp/www/data/evidence.txt',
                                          package = 'ProteoViewer'))
+
+            message('Demo data started')
+
 
             # Repeated three times because sometimes there are multiple uniprot:
             # Q9BUB7;Q9BUB7;Q9BUB7;Q9BUB7
@@ -52,7 +55,10 @@ function(input, output) {
         } else if (is.null(inFile)) {
             return(NULL)
         }
+
+
         return(df)
+
     })
 
     #### Proteins to select ####
@@ -68,12 +74,12 @@ function(input, output) {
             # Intensity
             proteinsToSelect <- proteomicsInput()[!is.na(proteomicsInput()$Intensity),]
 
-
             # Show also the protein name, create a column for that.
 
             proteinsToSelect <- proteinsToSelect %>% select(contains(
                 c('Proteins', 'names')
             ))
+
 
             proteinsToSelect$Display <- paste0(
                 proteinsToSelect$Proteins, ': ', proteinsToSelect$Protein.names
@@ -586,7 +592,7 @@ function(input, output) {
         } else if(input$Demo > 0){
 
             experimentDesign <- utils::read.delim(
-                system.file('shinyApp/www/experiment_design_example.txt',
+                system.file('shinyApp/www/data/experiment_design_example.txt',
                             package = 'ProteoViewer'),
                 header = TRUE)
 
@@ -766,6 +772,7 @@ function(input, output) {
     # Protease
 
     output$proteaseSelector <- renderUI({
+
         if (is.null(proteomicsInput())) {
             return(NULL)
         }

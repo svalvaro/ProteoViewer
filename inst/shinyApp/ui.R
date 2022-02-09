@@ -88,7 +88,21 @@ dashboardPage(
 
                     uiOutput('proteaseSelector'),
 
-                    uiOutput('imageSizeSelector')
+                    uiOutput('imageSizeSelector'),
+
+
+                    br(),
+                    br(),
+
+                    shinyWidgets::actionBttn(
+                        inputId = 'Demo',
+                        label = 'Load demo data',
+                        icon = NULL,
+                        style = "unite",
+                        color = "default",
+                        size = "md",
+                        block = FALSE,
+                        no_outline = TRUE)
 
 
                     ),
@@ -109,17 +123,9 @@ dashboardPage(
                     ),
                 tabName = 'expDesigntab'
                 )
-            ),
+            )
 
-        shinyWidgets::actionBttn(
-            inputId = 'Demo',
-            label = 'Start Demo',
-            icon = NULL,
-            style = "unite",
-            color = "default",
-            size = "md",
-            block = FALSE,
-            no_outline = TRUE)
+
         ),
 
 #### DashBoard Body ####
