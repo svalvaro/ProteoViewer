@@ -274,17 +274,20 @@ function(input, output) {
 
     })
 
-        output$proteinImageNoComparison <- renderImage({
+    output$proteinImageNoComparison <- renderImage({
 
-            url <- proteinImage_url()
+        if (input$inputComparison == 'conditions') {
+            stop()
+        }
 
+        url <- proteinImage_url()
 
-            # Return a list containing the filename
-            list(src = ProteoViewer::renderProtein(url = url),
-                 width = 200)
-            },
-            deleteFile = TRUE
-            )
+        # Return a list containing the filename
+        list(src = ProteoViewer::renderProtein(url = url),
+             width = 200)
+        },
+        deleteFile = TRUE
+        )
 
 
     #### Legend PTMs ####
@@ -361,7 +364,7 @@ function(input, output) {
 
     proteinImageOne_url <- reactive({
 
-        shiny::req(input$inputComparison == 'conditions')
+        #shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
         shiny::req(input$peptidesType)
 
@@ -463,6 +466,7 @@ function(input, output) {
 
     proteinImageTwo_url <- reactive({
 
+        shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[2])
         shiny::req(input$peptidesType)
 
@@ -822,10 +826,6 @@ function(input, output) {
     })
 
 
-    ##
-
-
-
 
     output$UserInterNoGroups <- renderUI({
 
@@ -890,40 +890,17 @@ function(input, output) {
             return(NULL)
         }
 
-        req(input$inputComparison)
-
-        if (input$inputComparison != 'conditions') {
-            column(
-                width = 12,
-
-                h2(textOutput('title_box')),
-
-                uiOutput('UserInterNoGroups'),
-
-                #uiOutput('UserInterGroups')
-            )
-        }else{
-            column(
-                width = 12,
-
-                h2(textOutput('title_box')),
-
-                #uiOutput('UserInterNoGroups'),
-
-                uiOutput('UserInterGroups')
-            )
-        }
 
 
-        # column(
-        #     width = 12,
-        #
-        #     h2(textOutput('title_box')),
-        #
-        #     uiOutput('UserInterNoGroups'),
-        #
-        #     uiOutput('UserInterGroups')
-        # )
+        column(
+            width = 12,
+
+            h2(textOutput('title_box')),
+
+            uiOutput('UserInterNoGroups'),
+
+            uiOutput('UserInterGroups')
+        )
     })
 
     output$PTMSlegendUI <- renderUI({
