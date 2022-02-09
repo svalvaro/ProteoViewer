@@ -88,7 +88,9 @@ dashboardPage(
 
                     uiOutput('proteaseSelector'),
 
-                    uiOutput('downloadSingleUI')
+                    #uiOutput('downloadSingleUI')
+
+                    uiOutput('downloadersUI')
 
                     ),
 

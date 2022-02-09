@@ -832,28 +832,25 @@ function(input, output) {
 
 
 
-    output$downloadSingleUI <- renderUI({
+    output$downloadNoComparison <- renderUI({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
 
-        # message(paste0("length of url: ", length(proteinImage_url())))
-        #
-        # if(is.null(proteinImage_url())){
-        #     stop()
-        # }
+        if (input$inputComparison == 'conditions') {
+            return(NULL)
+        }
 
         url <- gsub(pattern = "format=svg",
                     replacement = "format=png",
                     proteinImage_url())
 
-
         shiny::a(
             actionBttn(
                 inputId = 'downloadPNG',
-                label = 'Download Image',
-                #icon = icon("download"),
+                label = 'Download Protein',
+                icon = icon("download"),
                 style = "unite",
                 color = "default",
                 size = "md",
@@ -862,6 +859,92 @@ function(input, output) {
             ),
             target = "_blank",
             href = url)
+    })
+
+    output$downloadComparisonOne <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        if (input$inputComparison != 'conditions') {
+            return(NULL)
+        }
+
+        shiny::req(input$conditionsSelected[1])
+
+        condtionSelected <- input$conditionsSelected[1]
+
+        url <- gsub(pattern = "format=svg",
+                    replacement = "format=png",
+                    proteinImageOne_url())
+
+        shiny::a(
+            actionBttn(
+                inputId = 'downloadPNG',
+                label = paste0('Download Condition: ', condtionSelected),
+                icon = icon("download"),
+                style = "unite",
+                color = "default",
+                size = "md",
+                block = FALSE,
+                no_outline = TRUE
+            ),
+            target = "_blank",
+            href = url)
+    })
+
+
+    output$downloadComparisonTwo <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        if (input$inputComparison != 'conditions') {
+            return(NULL)
+        }
+
+        shiny::req(input$conditionsSelected[2])
+
+        condtionSelected <- input$conditionsSelected[2]
+
+        url <- gsub(pattern = "format=svg",
+                    replacement = "format=png",
+                    proteinImageTwo_url())
+
+        shiny::a(
+            actionBttn(
+                inputId = 'downloadPNG',
+                label = paste0('Download Condition: ', condtionSelected),
+                icon = icon("download"),
+                style = "unite",
+                color = "default",
+                size = "md",
+                block = FALSE,
+                no_outline = TRUE
+            ),
+            target = "_blank",
+            href = url)
+    })
+
+    output$downloadersUI <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+
+        div(
+            uiOutput("downloadNoComparison"),
+
+            uiOutput("downloadComparisonOne"),
+
+            uiOutput("downloadComparisonTwo")
+        )
+
+
+
     })
 
 
