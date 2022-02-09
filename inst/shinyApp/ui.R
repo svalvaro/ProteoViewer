@@ -90,7 +90,9 @@ dashboardPage(
 
                     #uiOutput('downloadSingleUI')
 
-                    uiOutput('downloadersUI')
+                    uiOutput('downloadersUI'),
+
+                    br()
 
                     ),
 

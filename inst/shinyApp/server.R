@@ -831,8 +831,7 @@ function(input, output) {
     # Downloader for the pictures
 
 
-
-    output$downloadNoComparison <- renderUI({
+    noComparisonURL <- reactive({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
@@ -846,9 +845,29 @@ function(input, output) {
                     replacement = "format=png",
                     proteinImage_url())
 
+        message("url")
+        message(url)
+
+        return(url)
+    })
+
+
+
+    output$downloadNoComparison <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+
+        if (input$inputComparison == 'conditions') {
+            return(NULL)
+        }
+
+
         shiny::a(
             actionBttn(
-                inputId = 'downloadPNG',
+                inputId = 'downloadPNG1',
                 label = 'Download Protein',
                 icon = icon("download"),
                 style = "unite",
@@ -858,8 +877,11 @@ function(input, output) {
                 no_outline = TRUE
             ),
             target = "_blank",
-            href = url)
+            href = noComparisonURL())
+
     })
+
+
 
     output$downloadComparisonOne <- renderUI({
 
@@ -934,17 +956,22 @@ function(input, output) {
             return(NULL)
         }
 
-
-        div(
-            uiOutput("downloadNoComparison"),
-
-            uiOutput("downloadComparisonOne"),
-
-            uiOutput("downloadComparisonTwo")
-        )
+        req(input$inputComparison)
 
 
+        if (input$inputComparison != 'conditions') {
 
+            div(
+                uiOutput("downloadNoComparison")
+            )
+
+        }else{
+          div(
+              uiOutput("downloadComparisonOne"),
+
+              uiOutput("downloadComparisonTwo")
+          )
+        }
     })
 
 
