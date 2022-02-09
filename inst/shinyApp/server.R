@@ -121,11 +121,8 @@ function(input, output) {
 
     output$experimentSelect <- renderUI({
 
-
-        shiny::req(input$inputComparison == 'individualExperiments' )
-
         if (is.null(proteomicsInput()) ||
-            !input$inputComparison == 'individualExperiments' ) {
+            is.null(input$inputComparison) ) {
 
               return(NULL)
         }
@@ -240,8 +237,6 @@ function(input, output) {
 
     proteinImage_url <- reactive({
 
-        message(paste0('Experiment Selected is: ',selectedExperiment()))
-
 
         if (input$inputComparison == 'conditions') {
             return(NULL)
@@ -281,14 +276,11 @@ function(input, output) {
 
         output$proteinImageNoComparison <- renderImage({
 
-            # if (is.null(proteinImage_url())) {
-            #     return(NULL)
-            # }
-
+            url <- proteinImage_url()
 
 
             # Return a list containing the filename
-            list(src = ProteoViewer::renderProtein(url = proteinImage_url()),
+            list(src = ProteoViewer::renderProtein(url = url),
                  width = 200)
             },
             deleteFile = TRUE
@@ -366,7 +358,8 @@ function(input, output) {
         }
     })
 
-    output$proteinImageComparisonOne <- renderImage({
+
+    proteinImageOne_url <- reactive({
 
         shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
@@ -401,11 +394,17 @@ function(input, output) {
             selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected,
             modifiedPeptides = modifiedPeptides
-            )
+        )
+
+        return(url)
+
+    })
+
+    output$proteinImageComparisonOne <- renderImage({
 
         # Add error in case that the URL is too long.
 
-        list(src = ProteoViewer::renderProtein(url = url),
+        list(src = ProteoViewer::renderProtein(url = proteinImageOne_url()),
              width = 200)
     },
     deleteFile = TRUE)
@@ -417,6 +416,7 @@ function(input, output) {
     })
 
     #### Render Comparison Two ####
+
 
     dfPeptidesColorsComparisonTwo <- reactive({
 
@@ -461,7 +461,7 @@ function(input, output) {
         }
     })
 
-    output$proteinImageComparisonTwo <- renderImage({
+    proteinImageTwo_url <- reactive({
 
         shiny::req(input$conditionsSelected[2])
         shiny::req(input$peptidesType)
@@ -490,12 +490,19 @@ function(input, output) {
             selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected,
             modifiedPeptides = modifiedPeptides
-            )
+        )
+        return(url)
+    })
 
-        list(src = ProteoViewer::renderProtein(url = url),
+    output$proteinImageComparisonTwo <- renderImage({
+
+
+
+        list(src = ProteoViewer::renderProtein(url = proteinImageTwo_url()),
              width = 200)
     },
     deleteFile = TRUE)
+
 
     output$titleProteinComparisonTwo <- renderText({
 
@@ -826,14 +833,10 @@ function(input, output) {
             return(NULL)
         }
 
-        #shiny::req(input$inputComparison)
 
-        #message(paste0('Comparison: ', input$inputComparison))
-
-
-
-
-        #shiny::req(input$inputComparison != 'conditions')
+        if(input$inputComparison == 'conditions'){
+            return(NULL)
+        }
 
 
         div(
@@ -845,30 +848,15 @@ function(input, output) {
 
             tags$script(HTML('panzoom($(".shiny-image-output").get(0))'))
 
-
         )
 
-
-        # shinydashboard::box(title = h2(textOutput('title_box')),
-        #     width = 1000,
-        #     # Error message in case no peptides found
-        #     h3(textOutput('noPeptidesErrorMessage')),
-        #
-        #     # If no comparisons are selected (without experiment design)
-        #
-        #    imageOutput(outputId = 'proteinImageNoComparison'),
-        #
-        #
-        #    )
     })
-
-
 
 
 
     output$UserInterGroups <- renderUI({
 
-        #shiny::req(input$inputComparison)
+        #shiny::req(input$inputComparison == 'conditions')
 
 
         if (input$inputComparison != 'conditions') {
@@ -879,21 +867,6 @@ function(input, output) {
         fluidRow(
             column(
                 width = 12,
-
-                # box(
-                #     height = paste0(input$zoomFigure+1000, 'px'),
-                #     title = h3(textOutput('titleProteinComparisonOne')
-                #                ),
-                #     imageOutput(outputId = 'proteinImageComparisonOne')
-                # ),
-
-                # box(
-                #     height = paste0(input$zoomFigure+1000, 'px'),
-                #     title = h3(
-                #     textOutput('titleProteinComparisonTwo')
-                #     ),
-                #     imageOutput(outputId = 'proteinImageComparisonTwo')
-                # )
 
                 div(
                     h3(textOutput('titleProteinComparisonOne')),
@@ -917,17 +890,40 @@ function(input, output) {
             return(NULL)
         }
 
+        req(input$inputComparison)
+
+        if (input$inputComparison != 'conditions') {
+            column(
+                width = 12,
+
+                h2(textOutput('title_box')),
+
+                uiOutput('UserInterNoGroups'),
+
+                #uiOutput('UserInterGroups')
+            )
+        }else{
+            column(
+                width = 12,
+
+                h2(textOutput('title_box')),
+
+                #uiOutput('UserInterNoGroups'),
+
+                uiOutput('UserInterGroups')
+            )
+        }
 
 
-        column(
-            width = 12,
-
-            h2(textOutput('title_box')),
-
-            uiOutput('UserInterNoGroups'),
-
-            uiOutput('UserInterGroups')
-        )
+        # column(
+        #     width = 12,
+        #
+        #     h2(textOutput('title_box')),
+        #
+        #     uiOutput('UserInterNoGroups'),
+        #
+        #     uiOutput('UserInterGroups')
+        # )
     })
 
     output$PTMSlegendUI <- renderUI({
