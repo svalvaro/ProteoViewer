@@ -836,19 +836,30 @@ function(input, output) {
         #shiny::req(input$inputComparison != 'conditions')
 
 
+        div(
+            h2(textOutput('title_box')),
 
-
-        shinydashboard::box(title = h2(textOutput('title_box')),
-            width = 1000,
-            # Error message in case no peptides found
             h3(textOutput('noPeptidesErrorMessage')),
 
-            # If no comparisons are selected (without experiment design)
+            imageOutput(outputId = 'proteinImageNoComparison'),
 
-           imageOutput(outputId = 'proteinImageNoComparison'),
+            tags$script(HTML('panzoom($(".shiny-image-output").get(0))'))
 
 
-           )
+        )
+
+
+        # shinydashboard::box(title = h2(textOutput('title_box')),
+        #     width = 1000,
+        #     # Error message in case no peptides found
+        #     h3(textOutput('noPeptidesErrorMessage')),
+        #
+        #     # If no comparisons are selected (without experiment design)
+        #
+        #    imageOutput(outputId = 'proteinImageNoComparison'),
+        #
+        #
+        #    )
     })
 
 
@@ -884,16 +895,18 @@ function(input, output) {
                 #     imageOutput(outputId = 'proteinImageComparisonTwo')
                 # )
 
-               # div(
+                div(
                     h3(textOutput('titleProteinComparisonOne')),
                     imageOutput(outputId = 'proteinImageComparisonOne'),
+                    tags$script(HTML('panzoom($("#proteinImageComparisonOne").get(0))'))
 
-                #),
+                ),
 
-                #div(
+                div(
                     h3(textOutput('titleProteinComparisonTwo')),
-                    imageOutput(outputId = 'proteinImageComparisonTwo')
-                #)
+                    imageOutput(outputId = 'proteinImageComparisonTwo'),
+                    tags$script(HTML('panzoom($("#proteinImageComparisonTwo").get(0))'))
+                )
             )
         )
     })
