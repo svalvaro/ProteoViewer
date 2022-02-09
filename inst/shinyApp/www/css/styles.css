@@ -31,3 +31,30 @@
 }
 
 
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
+
+
+
+
+body {
+  font-family: 'Lato', Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif!important;
+}
+
+h2 {
+  font-family: 'Lato'!important;
+
+  font-style: italic;
+}
+
+.sidebar-menu > li:hover > a {
+  color: #fff;
+  background: #1e282c;
+  border-left-color: white!important;
+}
+
+.sidebar-menu > li.active > a {
+  color: #fff;
+  background: #1e282c;
+  border-left-color: white!important;
+}

@@ -19,7 +19,10 @@ dashboardPage(
                 tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
 
                 # Custom
-                tags$link(rel = "stylesheet", type = "text/css", href = "css/styles.css")
+
+                tags$link(rel = "stylesheet", type = "text/css", href = "css/styles.css"),
+
+
                 )
             ),
         tags$li(a(id = 'power-off',
@@ -85,7 +88,7 @@ dashboardPage(
 
                     uiOutput('proteaseSelector'),
 
-                    uiOutput('imageSizeSelector')
+                    uiOutput('downloadSingleUI')
 
                     ),
 
@@ -112,6 +115,8 @@ dashboardPage(
                 menuItem(
                     h3('Demo Data'),
                     tabName = 'demoTab',
+
+                    br(),
 
                     shinyWidgets::actionBttn(
                         inputId = 'Demo',

@@ -243,6 +243,8 @@ function(input, output) {
 
     proteinImage_url <- reactive({
 
+        req(input$inputComparison)
+
         if (input$inputComparison == 'conditions') {
             return(NULL)
         }
@@ -824,6 +826,44 @@ function(input, output) {
 
             selected = 'none')
     })
+
+
+    # Downloader for the pictures
+
+
+
+    output$downloadSingleUI <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
+
+        # message(paste0("length of url: ", length(proteinImage_url())))
+        #
+        # if(is.null(proteinImage_url())){
+        #     stop()
+        # }
+
+        url <- gsub(pattern = "format=svg",
+                    replacement = "format=png",
+                    proteinImage_url())
+
+
+        shiny::a(
+            actionBttn(
+                inputId = 'downloadPNG',
+                label = 'Download Image',
+                #icon = icon("download"),
+                style = "unite",
+                color = "default",
+                size = "md",
+                block = FALSE,
+                no_outline = TRUE
+            ),
+            target = "_blank",
+            href = url)
+    })
+
 
     output$UserInterNoGroups <- renderUI({
 
