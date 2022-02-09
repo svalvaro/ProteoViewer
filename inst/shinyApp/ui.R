@@ -4,7 +4,7 @@ dashboardPage(
 #### DashBoard Header ####
     dashboardHeader(
         title =  titlePanel(
-            title = 'ProteoViewer',
+            title = h2('ProteoViewer'),
 
             windowTitle = tags$head(
                 tags$link(
@@ -19,10 +19,13 @@ dashboardPage(
                 tags$script(src = "https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js"),
 
                 # Custom
-                shiny::includeCSS(path = "www/css/styles.css")
+                tags$link(rel = "stylesheet", type = "text/css", href = "css/styles.css"),
+
+
+
                 )
             ),
-        tags$li(a(
+        tags$li(a(id = 'power-off',
             href = 'https://proteomics.fgu.cas.cz/',
             icon("power-off"),
             title = "Close ProteoViewer"),
@@ -47,13 +50,13 @@ dashboardPage(
 
             ProteoViewer:::convertMenuItem(
                 menuItem(
-                    text = 'Protein Visualization',
+                    text = h3('Results'),
 
                     tabName = 'proteinViz',
 
                     selected = TRUE,
 
-                    startExpanded = TRUE,
+                    startExpanded = FALSE,
 
                     fileInput(
                         inputId = "proteomics_table",
@@ -96,7 +99,7 @@ dashboardPage(
             ProteoViewer:::convertMenuItem(
 
                 menuItem(
-                    'Experiment Design',
+                    h3('Experiment Design'),
                     tabName = 'experimentDesignTab',
 
                     fileInput(inputId = "expDesignUpload",
@@ -162,7 +165,7 @@ dashboardPage(
                                            style = 'color:#990000'),
                                     target = '_blank'),
                              style = "font-size: 85%"),
-                           p(tags$em("Last updated: November 2021"),
+                           p(tags$em("Last updated: February 2022"),
                              style = 'font-size:75%')
                            )
                     )
@@ -196,7 +199,7 @@ dashboardPage(
                                            style = 'color:#990000'),
                                     target = '_blank'),
                              style = "font-size: 85%"),
-                           p(tags$em("Last updated: October 2021"),
+                           p(tags$em("Last updated: February 2022"),
                              style = 'font-size:75%')
                            )
                     )

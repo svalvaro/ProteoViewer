@@ -756,7 +756,7 @@ function(input, output) {
 
         shinyWidgets::radioGroupButtons(
             inputId = "peptidesType",
-            label = "Type of peptides to visualize?",
+            label = h4("Type of peptides to visualize?"),
             choices = c("Unmodified", "Modified", "Both"),
             status = "primary",
             selected = 'Both',
