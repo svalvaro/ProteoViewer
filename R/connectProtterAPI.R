@@ -11,6 +11,7 @@
 connectProtterAPI <- function(dfPeptidesColors = NULL,
                               modifiedPeptides = NULL,
                               selectedProtein = NULL,
+                              title = NULL,
                               proteaseSelected = 'Tryps'){
 
     # Generate url for protter API
@@ -25,6 +26,11 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     url <- paste0("http://wlab.ethz.ch/protter/create?up=",
                 selectedProtein,
                 "&tm=auto&mc=lightsalmon&lc=blue&tml=numcount&")
+
+    # Add a title for the comparisons
+    if (!is.null(title)) {
+        url <- paste0(url,"title=Condition:%20" ,title,"&")
+    }
 
 
     # Change it to comma separated color for peptides with the same color,
@@ -45,12 +51,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url,"bc:", colorsCollapsed$Colour[ii], "=",
                           colorsCollapsed$Seq[ii], '&' )
         }
-
-        # for (ii in seq_len(nrow(dfPeptidesColors))) {
-        #
-        #     url <- paste0(url,"bc:", dfPeptidesColors$Colour[ii], "=",
-        #                   dfPeptidesColors$Sequence[ii], '&' )
-        # }
 
     }
 

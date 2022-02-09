@@ -237,13 +237,9 @@ function(input, output) {
 
     proteinImage_url <- reactive({
 
-
         if (input$inputComparison == 'conditions') {
             return(NULL)
         }
-
-        #shiny::req(input$peptidesType)
-
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
@@ -364,7 +360,6 @@ function(input, output) {
 
     proteinImageOne_url <- reactive({
 
-        #shiny::req(input$inputComparison == 'conditions')
         shiny::req(input$conditionsSelected[1])
         shiny::req(input$peptidesType)
 
@@ -396,7 +391,8 @@ function(input, output) {
             dfPeptidesColors = dfPeptidesColorsComparisonOne(),
             selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected,
-            modifiedPeptides = modifiedPeptides
+            modifiedPeptides = modifiedPeptides,
+            title = input$conditionsSelected[1]
         )
 
         return(url)
@@ -493,14 +489,13 @@ function(input, output) {
             dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
             selectedProtein = proteinsSelected,
             proteaseSelected = input$proteaseSelected,
-            modifiedPeptides = modifiedPeptides
+            modifiedPeptides = modifiedPeptides,
+            title = input$conditionsSelected[2]
         )
         return(url)
     })
 
     output$proteinImageComparisonTwo <- renderImage({
-
-
 
         list(src = ProteoViewer::renderProtein(url = proteinImageTwo_url()),
              width = 200)
@@ -681,9 +676,7 @@ function(input, output) {
 
     peptideIntensityTable <- reactive({
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
-
-        #shiny::req(input$peptideType)
+        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein)
 
         # Option 1: the user wants to see only one experiment
 
@@ -825,19 +818,15 @@ function(input, output) {
             selected = 'none')
     })
 
-
-
     output$UserInterNoGroups <- renderUI({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
 
-
         if(input$inputComparison == 'conditions'){
             return(NULL)
         }
-
 
         div(
             h2(textOutput('title_box')),
@@ -849,34 +838,28 @@ function(input, output) {
             tags$script(HTML('panzoom($(".shiny-image-output").get(0))'))
 
         )
-
     })
 
 
 
     output$UserInterGroups <- renderUI({
 
-        #shiny::req(input$inputComparison == 'conditions')
-
-
         if (input$inputComparison != 'conditions') {
             return(NULL)
         }
-
 
         fluidRow(
             column(
                 width = 12,
 
                 div(
-                    h3(textOutput('titleProteinComparisonOne')),
+                    #h3(textOutput('titleProteinComparisonOne')),
                     imageOutput(outputId = 'proteinImageComparisonOne'),
                     tags$script(HTML('panzoom($("#proteinImageComparisonOne").get(0))'))
-
                 ),
 
                 div(
-                    h3(textOutput('titleProteinComparisonTwo')),
+                    #h3(textOutput('titleProteinComparisonTwo')),
                     imageOutput(outputId = 'proteinImageComparisonTwo'),
                     tags$script(HTML('panzoom($("#proteinImageComparisonTwo").get(0))'))
                 )
@@ -889,8 +872,6 @@ function(input, output) {
         if (is.null(proteomicsInput())) {
             return(NULL)
         }
-
-
 
         column(
             width = 12,
@@ -917,10 +898,8 @@ function(input, output) {
                 dataTableOutput('peptideIntensityTableOut'),
                 downloadButton(outputId = 'downloadTable',
                                label = 'Download')
-
-
+                )
             )
-        )
     })
 
 
