@@ -1,22 +1,36 @@
 function(input, output) {
 
-    #### Load Demo Data ####
+    #### Load Demo Data  & Notifications####
 
     demo <- shiny::reactiveValues(start = FALSE)
 
     observeEvent(input$Demo, {
         shiny::req(input$Demo)
 
-        message(paste0('Demo is', demo$start))
-
         demo$start <-  TRUE
+
+        message('Demo data being loaded')
 
        shinyalert::shinyalert("Demo Data Loaded",
                                "Now you can visualize some proteins!",
                                type="success",
                                closeOnClickOutside = TRUE,
                                closeOnEsc = TRUE,
-                               timer = 60000)
+                               timer = 6000)
+    })
+
+    observeEvent(input$saveExpDesign, {
+
+        message('Experiment Design updated')
+
+
+        shinyalert::shinyalert("Experiment Design saved",
+                               "You can go back to the Results Tab",
+                               type="success",
+                               closeOnClickOutside = TRUE,
+                               closeOnEsc = TRUE,
+                               timer = 6000)
+
     })
 
 
@@ -570,21 +584,16 @@ function(input, output) {
             # If no experiment is provided but the user has uploaded the
             # evidence txt
 
-            message(input$Demo)
-
-            print(experimentDesign)
-
             return(experimentDesign)
 
         } else if(!is.null(input$proteomics_table)  ){
 
             experimentDesign <- data.frame(
                                         label = experimentNames(),
-                                        condition = ' ',
-                                        replicate = as.numeric(' ')
+                                        condition = '',
+                                        replicate = NA_integer_,
+                                        Include = TRUE
                                         )
-
-            message(input$Demo)
 
             return(experimentDesign)
 
@@ -600,45 +609,92 @@ function(input, output) {
                             package = 'ProteoViewer'),
                 header = TRUE)
 
-            message(input$Demo)
-
             return(experimentDesign)
         }
     })
 
-    output$experimentDesignOutput <- rhandsontable::renderRHandsontable({
 
-        if (is.null(experimentNames())) {
+    expDesignEditable <- reactiveVal()
+
+    observeEvent(experimentDesign(),{
+
+        if (is.null(proteomicsInput())) {
             return(NULL)
         }
 
-        # Add the new column Include
+        expDesignEditable(experimentDesign())
 
-        df <- experimentDesign()
-
-        df$include <- TRUE
-
-        rhandsontable::rhandsontable(
-            #experimentDesign(),
-            df,
-            height =  500
-            ) %>%
-            rhandsontable::hot_col('replicate', format = '0a') %>%
-            rhandsontable::hot_col('label', readOnly = TRUE)
     })
 
-    # Obtain possible modifications that the user can make in the experiment
-    # design
+    output$experimentDesignOutput <- renderRHandsontable({
 
-    experimentDesignFinal <- shiny::reactiveValues()
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+        }
 
-    observeEvent(input$experimentDesignOutput,{
+        df <- expDesignEditable()
 
-            experimentDesignFinal$df <- rhandsontable::hot_to_r(
-                input$experimentDesignOutput)
+        rhandsontable(
+            df,
+            height =  500) %>%
+            hot_col('replicate', format = '0a') %>%
 
-        print('The experiment design is:')
-        print(experimentDesignFinal$df)
+            rhandsontable::hot_col('label', readOnly = TRUE)%>%
+
+            hot_table(highlightRow = TRUE) %>%
+
+            hot_col(col = "Include", halign = 'htCenter',
+                    renderer = "
+                    function (instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+
+                        var col_value = instance.getData()[row][3]
+
+                        if (col_value === false) {
+
+                            td.style.background = 'pink';
+                        }
+                    }
+                ") %>%
+
+            hot_col(col = c("label", "condition", "replicate"),halign = 'htCenter',
+                    renderer = "
+                    function (instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+                        var col_value = instance.getData()[row][3]
+
+                        if (col_value === false) {
+
+                            td.style.background = 'pink';
+                        }
+                    }
+                ") %>%
+            hot_col(col = 'replicate', readOnly = TRUE)
+
+    })
+
+    observeEvent(input$experimentDesignOutput, {
+        userDT <- rhandsontable::hot_to_r(input$experimentDesignOutput)
+        data.table::setDT(userDT)
+        userDT[, replicate := seq_len(.N), by = condition][is.na(condition) | condition == "", replicate := NA_integer_]
+        expDesignEditable(userDT)
+    })
+
+
+    experimentDesignFinal <- reactiveValues()
+
+    observeEvent(input$saveExpDesign, {
+
+        experimentDesignFinal$df <-  rhandsontable::hot_to_r(input$experimentDesignOutput)
+
+        # Remove the rows containing FALSE in include.
+
+        experimentDesignFinal$df <- experimentDesignFinal$df [! experimentDesignFinal$df $Include == FALSE,]
+
+
+        message('The experiment design is:')
+        print(experimentDesignFinal$df )
 
     })
 
@@ -658,6 +714,7 @@ function(input, output) {
 
     output$comparisonSelector <- shiny::renderUI({
 
+        req(input$inputComparison)
         # If no experiment design is provided
         if (is.null(experimentDesignFinal$df) ||
             !input$inputComparison == 'conditions'){
@@ -1029,6 +1086,8 @@ function(input, output) {
 
 
     output$UserInterGroups <- renderUI({
+
+        req(input$inputComparison)
 
         if (input$inputComparison != 'conditions') {
             return(NULL)

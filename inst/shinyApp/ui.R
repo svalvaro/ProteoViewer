@@ -192,12 +192,24 @@ dashboardPage(
             tabItem(
                 tabName = 'experimentDesignTab',
 
-                fluidRow(
-                    box(title = 'Experiment Design',
+                fluidRow("Fill the Experiment Design"),
 
-                        rhandsontable::rHandsontableOutput(
-                            'experimentDesignOutput')
-                        )
+                fluidRow(
+
+
+                    column(width = 2,
+
+                           actionBttn("saveExpDesign", "Update")
+                           ),
+                    column(width = 10,
+
+                           box(#title = 'Experiment Design',
+
+                               rhandsontable::rHandsontableOutput(
+                                   'experimentDesignOutput')
+                           )
+                           )
+
                     ),
                 hr(style = "border-color: #cbcbcb;"),
 

@@ -1,25 +1,25 @@
-label	condition	replicate
-condition_A_1	A	1
-condition_A_2	A	2
-condition_A_3	A	3
-condition_B_1	B	1
-condition_B_2	B	2
-condition_B_3	B	3
-condition_C_1	C	1
-condition_C_2	C	2
-condition_C_3	C	3
-condition_D_1	D	1
-condition_D_2	D	2
-condition_D_3	D	3
-condition_E_1	E	1
-condition_E_2	E	2
-condition_E_3	E	3
-condition_F_1	F	1
-condition_F_2	F	2
-condition_F_3	F	3
-condition_G_1	G	1
-condition_G_2	G	2
-condition_G_3	G	3
-condition_H_1	H	1
-condition_H_2	H	2
-condition_H_3	H	3
+label	condition	replicate	Include
+condition_A_1	A	1	true
+condition_A_2	A	2	true
+condition_A_3	A	3	true
+condition_B_1	B	1	true
+condition_B_2	B	2	true
+condition_B_3	B	3	true
+condition_C_1	C	1	true
+condition_C_2	C	2	true
+condition_C_3	C	3	true
+condition_D_1	D	1	true
+condition_D_2	D	2	true
+condition_D_3	D	3	true
+condition_E_1	E	1	true
+condition_E_2	E	2	true
+condition_E_3	E	3	true
+condition_F_1	F	1	true
+condition_F_2	F	2	true
+condition_F_3	F	3	true
+condition_G_1	G	1	true
+condition_G_2	G	2	true
+condition_G_3	G	3	true
+condition_H_1	H	1	true
+condition_H_2	H	2	true
+condition_H_3	H	3	true
