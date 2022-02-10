@@ -16,7 +16,7 @@ function(input, output) {
                                type="success",
                                closeOnClickOutside = TRUE,
                                closeOnEsc = TRUE,
-                               timer = 6000)
+                               timer = 60000)
     })
 
 
@@ -181,6 +181,8 @@ function(input, output) {
                             "Combine all experiments together" = "combineExperiments"),
                 status = "primary",
                 direction = "vertical",
+                size = 'normal'
+                # size = 'large' adjust the rest to make it a bit bigger
             )
 
         }else{

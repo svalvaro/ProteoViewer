@@ -93,3 +93,20 @@ h2 {
   background-color: rgb(214, 246, 253) !important;
 }
 
+/* Confirm button in the demo data pop up */
+
+.confirm {
+  background-color: rgba(72,138,153,1) !important; 
+}
+
+.sa-line {
+  background-color: rgba(72,138,153,1) !important; 
+}
+
+.sa-icon {
+  border-color: rgba(72,138,153,1) !important; 
+}
+
+/* .animate {
+  background-color: rgba(72,138,153,1) !important; 
+} */
