@@ -837,11 +837,6 @@ function(input, output) {
             return(NULL)
         }
 
-        # #req(input$inputComparison)
-        # if (input$inputComparison == 'conditions') {
-        #     return(NULL)
-        # }
-
         url <- gsub(pattern = "format=svg",
                     replacement = "format=png",
                     proteinImage_url())
@@ -852,13 +847,10 @@ function(input, output) {
         return(url)
     })
 
-
-
     output$singleDownload <- renderUI({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
-
         }
 
         if (input$inputComparison != 'individualExperiments') {
@@ -887,11 +879,9 @@ function(input, output) {
 
         if (is.null(proteomicsInput())) {
             return(NULL)
-
         }
 
         if (input$inputComparison != 'combineExperiments') {
-
             return(NULL)
         }
 
