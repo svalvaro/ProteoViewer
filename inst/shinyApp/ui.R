@@ -192,12 +192,12 @@ dashboardPage(
             tabItem(
                 tabName = 'experimentDesignTab',
 
-                fluidRow("Fill the Experiment Design"),
+                fluidRow(h1("Fill the Experiment Design")),
 
                 fluidRow(
 
 
-                    column(width = 2,
+                    column(width = 3,
 
                            actionBttn("saveExpDesign", "Update")
                            ),
