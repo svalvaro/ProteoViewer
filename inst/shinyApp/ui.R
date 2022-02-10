@@ -124,7 +124,7 @@ dashboardPage(
 
                     shinyWidgets::actionBttn(
                         inputId = 'Demo',
-                        label = 'Load demo data',
+                        label = h3('Load demo data'),
                         icon = NULL,
                         style = "unite",
                         color = "default",

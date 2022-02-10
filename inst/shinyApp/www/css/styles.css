@@ -24,18 +24,12 @@
   background-color: rgb(51,51,51)!important;
 }
 
-
-
 #power-off {
   color: rgb(51,51,51);
 }
 
 
 @import url('https://fonts.googleapis.com/css?family=Lato');
-
-
-
-
 
 body {
   font-family: 'Lato', Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif!important;
@@ -59,20 +53,18 @@ h2 {
   border-left-color: white!important;
 }
 
-
+/* Action buttons, load demo and download pictures */
+/* Maybe add border in white */
 .action-button {
-  /* background: rgba(72,138,153,1) !important; */
   background: rgb(72,138,153);
-  background: linear-gradient(90deg, rgba(72,138,153,1) 0%, rgba(193,145,145,1) 100%); 
-
+  background: linear-gradient(90deg, rgba(72,138,153,1) 0%, rgba(66,64,64,1) 100%);  
 }
-
-
 .bttn-unite.bttn-default {
-  border-color: white !important;
+  
   color: white !important;
-  border: 20px !important;
-  border-color: white !important;
+
+  border: 3px white !important;
+ 
 }
 
 .action-button::before {
@@ -82,3 +74,22 @@ h2 {
 .action-button::after {
   background:rgba(72,138,153,1) !important;
 }
+
+/* Button Groups for the checkbox */
+
+.btn-primary {
+  background-color: rgb(72,138,153) !important;
+  border: 1px white !important;
+}
+
+.btn-primary.active {
+  background-color: rgb(60, 106, 133) !important; 
+  
+}
+
+/* Download button  for table and upload button*/
+
+.btn-default {
+  background-color: rgb(214, 246, 253) !important;
+}
+
