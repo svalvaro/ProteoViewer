@@ -243,7 +243,7 @@ function(input, output) {
 
     proteinImage_url <- reactive({
 
-        req(input$inputComparison)
+        #req(input$inputComparison)
 
         if (input$inputComparison == 'conditions') {
             return(NULL)
@@ -755,7 +755,7 @@ function(input, output) {
 
     #### User Interface Reactive ####
 
-    # Peptides type
+        # Peptides type ----------------
 
     output$peptidesIntensitySelector <- renderUI({
         if (is.null(proteomicsInput())) {
@@ -771,7 +771,7 @@ function(input, output) {
         )
     })
 
-    # Protease
+        # Protease ------------------
 
     output$proteaseSelector <- renderUI({
 
@@ -828,7 +828,7 @@ function(input, output) {
     })
 
 
-    # Downloader for the pictures
+        # Downloader for the pictures ----------------
 
 
     noComparisonURL <- reactive({
@@ -837,15 +837,16 @@ function(input, output) {
             return(NULL)
         }
 
-        if (input$inputComparison == 'conditions') {
-            return(NULL)
-        }
+        # #req(input$inputComparison)
+        # if (input$inputComparison == 'conditions') {
+        #     return(NULL)
+        # }
 
         url <- gsub(pattern = "format=svg",
                     replacement = "format=png",
                     proteinImage_url())
 
-        message("url")
+        message("url no comparison")
         message(url)
 
         return(url)
@@ -853,17 +854,16 @@ function(input, output) {
 
 
 
-    output$downloadNoComparison <- renderUI({
+    output$singleDownload <- renderUI({
 
         if (is.null(proteomicsInput())) {
             return(NULL)
+
         }
 
-
-        if (input$inputComparison == 'conditions') {
+        if (input$inputComparison != 'individualExperiments') {
             return(NULL)
         }
-
 
         shiny::a(
             actionBttn(
@@ -875,11 +875,45 @@ function(input, output) {
                 size = "md",
                 block = FALSE,
                 no_outline = TRUE
-            ),
+                ),
             target = "_blank",
-            href = noComparisonURL())
+            href = noComparisonURL()
+        )
 
     })
+
+
+    output$combineDownload <- renderUI({
+
+        if (is.null(proteomicsInput())) {
+            return(NULL)
+
+        }
+
+        if (input$inputComparison != 'combineExperiments') {
+
+            return(NULL)
+        }
+
+        shiny::a(
+            actionBttn(
+                inputId = 'downloadPNG2',
+                label = 'Download Protein',
+                icon = icon("download"),
+                style = "unite",
+                color = "default",
+                size = "md",
+                block = FALSE,
+                no_outline = TRUE
+            ),
+            target = "_blank",
+            href = noComparisonURL()
+        )
+
+    })
+
+
+
 
 
 
@@ -962,7 +996,9 @@ function(input, output) {
         if (input$inputComparison != 'conditions') {
 
             div(
-                uiOutput("downloadNoComparison")
+                uiOutput("singleDownload"),
+                uiOutput("combineDownload")
+
             )
 
         }else{
@@ -975,6 +1011,7 @@ function(input, output) {
     })
 
 
+        # UI protein images ------------------
     output$UserInterNoGroups <- renderUI({
 
         if (is.null(proteomicsInput())) {
@@ -1040,6 +1077,8 @@ function(input, output) {
             uiOutput('UserInterGroups')
         )
     })
+
+        # UI PTMS ---------------------
 
     output$PTMSlegendUI <- renderUI({
 
