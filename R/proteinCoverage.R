@@ -10,7 +10,11 @@
 #' @importFrom stringi str_locate
 #'
 #' @examples
-proteinCoverage <- function(proteinId, evidence){
+proteinCoverage <- function(proteinId,
+                            dfPeptidesColors,
+                            comparison = c('individualExperiments',
+                                           'combineExperiments',
+                                           'conditions')){
 
     uniprot_url <- "http://www.uniprot.org/uniprot/"
 
@@ -19,6 +23,8 @@ proteinCoverage <- function(proteinId, evidence){
     proteinSequence <- httr::GET(uniprot_request)
 
     proteinSequence   <- httr::content(proteinSequence, encoding = "UTF-8")
+
+    lengthProteinSequence <- nchar(proteinSequence)
 
     # Keep only the sequence
     proteinSequence <- gsub(x = proteinSequence,
@@ -33,31 +39,61 @@ proteinCoverage <- function(proteinId, evidence){
          ignore.case = T)
 
 
-    proteomicsInput <- evidence %>%
-        dplyr::select(
-            c(
-                dplyr::contains(c('Proteins',
-                                  'Experiment',
-                                  'Protein.names',
-                                  'Sequence',
-                                  'Intensity')),
-                - dplyr::contains(c('leading',
-                                    'max',
-                                    'modified'))
-            )
-        )
+    # proteomicsInput <- evidence %>%
+    #     dplyr::select(
+    #         c(
+    #             dplyr::contains(c('Proteins',
+    #                               'Experiment',
+    #                               'Protein.names',
+    #                               'Sequence',
+    #                               'Intensity')),
+    #             - dplyr::contains(c('leading',
+    #                                 'max',
+    #                                 'modified'))
+    #         )
+    #     )
+    #
+    # # Filter by the selected Protein
+    # proteomicsInput <- proteomicsInput[proteomicsInput$Proteins == proteinID,]
 
-    # Filter by the selected Protein
-    proteomicsInput <- proteomicsInput[proteomicsInput$Proteins == proteinID,]
 
-    proteomicsInput$Length <- nchar(proteomicsInput$Sequence)
+
+    dfPeptidesColors$Length <- nchar(dfPeptidesColors$Sequence)
 
     # Now Match the peptides and add the Start/Finish
 
-    proteomicsInput$startPosition <- stringi::stri_locate(str = proteinSequence, regex = proteomicsInput$Sequence)[,1]
+    dfPeptidesColors$startPosition <- stringi::stri_locate(str = proteinSequence, regex = dfPeptidesColors$Sequence)[,1]
 
-    proteomicsInput$endPosition <- stringi::stri_locate(str = proteinSequence, regex = proteomicsInput$Sequence)[,2]
+    dfPeptidesColors$endPosition <- stringi::stri_locate(str = proteinSequence, regex = dfPeptidesColors$Sequence)[,2]
 
+    # Add the hash to the colours
+
+    dfPeptidesColors$Colour <- paste0("#", dfPeptidesColors$Colour)
+
+
+    # Now filter by the comparison
+
+
+    if (comparison == "conditions") {
+
+    }
+
+
+
+
+    p <- ggplot(dfPeptidesColors)+
+        geom_segment(aes(x = startPosition,
+                        xend = endPosition,
+                        y = startPosition,
+                        yend = endPosition
+                        ),
+                     colour = dfPeptidesColors$Colour,
+                     size = 2)+
+        theme_bw()+
+        coord_cartesian(xlim = c(0, lengthProteinSequence), ylim = c(0, lengthProteinSequence))#+
+        # scale_color_manual(values = dfPeptidesColors$Colour)
+
+    plotly::ggplotly(p)
 
     }
 

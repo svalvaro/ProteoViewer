@@ -36,7 +36,6 @@ createLegend <- function(evidence,
 
     # If the peptide type is "Both" do nothing.
 
-
     # Creation of a plot containing a table with and a plot with the intensities
     # coloured.
 
