@@ -57,14 +57,14 @@ h2 {
 /* Maybe add border in white */
 .action-button {
   background: rgb(72,138,153);
-  background: linear-gradient(90deg, rgba(72,138,153,1) 0%, rgba(66,64,64,1) 100%);  
+  background: linear-gradient(90deg, rgba(72,138,153,1) 0%, rgba(66,64,64,1) 100%);
 }
 .bttn-unite.bttn-default {
-  
+
   color: white !important;
 
   border: 3px white !important;
- 
+
 }
 
 .action-button::before {
@@ -83,8 +83,8 @@ h2 {
 }
 
 .btn-primary.active {
-  background-color: rgb(60, 106, 133) !important; 
-  
+  background-color: rgb(60, 106, 133) !important;
+
 }
 
 /* Download button  for table and upload button*/
@@ -96,17 +96,19 @@ h2 {
 /* Confirm button in the demo data pop up */
 
 .confirm {
-  background-color: rgba(72,138,153,1) !important; 
+  background-color: rgba(72,138,153,1) !important;
 }
 
 .sa-line {
-  background-color: rgba(72,138,153,1) !important; 
+  background-color: rgba(72,138,153,1) !important;
 }
 
 .sa-icon {
-  border-color: rgba(72,138,153,1) !important; 
+  border-color: rgba(72,138,153,1) !important;
 }
 
-/* .animate {
-  background-color: rgba(72,138,153,1) !important; 
-} */
+
+img {
+  border: 1;
+  max-width: 100%;
+}

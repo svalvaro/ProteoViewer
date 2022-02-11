@@ -165,6 +165,12 @@ dashboardPage(
                         )
                     ),
 
+                fluidRow(
+
+                    uiOutput('coverageUI')
+
+                ),
+
                 hr(style = "border-color: #cbcbcb;"),
 
                 fluidRow(

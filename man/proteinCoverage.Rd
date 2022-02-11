@@ -4,7 +4,11 @@
 \alias{proteinCoverage}
 \title{Title}
 \usage{
-proteinCoverage(proteinId, evidence)
+proteinCoverage(
+  proteinId,
+  dfPeptidesColors,
+  comparison = c("individualExperiments", "combineExperiments", "conditions")
+)
 }
 \arguments{
 \item{evidence}{}

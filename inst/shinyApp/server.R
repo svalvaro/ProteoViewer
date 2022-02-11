@@ -215,6 +215,9 @@ function(input, output) {
 
     dfPeptidesColorsNoGroups <- reactive({
 
+
+        shiny::req(input$inputComparison)
+
         if (is.null(proteomicsInput()) ||
             input$inputComparison == 'conditions') {
             return(NULL)
@@ -225,7 +228,7 @@ function(input, output) {
         # Remove everything after the ":" in the proteinSelected
         # which is the description of the protein.
 
-        proteinsSelected <- base::gsub("(.*):.*", "\\1",input$selectedProtein )
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein)
 
         # Create the peptides and colours tabular format
         # When plot_legend = FALSE, it returns a table containing
@@ -809,6 +812,32 @@ function(input, output) {
         }
     )
 
+
+    #### Plot Coverage ####
+
+    coveragePlotReactive <- reactive({
+
+        if (is.null(proteomicsInput()) || is.null(dfPeptidesColorsNoGroups())) {
+            stop()
+        }
+
+        req(input$selectedProtein)
+
+        req(input$yaxisCoverage)
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein)
+
+        message("The protein Selected is: ", proteinsSelected)
+
+        p <- ProteoViewer::proteinCoverage(proteinId = proteinsSelected,
+                                    dfPeptidesColors = dfPeptidesColorsNoGroups(),
+                                    yaxis = input$yaxisCoverage)
+    })
+
+    output$coveragePlot <- renderPlotly({
+        coveragePlotReactive()
+    })
+
     #### User Interface Reactive ####
 
         # Peptides type ----------------
@@ -1125,6 +1154,70 @@ function(input, output) {
             uiOutput('UserInterGroups')
         )
     })
+
+
+
+        # UI Coverage -----------------------
+
+    output$coverageUI <- renderUI({
+
+        if (is.null(proteomicsInput()) ) {
+            return(NULL)
+        }
+
+         req(!is.null(dfPeptidesColorsNoGroups()))
+        #
+        # if (is.null(dfPeptidesColorsNoGroups())) {
+        #     stop()
+        # }
+
+
+        column(
+            width = 12,
+            shinyWidgets::dropdown(
+
+                selectInput("yaxisCoverage",
+                            "Select the y axis",
+                            choices = c("Log 2 Intensity" = "Intensity",
+                                        "Peptide Start Position" = "startPosition"),
+                ),
+
+                #options = list(`style` = "btn-info"),
+                style = "unite",
+                icon = tags$i(
+                    class = "fa fa-gear",
+                    style = "color: rgb(255,255,255)"
+                ),
+                status = "success",
+                width = "300px",
+                animate = animateOptions(
+                    enter = animations$fading_entrances$fadeInLeftBig,
+                    exit = animations$fading_exits$fadeOutRightBig)
+            ),
+            plotlyOutput('coveragePlot')
+        )
+
+
+    })
+
+
+    shinyWidgets::dropdown(
+
+        selectInput("yaxisCoverage",
+                    "Select the y axis",
+                    choices = c("Log 2 Intensity" = "Intensity",
+                                "Peptide Start Position" = "startPosition"),
+        ),
+
+        options = list(`style` = "btn-info"),
+        style = "unite",
+        icon = icon("paint-brush"),
+        status = "success", width = "300px",
+        animate = animateOptions(
+            enter = animations$fading_entrances$fadeInLeftBig,
+            exit = animations$fading_exits$fadeOutRightBig)
+    )
+    plotlyOutput('coveragePlot')
 
         # UI PTMS ---------------------
 

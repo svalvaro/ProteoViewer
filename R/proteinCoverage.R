@@ -7,18 +7,17 @@
 #' @export
 #'
 #'
-#' @importFrom stringi str_locate
-#'
 #' @examples
 proteinCoverage <- function(proteinId,
                             dfPeptidesColors,
+                            yaxis = c('Intensity', 'startPosition'),
                             comparison = c('individualExperiments',
                                            'combineExperiments',
                                            'conditions')){
 
     uniprot_url <- "http://www.uniprot.org/uniprot/"
 
-    uniprot_request <- paste0(uniprot_url, proteinID, '.fasta')
+    uniprot_request <- paste0(uniprot_url, proteinId, '.fasta')
 
     proteinSequence <- httr::GET(uniprot_request)
 
@@ -74,26 +73,56 @@ proteinCoverage <- function(proteinId,
     # Now filter by the comparison
 
 
-    if (comparison == "conditions") {
+    # if (comparison == "conditions") {
+    #
+    #
+    # }
+
+    # Duplicate columns to solve the duplication in the tooltip with ggplotly
+
+    dfPeptidesColors$Intensity <- format(round(dfPeptidesColors$Intensity , 2), nsmall = 2)
+
+    dfPeptidesColors$startPositionDuplicate <- dfPeptidesColors$startPosition
+    dfPeptidesColors$endPositionDuplicate <- dfPeptidesColors$endPosition
+    dfPeptidesColors$IntensityDuplicate <- dfPeptidesColors$Intensity
+
+
+
+    if (yaxis == "Intensity") {
+
+        p <- ggplot(dfPeptidesColors, aes(text = Sequence))+
+            geom_segment(aes(x = startPosition,
+                             xend = endPosition,
+                             y = as.numeric(Intensity),
+                             yend = as.numeric(IntensityDuplicate)
+            ),
+            colour = dfPeptidesColors$Colour,
+            size = 2)+
+            theme_bw()+
+            coord_cartesian(xlim = c(0, lengthProteinSequence))+
+            ylab("Log2 Intensity")
+
+
+    }else if(yaxis == "startPosition"){
+        p <- ggplot(dfPeptidesColors , aes(text = Sequence))+
+            geom_segment(aes(x = startPosition,
+                             xend = endPosition,
+                             y = startPositionDuplicate,
+                             yend = endPositionDuplicate
+            ),colour = dfPeptidesColors$Colour,size = 2)+
+            theme_bw()+
+            coord_cartesian(xlim = c(0, lengthProteinSequence), ylim = c(0, lengthProteinSequence))+
+            ylab("Start Position")
 
     }
 
+    p <- p +
+        xlab("Start Position")+
+        ggtitle("Coverage of the Protein")
 
 
-
-    p <- ggplot(dfPeptidesColors)+
-        geom_segment(aes(x = startPosition,
-                        xend = endPosition,
-                        y = startPosition,
-                        yend = endPosition
-                        ),
-                     colour = dfPeptidesColors$Colour,
-                     size = 2)+
-        theme_bw()+
-        coord_cartesian(xlim = c(0, lengthProteinSequence), ylim = c(0, lengthProteinSequence))#+
-        # scale_color_manual(values = dfPeptidesColors$Colour)
-
-    plotly::ggplotly(p)
+    plotly::ggplotly(p,
+                     tooltip = c("startPosition","endPosition","Intensity","Sequence"))
 
     }
 
