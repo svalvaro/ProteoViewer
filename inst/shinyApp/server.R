@@ -70,7 +70,6 @@ function(input, output) {
             return(NULL)
         }
 
-
         return(df)
 
     })
@@ -118,8 +117,6 @@ function(input, output) {
                                label = h4('Select a protein of interest'),
                                choices = proteinsToSelect,
                                selected = proteinsToSelect[1])
-
-
         }
     })
 

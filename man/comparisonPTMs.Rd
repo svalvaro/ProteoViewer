@@ -6,10 +6,11 @@
 \usage{
 comparisonPTMs(
   evidence,
+  peptideType = c("Unmodified", "Modified", "Both"),
   selectedProtein,
   selectedExperiment,
   experimentDesign = NULL,
-  selectedCondition = NULL
+  selectedConditions = NULL
 )
 }
 \arguments{

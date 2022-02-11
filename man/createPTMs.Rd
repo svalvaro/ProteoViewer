@@ -6,6 +6,7 @@
 \usage{
 createPTMs(
   evidence,
+  peptideType = c("Unmodified", "Modified", "Both"),
   selectedProtein,
   selectedExperiment,
   experimentDesign = NULL,

@@ -8,6 +8,7 @@ connectProtterAPI(
   dfPeptidesColors = NULL,
   modifiedPeptides = NULL,
   selectedProtein = NULL,
+  title = NULL,
   proteaseSelected = "Tryps"
 )
 }

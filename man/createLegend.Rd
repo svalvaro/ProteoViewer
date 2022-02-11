@@ -6,6 +6,7 @@
 \usage{
 createLegend(
   evidence,
+  peptideType = c("Unmodified", "Modified", "Both"),
   experimentDesign,
   comparison = c("individualExperiments", "combineExperiments", "conditions"),
   conditionSelected = NULL,
