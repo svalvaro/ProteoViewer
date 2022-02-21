@@ -13,7 +13,10 @@ proteinCoverage <- function(proteinId,
                             yaxis = c('Intensity', 'startPosition'),
                             comparison = c('individualExperiments',
                                            'combineExperiments',
-                                           'conditions')){
+                                           'conditions'),
+                            sizeSegments,
+                            darkMode = TRUE,
+                            nameCondition = NULL){
 
     uniprot_url <- "http://www.uniprot.org/uniprot/"
 
@@ -38,23 +41,6 @@ proteinCoverage <- function(proteinId,
          ignore.case = T)
 
 
-    # proteomicsInput <- evidence %>%
-    #     dplyr::select(
-    #         c(
-    #             dplyr::contains(c('Proteins',
-    #                               'Experiment',
-    #                               'Protein.names',
-    #                               'Sequence',
-    #                               'Intensity')),
-    #             - dplyr::contains(c('leading',
-    #                                 'max',
-    #                                 'modified'))
-    #         )
-    #     )
-    #
-    # # Filter by the selected Protein
-    # proteomicsInput <- proteomicsInput[proteomicsInput$Proteins == proteinID,]
-
 
 
     dfPeptidesColors$Length <- nchar(dfPeptidesColors$Sequence)
@@ -69,14 +55,6 @@ proteinCoverage <- function(proteinId,
 
     dfPeptidesColors$Colour <- paste0("#", dfPeptidesColors$Colour)
 
-
-    # Now filter by the comparison
-
-
-    # if (comparison == "conditions") {
-    #
-    #
-    # }
 
     # Duplicate columns to solve the duplication in the tooltip with ggplotly
 
@@ -98,7 +76,8 @@ proteinCoverage <- function(proteinId,
             ),
             colour = dfPeptidesColors$Colour,
             size = 2)+
-            theme_bw()+
+            #theme_bw()+
+            #theme_dark()+
             coord_cartesian(xlim = c(0, lengthProteinSequence))+
             ylab("Log2 Intensity")
 
@@ -109,16 +88,35 @@ proteinCoverage <- function(proteinId,
                              xend = endPosition,
                              y = startPositionDuplicate,
                              yend = endPositionDuplicate
-            ),colour = dfPeptidesColors$Colour,size = 2)+
-            theme_bw()+
+            ),colour = dfPeptidesColors$Colour,size = sizeSegments)+
+            #theme_bw()+
             coord_cartesian(xlim = c(0, lengthProteinSequence), ylim = c(0, lengthProteinSequence))+
             ylab("Start Position")
 
     }
 
     p <- p +
-        xlab("Start Position")+
-        ggtitle("Coverage of the Protein")
+        xlab("Start Position")
+
+    if(!is.null(nameCondition)){
+        p <- p + ggtitle(paste0("Protein Coverage:  ", nameCondition))
+    }else{
+        p <- p + ggtitle(paste0("Protein Coverage of:  ", proteinId))
+    }
+
+
+
+    if (darkMode == TRUE) {
+        p <- p + theme_bw()+
+            theme(panel.background =   element_rect(fill = "#488a9b", colour = NA,
+                                                 color = 'black'),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  panel.border = element_blank())
+    }else{
+        p <- p + theme_bw()+
+            theme(plot.background = element_rect(color = 'black'))
+    }
 
 
     plotly::ggplotly(p,

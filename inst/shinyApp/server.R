@@ -297,7 +297,7 @@ function(input, output) {
     output$proteinImageNoComparison <- renderImage({
 
         if (input$inputComparison == 'conditions') {
-            stop()
+            return(NULL)
         }
 
         url <- proteinImage_url()
@@ -818,12 +818,14 @@ function(input, output) {
     coveragePlotReactive <- reactive({
 
         if (is.null(proteomicsInput()) || is.null(dfPeptidesColorsNoGroups())) {
-            stop()
+            return(NULL)
         }
 
         req(input$selectedProtein)
 
         req(input$yaxisCoverage)
+
+        req(input$sizeSegments)
 
         proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein)
 
@@ -831,11 +833,79 @@ function(input, output) {
 
         p <- ProteoViewer::proteinCoverage(proteinId = proteinsSelected,
                                     dfPeptidesColors = dfPeptidesColorsNoGroups(),
-                                    yaxis = input$yaxisCoverage)
+                                    yaxis = input$yaxisCoverage,
+                                    sizeSegments = input$sizeSegments,
+                                    darkMode = input$darkMode
+                                    )
     })
 
     output$coveragePlot <- renderPlotly({
+        if (is.null(coveragePlotReactive())) {
+            return(NULL)
+        }
         coveragePlotReactive()
+    })
+
+
+    coverageComparisonOne <- reactive({
+
+        if (is.null(proteomicsInput()) || is.null(dfPeptidesColorsComparisonOne())) {
+            stop()
+        }
+
+        req(input$selectedProtein)
+
+        req(input$yaxisCoverage)
+
+        req(input$sizeSegments)
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein)
+
+        message("The protein Selected is: ", proteinsSelected)
+
+        p <- ProteoViewer::proteinCoverage(proteinId = proteinsSelected,
+                                           dfPeptidesColors = dfPeptidesColorsComparisonOne(),
+                                           yaxis = input$yaxisCoverage,
+                                           sizeSegments = input$sizeSegments,
+                                           darkMode = input$darkMode,
+                                           nameCondition = input$conditionsSelected[1]
+        )
+        return(p)
+    })
+
+    coverageComparisonTwo <- reactive({
+
+        if (is.null(proteomicsInput()) || is.null(dfPeptidesColorsComparisonTwo())) {
+            stop()
+        }
+
+        req(input$selectedProtein)
+
+        req(input$yaxisCoverage)
+
+        req(input$sizeSegments)
+
+        proteinsSelected <- base::gsub("(.*):.*", "\\1", input$selectedProtein)
+
+        message("The protein Selected is: ", proteinsSelected)
+
+        p <- ProteoViewer::proteinCoverage(proteinId = proteinsSelected,
+                                           dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
+                                           yaxis = input$yaxisCoverage,
+                                           sizeSegments = input$sizeSegments,
+                                           darkMode = input$darkMode,
+                                           nameCondition = input$conditionsSelected[2]
+        )
+        return(p)
+
+    })
+
+    output$coveragePlotComparisonOne <- renderPlotly({
+        coverageComparisonOne()
+    })
+
+    output$coveragePlotComparisonTwo <- renderPlotly({
+        coverageComparisonTwo()
     })
 
     #### User Interface Reactive ####
@@ -1165,7 +1235,7 @@ function(input, output) {
             return(NULL)
         }
 
-         req(!is.null(dfPeptidesColorsNoGroups()))
+        # req(!is.null(dfPeptidesColorsNoGroups()))
         #
         # if (is.null(dfPeptidesColorsNoGroups())) {
         #     stop()
@@ -1182,6 +1252,15 @@ function(input, output) {
                                         "Peptide Start Position" = "startPosition"),
                 ),
 
+                sliderInput('sizeSegments',
+                            'Size of the Segments',
+                            min = 1,
+                            max = 20,
+                            value = 2),
+
+                shinyWidgets::switchInput('darkMode',
+                                          'Dark Mode', value = TRUE),
+
                 #options = list(`style` = "btn-info"),
                 style = "unite",
                 icon = tags$i(
@@ -1194,30 +1273,30 @@ function(input, output) {
                     enter = animations$fading_entrances$fadeInLeftBig,
                     exit = animations$fading_exits$fadeOutRightBig)
             ),
-            plotlyOutput('coveragePlot')
+
+            if (input$inputComparison != 'conditions') {
+                req(!is.null(dfPeptidesColorsNoGroups()))
+
+                plotlyOutput('coveragePlot')
+            }else{
+                req(!is.null(coverageComparisonOne()))
+
+                #message('usre is here')
+                column(width = 12,
+                       fluidRow(
+                           column(width = 6,
+                                  plotlyOutput('coveragePlotComparisonOne')
+                       ),
+                       column(width = 6,
+                              plotlyOutput('coveragePlotComparisonTwo')
+                              )
+                       )
+                )
+            }
         )
-
-
     })
 
 
-    shinyWidgets::dropdown(
-
-        selectInput("yaxisCoverage",
-                    "Select the y axis",
-                    choices = c("Log 2 Intensity" = "Intensity",
-                                "Peptide Start Position" = "startPosition"),
-        ),
-
-        options = list(`style` = "btn-info"),
-        style = "unite",
-        icon = icon("paint-brush"),
-        status = "success", width = "300px",
-        animate = animateOptions(
-            enter = animations$fading_entrances$fadeInLeftBig,
-            exit = animations$fading_exits$fadeOutRightBig)
-    )
-    plotlyOutput('coveragePlot')
 
         # UI PTMS ---------------------
 
