@@ -153,22 +153,49 @@ dashboardPage(
 
                 fluidRow(
                     # Plotting of the Rendered proteins
-                    column(width = 8,
+                    column(width = 12,
 
                         uiOutput('proteinImagesUIAll')
                         #imageOutput('proteinImageNoComparison')
-                        ),
-
-                    # Plotting of the PTM image and the table
-                    column(width = 4,
-                        uiOutput('PTMSlegendUI')
                         )
                     ),
 
                 fluidRow(
+                    column(width = 12,
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br()
+                           )
+                ),
 
-                    uiOutput('coverageUI')
+                fluidRow(
+                    column(width = 12,
+                           uiOutput('coverageUI')
+                           )
+                ),
 
+                fluidRow(
+                    # Plotting of the PTM image and the table
+                    column(width = 12,
+                           uiOutput('PTMSlegendUI')
+                    )
                 ),
 
                 hr(style = "border-color: #cbcbcb;"),

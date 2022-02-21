@@ -11,12 +11,10 @@
 proteinCoverage <- function(proteinId,
                             dfPeptidesColors,
                             yaxis = c('Intensity', 'startPosition'),
-                            comparison = c('individualExperiments',
-                                           'combineExperiments',
-                                           'conditions'),
                             sizeSegments,
                             darkMode = TRUE,
-                            nameCondition = NULL){
+                            nameCondition = NULL,
+                            intensityRange = NULL){
 
     uniprot_url <- "http://www.uniprot.org/uniprot/"
 
@@ -39,9 +37,6 @@ proteinCoverage <- function(proteinId,
          replacement = '',
          pattern = '\n',
          ignore.case = T)
-
-
-
 
     dfPeptidesColors$Length <- nchar(dfPeptidesColors$Sequence)
 
@@ -79,7 +74,8 @@ proteinCoverage <- function(proteinId,
             #theme_bw()+
             #theme_dark()+
             coord_cartesian(xlim = c(0, lengthProteinSequence))+
-            ylab("Log2 Intensity")
+            ylab("Log2 Intensity")+
+            ylim(intensityRange)
 
 
     }else if(yaxis == "startPosition"){
@@ -108,14 +104,14 @@ proteinCoverage <- function(proteinId,
 
     if (darkMode == TRUE) {
         p <- p + theme_bw()+
-            theme(panel.background =   element_rect(fill = "#488a9b", colour = NA,
+            theme(panel.background = element_rect(fill = "#333333", colour = NA,
                                                  color = 'black'),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   panel.border = element_blank())
     }else{
         p <- p + theme_bw()+
-            theme(plot.background = element_rect(color = 'black'))
+            theme(plot.background = element_rect(color = 'black',size = 2))
     }
 
 

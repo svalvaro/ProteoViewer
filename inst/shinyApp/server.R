@@ -835,7 +835,8 @@ function(input, output) {
                                     dfPeptidesColors = dfPeptidesColorsNoGroups(),
                                     yaxis = input$yaxisCoverage,
                                     sizeSegments = input$sizeSegments,
-                                    darkMode = input$darkMode
+                                    darkMode = input$darkMode,
+                                    intensityRange = input$intensityRange
                                     )
     })
 
@@ -868,7 +869,8 @@ function(input, output) {
                                            yaxis = input$yaxisCoverage,
                                            sizeSegments = input$sizeSegments,
                                            darkMode = input$darkMode,
-                                           nameCondition = input$conditionsSelected[1]
+                                           nameCondition = input$conditionsSelected[1],
+                                           intensityRange = input$intensityRange
         )
         return(p)
     })
@@ -894,7 +896,8 @@ function(input, output) {
                                            yaxis = input$yaxisCoverage,
                                            sizeSegments = input$sizeSegments,
                                            darkMode = input$darkMode,
-                                           nameCondition = input$conditionsSelected[2]
+                                           nameCondition = input$conditionsSelected[2],
+                                           intensityRange = input$intensityRange
         )
         return(p)
 
@@ -1056,11 +1059,6 @@ function(input, output) {
         )
 
     })
-
-
-
-
-
 
     output$downloadComparisonOne <- renderUI({
 
@@ -1261,6 +1259,10 @@ function(input, output) {
                 shinyWidgets::switchInput('darkMode',
                                           'Dark Mode', value = TRUE),
 
+                sliderInput("intensityRange", label = h4("Intensity Log2 range"), min = 15,
+                            max = 35, value = c(20, 30)
+            ),
+
                 #options = list(`style` = "btn-info"),
                 style = "unite",
                 icon = tags$i(
@@ -1280,6 +1282,7 @@ function(input, output) {
                 plotlyOutput('coveragePlot')
             }else{
                 req(!is.null(coverageComparisonOne()))
+                req(!is.null(coverageComparisonTwo()))
 
                 #message('usre is here')
                 column(width = 12,
