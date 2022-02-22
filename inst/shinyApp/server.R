@@ -1273,20 +1273,9 @@ function(input, output) {
 
             if (input$inputComparison != 'conditions') {
 
-                # if (is.null(dfPeptidesColorsNoGroups())) {
-                #     return(NULL)
-                # }
-                # req(!is.null(dfPeptidesColorsNoGroups()))
-
                 plotlyOutput('coveragePlot')
             }else{
-                # if (is.null(coverageComparisonOne())) {
-                #     return(NULL)
-                # }
-                # req(!is.null(coverageComparisonOne()))
-                # req(!is.null(coverageComparisonTwo()))
 
-                #message('usre is here')
                 column(width = 12,
                        fluidRow(
                            column(width = 6,

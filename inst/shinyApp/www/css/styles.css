@@ -119,3 +119,21 @@ img {
   background: rgba(72,138,153,1) !important;
   background-color: rgba(72,138,153,1) !important;
 }
+
+/* Slider bar */
+
+
+
+
+.irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single, .irs--shiny .irs-min, .irs--shiny .irs-max {
+  background-color: rgba(72,138,153,1);
+  color: white;
+}
+
+.irs--shiny .irs-bar {
+  top: 25px;
+  height: 8px;
+  border-top: 1px solid rgba(72,138,153,1);
+  border-bottom: 1px solid rgba(72,138,153,1);
+  background: rgba(72,138,153,1);;
+}
