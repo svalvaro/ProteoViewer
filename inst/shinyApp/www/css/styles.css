@@ -89,9 +89,9 @@ h2 {
 
 /* Download button  for table and upload button*/
 
-.btn-default {
+/* .btn-default {
   background-color: rgb(214, 246, 253) !important;
-}
+} */
 
 /* Confirm button in the demo data pop up */
 
@@ -123,17 +123,28 @@ img {
 /* Slider bar */
 
 
-
-
 .irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single, .irs--shiny .irs-min, .irs--shiny .irs-max {
-  background-color: rgba(72,138,153,1);
-  color: white;
+  background-color: rgba(72,138,153,1) !important;
+  color: white !important;
 }
 
 .irs--shiny .irs-bar {
   top: 25px;
   height: 8px;
-  border-top: 1px solid rgba(72,138,153,1);
-  border-bottom: 1px solid rgba(72,138,153,1);
-  background: rgba(72,138,153,1);;
+  border-top: 1px solid rgba(72,138,153,1) !important;
+  border-bottom: 1px solid rgba(72,138,153,1) !important;
+  background: rgba(72,138,153,1) !important;
+}
+
+
+/* Drop down colour */
+
+.sw-dropdown-in {
+  background-color: rgb(214, 246, 253)  !important;
+}
+
+.sw-dropdown-content {
+
+  background: none repeat scroll 0% 0% rgb(214, 246, 253) !important;
+
 }

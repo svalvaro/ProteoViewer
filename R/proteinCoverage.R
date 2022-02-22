@@ -10,9 +10,10 @@
 #' @examples
 proteinCoverage <- function(proteinId,
                             dfPeptidesColors,
+                            xAxis = c('position', 'sequence'),
                             yaxis = c('Intensity', 'startPosition'),
                             sizeSegments,
-                            darkMode = TRUE,
+                            backGroundColour = "#333333",
                             nameCondition = NULL,
                             intensityRange = NULL){
 
@@ -100,22 +101,22 @@ proteinCoverage <- function(proteinId,
         p <- p + ggtitle(paste0("Protein Coverage of:  ", proteinId))
     }
 
+    p <- p + theme_bw()+
+        theme(panel.background = element_rect(fill = backGroundColour, colour = NA,
+                                             color = 'black'),
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              panel.border = element_blank())
 
 
-    if (darkMode == TRUE) {
-        p <- p + theme_bw()+
-            theme(panel.background = element_rect(fill = "#333333", colour = NA,
-                                                 color = 'black'),
-                  panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank(),
-                  panel.border = element_blank())
-    }else{
-        p <- p + theme_bw()+
-            theme(plot.background = element_rect(color = 'black',size = 2))
+    if (xAxis == 'sequence') {
+        xAxisSeq <- unlist(strsplit(proteinSequence, split = "+"))
+
+        p <- p + scale_x_continuous(labels=xAxisSeq, breaks=1:length(xAxisSeq), limits=c(1,length(xAxisSeq)))
     }
 
 
-    plotly::ggplotly(p,
+     plotly::ggplotly(p,
                      tooltip = c("startPosition","endPosition","Intensity","Sequence"))
 
     }

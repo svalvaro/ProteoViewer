@@ -835,8 +835,9 @@ function(input, output) {
                                     dfPeptidesColors = dfPeptidesColorsNoGroups(),
                                     yaxis = input$yaxisCoverage,
                                     sizeSegments = input$sizeSegments,
-                                    darkMode = input$darkMode,
-                                    intensityRange = input$intensityRange
+                                    backGroundColour = input$backgroundColour,
+                                    intensityRange = input$intensityRange,
+                                    xAxis = input$xAxisCoverage
                                     )
     })
 
@@ -868,9 +869,10 @@ function(input, output) {
                                            dfPeptidesColors = dfPeptidesColorsComparisonOne(),
                                            yaxis = input$yaxisCoverage,
                                            sizeSegments = input$sizeSegments,
-                                           darkMode = input$darkMode,
+                                           backGroundColour = input$backgroundColour,
                                            nameCondition = input$conditionsSelected[1],
-                                           intensityRange = input$intensityRange
+                                           intensityRange = input$intensityRange,
+                                           xAxis = input$xAxisCoverage
         )
         return(p)
     })
@@ -895,9 +897,10 @@ function(input, output) {
                                            dfPeptidesColors = dfPeptidesColorsComparisonTwo(),
                                            yaxis = input$yaxisCoverage,
                                            sizeSegments = input$sizeSegments,
-                                           darkMode = input$darkMode,
+                                           backGroundColour = input$backgroundColour,
                                            nameCondition = input$conditionsSelected[2],
-                                           intensityRange = input$intensityRange
+                                           intensityRange = input$intensityRange,
+                                           xAxis = input$xAxisCoverage
         )
         return(p)
 
@@ -1240,19 +1243,30 @@ function(input, output) {
             shinyWidgets::dropdown(
 
                 selectInput("yaxisCoverage",
-                            "Select the y axis",
+                           h4( "Select the Y-axis"),
                             choices = c("Log 2 Intensity" = "Intensity",
                                         "Peptide Start Position" = "startPosition"),
                 ),
 
+                selectInput("xAxisCoverage",
+                            h4( "Select the X-axis"),
+                            choices = c("Sequence" ='sequence',
+                                        "Position" = "position"),
+                            selected = "position"
+                ),
+
+
                 sliderInput('sizeSegments',
-                            'Size of the Segments',
+                            h4('Size of the Segments'),
                             min = 1,
                             max = 20,
                             value = 2),
 
-                shinyWidgets::switchInput('darkMode',
-                                          'Dark Mode', value = TRUE),
+                # shinyWidgets::switchInput('darkMode',
+                #                           'Dark Mode', value = TRUE),
+                shinyWidgets::colorPickr(inputId = 'backgroundColour',
+                                         label = h4("Background Colour"),
+                                         selected = "#333333"),
 
                 sliderInput("intensityRange", label = h4("Intensity Log2 range"), min = 15,
                             max = 35, value = c(20, 33)
