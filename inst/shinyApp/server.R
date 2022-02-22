@@ -1232,12 +1232,7 @@ function(input, output) {
         if (is.null(proteomicsInput()) ) {
             return(NULL)
         }
-
-        # req(!is.null(dfPeptidesColorsNoGroups()))
-        #
-        # if (is.null(dfPeptidesColorsNoGroups())) {
-        #     stop()
-        # }
+        req(input$inputComparison)
 
 
         column(
@@ -1260,7 +1255,7 @@ function(input, output) {
                                           'Dark Mode', value = TRUE),
 
                 sliderInput("intensityRange", label = h4("Intensity Log2 range"), min = 15,
-                            max = 35, value = c(20, 30)
+                            max = 35, value = c(20, 33)
             ),
 
                 #options = list(`style` = "btn-info"),
@@ -1277,12 +1272,19 @@ function(input, output) {
             ),
 
             if (input$inputComparison != 'conditions') {
-                req(!is.null(dfPeptidesColorsNoGroups()))
+
+                # if (is.null(dfPeptidesColorsNoGroups())) {
+                #     return(NULL)
+                # }
+                # req(!is.null(dfPeptidesColorsNoGroups()))
 
                 plotlyOutput('coveragePlot')
             }else{
-                req(!is.null(coverageComparisonOne()))
-                req(!is.null(coverageComparisonTwo()))
+                # if (is.null(coverageComparisonOne())) {
+                #     return(NULL)
+                # }
+                # req(!is.null(coverageComparisonOne()))
+                # req(!is.null(coverageComparisonTwo()))
 
                 #message('usre is here')
                 column(width = 12,

@@ -112,3 +112,10 @@ img {
   border: 1;
   max-width: 100%;
 }
+
+
+.bootstrap-switch-handle-on.bootstrap-switch-primary {
+  
+  background: rgba(72,138,153,1) !important;
+  background-color: rgba(72,138,153,1) !important;
+}
