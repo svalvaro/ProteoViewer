@@ -140,11 +140,12 @@ img {
 /* Drop down colour */
 
 .sw-dropdown-in {
-  background-color: rgb(214, 246, 253)  !important;
+  /* background-color: rgb(214, 246, 253)  !important; */
+  background: rgb(217,231,255);
+  background: linear-gradient(45deg, rgba(217,231,255,1) 0%, rgba(133,191,205,1) 100%) !important; 
 }
 
 .sw-dropdown-content {
-
-  background: none repeat scroll 0% 0% rgb(214, 246, 253) !important;
-
+  background: rgb(217,231,255);
+  background: linear-gradient(45deg, rgba(217,231,255,1) 0%, rgba(133,191,205,1) 100%) !important; 
 }
