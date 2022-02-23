@@ -1245,14 +1245,16 @@ function(input, output) {
                 selectInput("yaxisCoverage",
                            h4( "Select the Y-axis"),
                             choices = c("Log 2 Intensity" = "Intensity",
-                                        "Peptide Start Position" = "startPosition"),
+                                        "Peptide Start Position" = "startPosition",
+                                        "Sequence" = 'sequence'),
+                           selected = 'Intensity',
                 ),
 
                 selectInput("xAxisCoverage",
                             h4( "Select the X-axis"),
                             choices = c("Sequence" ='sequence',
-                                        "Position" = "position"),
-                            selected = "position"
+                                        "Peptide Start Position" = "position"),
+                            selected = "sequence"
                 ),
 
 

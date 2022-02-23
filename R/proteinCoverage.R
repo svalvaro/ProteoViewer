@@ -25,8 +25,6 @@ proteinCoverage <- function(proteinId,
 
     proteinSequence   <- httr::content(proteinSequence, encoding = "UTF-8")
 
-    lengthProteinSequence <- nchar(proteinSequence)
-
     # Keep only the sequence
     proteinSequence <- gsub(x = proteinSequence,
                              replacement = '',
@@ -38,6 +36,8 @@ proteinCoverage <- function(proteinId,
          replacement = '',
          pattern = '\n',
          ignore.case = T)
+
+    lengthProteinSequence <- nchar(proteinSequence)
 
     dfPeptidesColors$Length <- nchar(dfPeptidesColors$Sequence)
 
@@ -72,9 +72,7 @@ proteinCoverage <- function(proteinId,
             ),
             colour = dfPeptidesColors$Colour,
             size = 2)+
-            #theme_bw()+
-            #theme_dark()+
-            coord_cartesian(xlim = c(0, lengthProteinSequence))+
+            coord_cartesian(xlim = c(1, lengthProteinSequence))+
             ylab("Log2 Intensity")+
             ylim(intensityRange)
 
@@ -86,14 +84,40 @@ proteinCoverage <- function(proteinId,
                              y = startPositionDuplicate,
                              yend = endPositionDuplicate
             ),colour = dfPeptidesColors$Colour,size = sizeSegments)+
-            #theme_bw()+
-            coord_cartesian(xlim = c(0, lengthProteinSequence), ylim = c(0, lengthProteinSequence))+
+            coord_cartesian(xlim = c(1, lengthProteinSequence), ylim = c(1, lengthProteinSequence))+
             ylab("Start Position")
+
+    }else if (yaxis == 'sequence'){
+
+        p <- ggplot(dfPeptidesColors , aes(text = Sequence))+
+            geom_segment(aes(x = startPosition,
+                             xend = endPosition,
+                             y = startPositionDuplicate,
+                             yend = endPositionDuplicate
+            ),colour = dfPeptidesColors$Colour,size = sizeSegments)+
+            coord_cartesian(xlim = c(1, lengthProteinSequence), ylim = c(1, lengthProteinSequence))+
+            ylab("Sequence")
+
+
+        yAxisSeq <- unlist(strsplit(proteinSequence, split = "+"))
+
+        p <- p + scale_y_continuous(labels=yAxisSeq, breaks=1:length(yAxisSeq), limits=c(1,length(yAxisSeq)))
 
     }
 
-    p <- p +
-        xlab("Start Position")
+
+    # For the X- axis
+
+    if (xAxis == 'sequence') {
+        xAxisSeq <- unlist(strsplit(proteinSequence, split = "+"))
+
+        p <- p + scale_x_continuous(labels=xAxisSeq, breaks=1:length(xAxisSeq),
+                                    limits=c(1,length(xAxisSeq)))+
+            xlab('Start Position')
+    }else {
+        p <- p + xlab('Start Position')
+    }
+
 
     if(!is.null(nameCondition)){
         p <- p + ggtitle(paste0("Protein Coverage:  ", nameCondition))
@@ -109,11 +133,7 @@ proteinCoverage <- function(proteinId,
               panel.border = element_blank())
 
 
-    if (xAxis == 'sequence') {
-        xAxisSeq <- unlist(strsplit(proteinSequence, split = "+"))
 
-        p <- p + scale_x_continuous(labels=xAxisSeq, breaks=1:length(xAxisSeq), limits=c(1,length(xAxisSeq)))
-    }
 
 
      plotly::ggplotly(p,
