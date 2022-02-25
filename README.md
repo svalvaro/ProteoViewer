@@ -39,4 +39,4 @@ ProteoViewer accepts the `evidence.txt` from
 ## Example
 
 ![ProteoViewer
-example](https://github.com/svalvaro/ProteoViewer/blob/master/inst/shinyApp/www/images/exampleApp.png?raw=true)
+example](https://github.com/svalvaro/ProteoViewer/blob/master/inst/shinyApp/www/images/shinyDemo.png?raw=true)

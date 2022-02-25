@@ -50,7 +50,7 @@ ProteoViewer accepts the `evidence.txt` from [MaxQuant](https://www.maxquant.org
 
 
 ## Example
-![ProteoViewer example](https://github.com/svalvaro/ProteoViewer/blob/master/inst/shinyApp/www/images/exampleApp.png?raw=true)
+![ProteoViewer example](https://github.com/svalvaro/ProteoViewer/blob/master/inst/shinyApp/www/images/shinyDemo.png?raw=true)
 
 
 
