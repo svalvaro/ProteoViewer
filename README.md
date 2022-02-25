@@ -3,13 +3,12 @@
 
 # ProteoViewer
 
-<!-- badges: start -->
-<!-- badges: end -->
-
 The goal of ProteoViewer is to analyse the peptide intensities in a
 proteomics LC-MS/MS experiment. Besides, it provides visualization for
 the protein topology, Post-translational modifications and protein
 Coverage.
+
+It relies on the [Protter](http://wlab.ethz.ch/protter/start/) API.
 
 ## Installation
 
@@ -36,3 +35,8 @@ Or access to it trough the web application hosted at:
 ProteoViewer accepts the `evidence.txt` from
 [MaxQuant](https://www.maxquant.org/) or the output from
 [Spectronaut](https://biognosys.com/software/spectronaut/)
+
+## Example
+
+![ProteoViewer
+example](https://github.com/svalvaro/ProteoViewer/blob/master/inst/shinyApp/www/images/exampleApp.png?raw=true)
