@@ -6,11 +6,12 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of ProteoViewer is to …
+The goal of ProteoViewer is to analyse the peptide intensities in a
+proteomics LC-MS/MS experiment. Besides, it provides visualization for
+the protein topology, Post-translational modifications and protein
+Coverage.
 
 ## Installation
-
-And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -27,16 +28,11 @@ library(ProteoViewer)
 runProteoViewerApp()
 ```
 
-You can also provide the evidence.txt to the main function and obtain
-the URL that you can copy and paste into any browser to obtain the
-visualization of the protein of interest.
+Or access to it trough the web application hosted at:
+<https://proteomics.fgu.cas.cz/ProteoViewer/>
 
-``` r
-df <- read.delim('evidence.tx')
+## Data
 
-connectProtterAPI(evidence = df,
-                SelectedExperiment = 'wt_1',
-                SelectedProtein = 'Q001',combineExperiments = FALSE,
-                plot_palette = FALSE,
-                peptideCutter = TRUE)
-```
+ProteoViewer accepts the `evidence.txt` from
+[MaxQuant](https://www.maxquant.org/) or the output from
+[Spectronaut](https://biognosys.com/software/spectronaut/)

@@ -6,7 +6,7 @@ uiHeader <- dashboardHeader(
             tags$link(
                 rel = "icon",
                 type = "image/png",
-                href = "logo_small.png"
+                href = "images/logo_small.png"
             ),
             tags$title("ProteoViewer"),
 
@@ -29,7 +29,7 @@ uiHeader <- dashboardHeader(
 
     tags$li(a(
         href = 'https://proteomics.fgu.cas.cz/',
-        img(src = 'logo.png',
+        img(src = 'images/logo.png',
             title = "ProteoLab",
             height = "30px"),
         style = "padding-top:10px; padding-bottom:10px;"),
