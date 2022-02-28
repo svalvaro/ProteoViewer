@@ -130,9 +130,9 @@ createPTMs <- function(evidence,
           modifiedPeptides$Modified.sequence
       )
 
-  # For (M Oxidations):
+  # For Oxidation (M):
 
-    modifiedPeptides$Modified.sequence <-
+  modifiedPeptides$Modified.sequence <-
       gsub(
       pattern = 'M\\(Oxidation \\(M\\)\\)',
       replacement = '(M)',
@@ -179,6 +179,19 @@ createPTMs <- function(evidence,
          x = modifiedPeptides$Modified.sequence
     )
 
+
+  # For other modifications that not methylations, oxidations, Acetylations, Phosphorylation
+  # In a more universal way
+  index_PTM_universal <-   which(!((modifiedPeptides$Modifications)  %in% c(
+    "Oxidation (M)", "Acetyl (Protein N-term)", "Methyl (KR)", 'Dimethyl (KR)',
+    'Trimethyl (K)',"Phospho (STY)")
+    ))
+
+  modifiedPeptides$Modified.sequence[index_PTM_universal] <-
+    gsub(pattern = paste0('\\(',modifiedPeptides$Modifications[index_PTM_universal],"\\)",'(.)'),
+         replacement = '(\\1)',
+         x = modifiedPeptides$Modified.sequence[index_PTM_universal]
+    )
 
 
   # Remove the underscores:
@@ -257,6 +270,18 @@ createPTMs <- function(evidence,
 
     p <- png::readPNG(
       source = system.file('shinyApp/www/legendImages/phospho.png',
+                           package = 'ProteoViewer'))
+
+    ptmImages[[length(ptmImages)+1]] <- p
+  }
+
+
+  # Add universal ptm
+
+  if (length(index_PTM_universal)>0) {
+
+    p <- png::readPNG(
+      source = system.file('shinyApp/www/legendImages/universalPTM.png',
                            package = 'ProteoViewer'))
 
     ptmImages[[length(ptmImages)+1]] <- p
