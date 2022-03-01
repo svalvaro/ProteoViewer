@@ -78,6 +78,10 @@ peptideIntensityTable <- reactive({
     peptideIntensityTable$endPosition <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,2]
 
 
+    # Sort the table according to the start position
+
+
+    peptideIntensityTable <- peptideIntensityTable[order(peptideIntensityTable$startPosition, decreasing = FALSE),]
 
 
     return(peptideIntensityTable)
