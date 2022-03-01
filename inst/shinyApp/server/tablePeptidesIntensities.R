@@ -48,7 +48,6 @@ peptideIntensityTable <- reactive({
         )
     }
 
-
     # Add the peptide start and end
 
     uniprot_url <- "http://www.uniprot.org/uniprot/"
@@ -64,7 +63,6 @@ peptideIntensityTable <- reactive({
                             replacement = '',
                             pattern =  '.*.SV=.\n',
                             ignore.case = T)
-
     # Remove the \n
     proteinSequence <- gsub(x = proteinSequence,
                             replacement = '',
@@ -73,28 +71,26 @@ peptideIntensityTable <- reactive({
 
     # Now Match the peptides and add the Start/Finish
 
-    peptideIntensityTable$startPosition <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,1]
+    peptideIntensityTable$`Start Position` <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,1]
 
-    peptideIntensityTable$endPosition <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,2]
+    peptideIntensityTable$`End Position` <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,2]
 
 
     # Sort the table according to the start position
 
-
-    peptideIntensityTable <- peptideIntensityTable[order(peptideIntensityTable$startPosition, decreasing = FALSE),]
-
+    peptideIntensityTable <- peptideIntensityTable[order(peptideIntensityTable$`Start Position` , decreasing = FALSE),]
 
     return(peptideIntensityTable)
 })
 
-output$peptideIntensityTableOut <- shiny::renderDataTable({
+output$peptideIntensityTableOut <- shiny::renderDataTable(options = list(pageLength= 10),
+                                                          {
     peptideIntensityTable()
 })
 
 # Download the table button
 
 output$downloadTable <- downloadHandler(
-
 
     filename = function(){paste0(
         base::gsub("(.*):.*", "\\1",input$selectedProtein),
