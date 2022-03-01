@@ -114,9 +114,7 @@ output$singleDownload <- renderUI({
         target = "_blank",
         href = noComparisonURL()
     )
-
 })
-
 
 output$combineDownload <- renderUI({
 
@@ -142,7 +140,6 @@ output$combineDownload <- renderUI({
         target = "_blank",
         href = noComparisonURL()
     )
-
 })
 
 output$downloadComparisonOne <- renderUI({
@@ -226,7 +223,6 @@ output$downloadersUI <- renderUI({
         div(
             uiOutput("singleDownload"),
             uiOutput("combineDownload")
-
         )
 
     }else{

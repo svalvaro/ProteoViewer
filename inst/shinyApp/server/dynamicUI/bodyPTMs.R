@@ -8,7 +8,6 @@ output$PTMSlegendUI <- renderUI({
         width = 12,
         box(width = 400,
             plotOutput('legendPTMs'),
-
             dataTableOutput('peptideIntensityTableOut'),
             downloadButton(outputId = 'downloadTable',
                            label = 'Download')

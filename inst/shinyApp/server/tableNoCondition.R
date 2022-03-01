@@ -1,6 +1,5 @@
 dfPeptidesColorsNoGroups <- reactive({
 
-
     shiny::req(input$inputComparison)
 
     if (is.null(proteomicsInput()) ||

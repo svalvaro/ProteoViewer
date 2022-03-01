@@ -19,7 +19,6 @@ observeEvent(input$saveExpDesign, {
 
     message('Experiment Design updated')
 
-
     shinyalert::shinyalert("Experiment Design saved",
                            "You can go back to the Results Tab",
                            type="success",

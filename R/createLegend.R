@@ -43,13 +43,6 @@ createLegend <- function(evidence,
         return(NULL)
     }
 
-    # Select the peptide type
-
-
-
-    # selectedExperiment = "condition_A_1"
-    # selectedProtein = "O75947"
-
     proteomicsInput <- evidence %>%
         dplyr::select(
             c(
@@ -63,9 +56,6 @@ createLegend <- function(evidence,
                                     'modified'))
             )
         )
-
-    # Select only for the selected protein
-
 
     # If there are no peptides are found in that experiment.
 
@@ -103,7 +93,6 @@ createLegend <- function(evidence,
 
     dfColorsMax <- dfColorsMax[!is.na(dfColorsMax$Intensity),]
 
-
     # Minimium colours
 
     dfColorsMin <- dfPeptidesColors
@@ -116,14 +105,12 @@ createLegend <- function(evidence,
 
     dfColorsMin$Intensity <- as.numeric(dfColorsMin$Intensity)
 
-
     dfColorsMin <- dfColorsMin[!is.na(dfColorsMin$Intensity),]
 
     # Obtain the number of breaks to
 
     continuous_breaks <- seq(from = trunc(min(dfColorsMin$Intensity)),
                              to = trunc(max(dfColorsMax$Intensity))+1)
-
 
     myColors <- grDevices::colorRampPalette(c(
         "#2166AC",
@@ -164,28 +151,12 @@ createLegend <- function(evidence,
 
     }
 
-
     ##### Second part #####
 
     # If the legend is not required, then we can now index by the protein
 
-
-
-    # Select only for the selected protein
-
-    # The problem with this is that if there are multiple proteins it will not
-    # find it: Q432423;Q324923;QR230;..
-    # GREP might work better
-
     dfPeptidesColors <- dfPeptidesColors[
         dfPeptidesColors$Proteins == selectedProtein,]
-
-    # dfPeptidesColors <- dfPeptidesColors[
-    #     grep(pattern = selectedProtein,
-    #          x = dfPeptidesColors$Proteins),
-    # ]
-
-
 
     # If there are no peptides are found in that experiment.
 
@@ -200,10 +171,6 @@ createLegend <- function(evidence,
 
     # First aggregate the sum of the same peptide for the same experiment,
     # Because this step has to be done for the three possible conditions:
-
-    # dfPeptidesColors2 <- ProteoIndexed %>%
-    #     group_by(Sequence, Experiment) %>%
-    #     summarise(Intensity = sum(Intensity))
 
     # If the plotting of the palette is not requried, I need to match
     # the peptide intensites to the color
@@ -220,7 +187,6 @@ createLegend <- function(evidence,
             group_by(Sequence) %>%
             summarise(Intensity = sum(Intensity))
     }
-
 
     if (comparison == 'conditions') {
 

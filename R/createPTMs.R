@@ -44,13 +44,6 @@ createPTMs <- function(evidence,
 
   # Index by Selected protein and remove Unmodified peptides
 
-  # selectedProtein = 	'P10645'
-
-  # modifiedPeptides <- modifiedPeptides[
-  #   grep(pattern = selectedProtein,
-  #        x = modifiedPeptides$Proteins),
-  #   ]
-
   modifiedPeptides <- modifiedPeptides[
     modifiedPeptides$Proteins == selectedProtein,]
 
@@ -82,7 +75,6 @@ createPTMs <- function(evidence,
     pattern = '[1-3] ',
     replacement =  '',
     x =  modifiedPeptides$Modifications)
-
 
   for (ii in seq_len(nrow(modifiedPeptides))) {
 
@@ -179,7 +171,6 @@ createPTMs <- function(evidence,
          x = modifiedPeptides$Modified.sequence
     )
 
-
   # For other modifications that not methylations, oxidations, Acetylations, Phosphorylation
   # In a more universal way
   index_PTM_universal <-   which(!((modifiedPeptides$Modifications)  %in% c(
@@ -193,14 +184,12 @@ createPTMs <- function(evidence,
          x = modifiedPeptides$Modified.sequence[index_PTM_universal]
     )
 
-
   # Remove the underscores:
 
   modifiedPeptides$Modified.sequence <-
       gsub(pattern = '_',
           replacement = '',
           x = modifiedPeptides$Modified.sequence)
-
 
   modifiedPeptides <-  unique(modifiedPeptides)
 
@@ -274,7 +263,6 @@ createPTMs <- function(evidence,
 
     ptmImages[[length(ptmImages)+1]] <- p
   }
-
 
   # Add universal ptm
 

@@ -77,6 +77,4 @@ function(input, output) {
         # UI PTMS
 
     source("server/dynamicUI/bodyPTMs.R", local = TRUE)
-
-
 }

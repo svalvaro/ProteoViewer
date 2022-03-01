@@ -36,12 +36,6 @@ comparisonPTMs <- function(evidence,
     modifiedPeptides <- modifiedPeptides[
         modifiedPeptides$Proteins == selectedProtein,]
 
-    # modifiedPeptides <- modifiedPeptides[
-    #     grep(pattern = selectedProtein,
-    #          x = modifiedPeptides$Proteins),
-    #     ]
-
-
     # Remove empty values
     modifiedPeptides <- modifiedPeptides[!is.na(modifiedPeptides$Intensity),]
 
@@ -62,7 +56,6 @@ comparisonPTMs <- function(evidence,
         modifiedPeptides$Experiment <- NULL
     }
 
-
     # Option 2: The user wants to see the combined version of all experiments:
 
     # If provide an experiment, index by it
@@ -73,13 +66,6 @@ comparisonPTMs <- function(evidence,
             group_by(Sequence,  Modifications) %>%
             summarise(Intensity = sum(Intensity))
     }
-
-
-    # Option 3: The user wants to compare one or two conditions:
-
-
-
-
 
     # If two conditions are compared, return a table with:
     # 'Condition' 'Sequence' 'Modification' and 'Intensity'
@@ -107,7 +93,6 @@ comparisonPTMs <- function(evidence,
 
     }
 
-
     # Format the Intensity column to log2 and only one decimal
     modifiedPeptides$Intensity <- format(
         round(
@@ -117,5 +102,4 @@ comparisonPTMs <- function(evidence,
     )
 
     return(modifiedPeptides)
-
 }

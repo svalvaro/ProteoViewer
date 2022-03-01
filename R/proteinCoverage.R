@@ -51,7 +51,6 @@ proteinCoverage <- function(proteinId,
 
     dfPeptidesColors$Colour <- paste0("#", dfPeptidesColors$Colour)
 
-
     # Duplicate columns to solve the duplication in the tooltip with ggplotly
 
     dfPeptidesColors$Intensity <- format(round(dfPeptidesColors$Intensity , 2), nsmall = 2)
@@ -59,8 +58,6 @@ proteinCoverage <- function(proteinId,
     dfPeptidesColors$startPositionDuplicate <- dfPeptidesColors$startPosition
     dfPeptidesColors$endPositionDuplicate <- dfPeptidesColors$endPosition
     dfPeptidesColors$IntensityDuplicate <- dfPeptidesColors$Intensity
-
-
 
     if (yaxis == "Intensity") {
 
@@ -75,7 +72,6 @@ proteinCoverage <- function(proteinId,
             coord_cartesian(xlim = c(1, lengthProteinSequence))+
             ylab("Log2 Intensity")+
             ylim(intensityRange)
-
 
     }else if(yaxis == "startPosition"){
         p <- ggplot(dfPeptidesColors , aes(text = Sequence))+
@@ -98,13 +94,11 @@ proteinCoverage <- function(proteinId,
             coord_cartesian(xlim = c(1, lengthProteinSequence), ylim = c(1, lengthProteinSequence))+
             ylab("Sequence")
 
-
         yAxisSeq <- unlist(strsplit(proteinSequence, split = "+"))
 
         p <- p + scale_y_continuous(labels=yAxisSeq, breaks=1:length(yAxisSeq), limits=c(1,length(yAxisSeq)))
 
     }
-
 
     # For the X- axis
 
@@ -118,7 +112,6 @@ proteinCoverage <- function(proteinId,
         p <- p + xlab('Start Position')
     }
 
-
     if(!is.null(nameCondition)){
         p <- p + ggtitle(paste0("Protein Coverage:  ", nameCondition))
     }else{
@@ -131,10 +124,6 @@ proteinCoverage <- function(proteinId,
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               panel.border = element_blank())
-
-
-
-
 
      plotly::ggplotly(p,
                      tooltip = c("startPosition","endPosition","Intensity","Sequence"))

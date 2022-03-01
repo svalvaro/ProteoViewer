@@ -17,5 +17,4 @@ dashboardPage(
 #### DashBoard Body ####
 
     uiBody
-
 )

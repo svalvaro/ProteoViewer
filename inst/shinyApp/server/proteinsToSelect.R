@@ -15,7 +15,6 @@ output$proteinsSelect <- renderUI({
             c('Proteins', 'names')
         ))
 
-
         proteinsToSelect$Display <- paste0(
             proteinsToSelect$Proteins, ': ', proteinsToSelect$Protein.names
         )

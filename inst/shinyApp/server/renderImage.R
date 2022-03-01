@@ -1,7 +1,5 @@
 proteinImage_url <- reactive({
 
-    #req(input$inputComparison)
-
     if (input$inputComparison == 'conditions') {
         return(NULL)
     }

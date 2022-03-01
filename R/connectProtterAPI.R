@@ -32,7 +32,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
         url <- paste0(url,"title=Condition:%20" ,title,"&")
     }
 
-
     # Change it to comma separated color for peptides with the same color,
     # It will reduce a bit the length of the total query and might aliviate the
     # issues with long requests.
@@ -53,7 +52,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
         }
 
     }
-
 
     #### PTMS ####
     # If modified peptides are added, then a new part will be added to the url:
@@ -112,7 +110,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url, '&')
         }
 
-
         # For Methyl (KR):
 
         # The indexes of modified peptides are:
@@ -162,8 +159,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
 
             url <- paste0(url, '&')
         }
-
-
 
         # For Trimethyl (K):
 
@@ -215,7 +210,6 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
             url <- paste0(url, '&')
         }
 
-
         # For Other PTMs
         universalPTMindex <- which(!((modifiedPeptides$Modifications)  %in% c(
             "Oxidation (M)", "Acetyl (Protein N-term)", "Methyl (KR)", 'Dimethyl (KR)',
@@ -244,13 +238,10 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
     }
 
 
-
-
     # This part creates the style of in the rendered protein of the PTMs
     # s: shape
     # bc" background color
     # cc: contour color
-
 
     if ('Oxidation (M)' %in% modifiedPeptides$Modifications) {
         url <- paste0(url, 's:diamond,bc:forestgreen,cc:white=EX.MODMOX&' )
@@ -280,13 +271,11 @@ connectProtterAPI <- function(dfPeptidesColors = NULL,
         url <- paste0(url, 's:diamond,bc:black,cc:white=EX.modUniversal&' )
     }
 
-
     if (!proteaseSelected == 'none') {
 
         url <- paste0(url, "cutAt=peptidecutter.", proteaseSelected,"&")
     }
 
-    #url <- paste0(url, "format=png")
     url <- paste0(url, "format=svg")
 
     message(paste0('The url is: \n', url))

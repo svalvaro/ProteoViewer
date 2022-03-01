@@ -17,7 +17,6 @@ output$comparisonAll <- renderUI({
             status = "primary",
             direction = "vertical",
             size = 'normal'
-            # size = 'large' adjust the rest to make it a bit bigger
         )
 
     }else{

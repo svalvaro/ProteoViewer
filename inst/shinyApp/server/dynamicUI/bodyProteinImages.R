@@ -20,8 +20,6 @@ output$UserInterNoGroups <- renderUI({
     )
 })
 
-
-
 output$UserInterGroups <- renderUI({
 
     req(input$inputComparison)
@@ -35,13 +33,11 @@ output$UserInterGroups <- renderUI({
             width = 12,
 
             div(
-                #h3(textOutput('titleProteinComparisonOne')),
                 imageOutput(outputId = 'proteinImageComparisonOne'),
                 tags$script(HTML('panzoom($("#proteinImageComparisonOne").get(0))'))
             ),
 
             div(
-                #h3(textOutput('titleProteinComparisonTwo')),
                 imageOutput(outputId = 'proteinImageComparisonTwo'),
                 tags$script(HTML('panzoom($("#proteinImageComparisonTwo").get(0))'))
             )

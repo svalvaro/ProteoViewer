@@ -41,7 +41,6 @@ dfPeptidesColorsComparisonOne <- reactive({
     }
 })
 
-
 proteinImageOne_url <- reactive({
 
     shiny::req(input$conditionsSelected[1])

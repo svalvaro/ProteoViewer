@@ -119,7 +119,6 @@ observeEvent(input$saveExpDesign, {
 
     experimentDesignFinal$df <- experimentDesignFinal$df [! experimentDesignFinal$df $Include == FALSE,]
 
-
     message('The experiment design is:')
     print(experimentDesignFinal$df )
 
