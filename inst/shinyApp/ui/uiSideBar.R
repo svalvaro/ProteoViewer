@@ -71,7 +71,7 @@ uiSideBar <- dashboardSidebar(
                 ProteoViewer:::convertMenuItem(
 
                     menuItem(
-                        h3('Demo Data'),
+                        h3('About'),
                         tabName = 'demoTab',
 
                         br(),
@@ -85,6 +85,7 @@ uiSideBar <- dashboardSidebar(
                             size = "md",
                             block = FALSE,
                             no_outline = TRUE)
+
 
                     ),
                     tabName = 'demoDataTab'

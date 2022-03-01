@@ -12,7 +12,6 @@ uiBody <-     dashboardBody(
                 column(width = 12,
 
                        uiOutput('proteinImagesUIAll')
-                       #imageOutput('proteinImageNoComparison')
                 )
             ),
 
@@ -91,13 +90,11 @@ uiBody <-     dashboardBody(
                 ),
                 column(width = 10,
 
-                       box(#title = 'Experiment Design',
-
+                       box(
                            rhandsontable::rHandsontableOutput(
                                'experimentDesignOutput')
                        )
                 )
-
             ),
             hr(style = "border-color: #cbcbcb;"),
 
@@ -130,6 +127,14 @@ uiBody <-     dashboardBody(
 
                 column(
                     width = 12,
+
+                    h3('What is ProteoViewer'),
+
+                    h4('ProteoViewer is a web application that takes proteomics
+                       data and presents visualisations for the Protein Topology,
+                       Protein Coverage, Peptide Intensity, and Post-translational Modifications.'),
+
+
                     h3("Proteomics Data"),
 
 
@@ -154,7 +159,14 @@ uiBody <-     dashboardBody(
                            h4('experiment_design.txt'),
                            download=NA,
                            target='_blank'),
-                    h4("By clicking on Load demo data, these two files will be uploaded automatically")
+                    h4("By clicking on Load demo data, these two files will be uploaded automatically"),
+
+
+                    h3('Post-translational Modifications'),
+
+                    h4('There are six PTMs which are recognised and colour-coded by ProteoViewer: Oxidation (M),
+                        Acetyl (Protein N-term), Methyl (KR), Dimethyl (KR), Trimethyl (K) and Phospho (STY).
+                        Other PTMs will be shown in the legend as "Other PTM".')
                 )
             ),
 
