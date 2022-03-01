@@ -48,6 +48,38 @@ peptideIntensityTable <- reactive({
         )
     }
 
+
+    # Add the peptide start and end
+
+    uniprot_url <- "http://www.uniprot.org/uniprot/"
+
+    uniprot_request <- paste0(uniprot_url, proteinsSelected, '.fasta')
+
+    proteinSequence <- httr::GET(uniprot_request)
+
+    proteinSequence   <- httr::content(proteinSequence, encoding = "UTF-8")
+
+    # Keep only the sequence
+    proteinSequence <- gsub(x = proteinSequence,
+                            replacement = '',
+                            pattern =  '.*.SV=.\n',
+                            ignore.case = T)
+
+    # Remove the \n
+    proteinSequence <- gsub(x = proteinSequence,
+                            replacement = '',
+                            pattern = '\n',
+                            ignore.case = T)
+
+    # Now Match the peptides and add the Start/Finish
+
+    peptideIntensityTable$startPosition <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,1]
+
+    peptideIntensityTable$endPosition <- stringi::stri_locate(str = proteinSequence, regex = peptideIntensityTable$Sequence)[,2]
+
+
+
+
     return(peptideIntensityTable)
 })
 
